@@ -2,11 +2,12 @@ use situacaoaprendizagem;
 
 create table usuario (
 	id int not null auto_increment,
+    avatar varchar(20),
     nome varchar(100) not null,
-    cpf varchar(14) not null,
+    cpf varchar(14) not null unique,
     dt_nascimento date,
     sexo int,
-    email varchar(100) not null,
+    email varchar(100) not null unique,
     senha varchar(250) not null,
     situacao int default 1,
     funcao int not null,
@@ -53,32 +54,6 @@ create table reserva (
     constraint fk_reserva_sala foreign key (id_sala) references sala(id),
     constraint fk_reserva_turma foreign key (id_turma) references turma(id)
 );
-
--- Procedures ---------------------------------------------------------------------------
-
-delimiter $$
-create procedure InsereUsuario(
-	p_nome varchar(100),
-    p_cpf varchar(14),
-    p_dt_nascimento date,
-    p_sexo int,
-    p_email varchar(100),
-    p_senha varchar(250),
-    p_situacao int,
-    p_funcao int
-)
-begin
-	insert into aluno (
-		`nome`, `cpf`, `dt_nascimento`, `sexo`, `email`, `senha`, `situacao`, `funcao`
-    ) values (
-		p_nome, p_cpf, p_dt_nascimento, p_sexo, p_email, p_senha, p_situacao, p_funcao
-    );
-end$$
-delimiter ;
-
-
-
-
 
 
 
