@@ -157,3 +157,39 @@ begin
     where `id` = p_id 
 end$$
 delimiter ;
+
+delimiter $$
+create procedure DeletarUsuario(
+    p_id int not null
+)
+begin
+    delete from usuario where `id` = p_id;
+end$$
+delimiter ;
+
+delimiter $$
+create procedure DeletarTurma(
+    p_id int not null
+)
+begin
+    delete from turma where `id` = p_id;
+end$$
+delimiter ;
+
+delimiter $$
+create procedure DeletarSala(
+    p_id int not null
+)
+begin
+    delete from sala where `id` = p_id;
+end$$
+delimiter ;
+
+delimiter $$
+create procedure DeletarReserva(
+    p_id int not null
+)
+begin
+    delete from reserva where `id` = p_id;
+end$$
+delimiter ;
