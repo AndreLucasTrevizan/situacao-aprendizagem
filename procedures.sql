@@ -1,5 +1,3 @@
--- Procedures ---------------------------------------------------------------------------
-
 delimiter $$
 create procedure InsereUsuario(
     p_avatar varchar(20),
@@ -74,7 +72,7 @@ delimiter ;
 
 delimiter $$
 create procedure EditarUsuario(
-    p_id int not null,
+    p_id int,
     p_avatar varchar(20),
 	p_nome varchar(100),
     p_cpf varchar(14),
@@ -93,14 +91,15 @@ begin
         `sexo` = p_sexo,
         `email` = p_email,
         `senha` = p_senha,
-        `situacao` = p_situacao
+        `situacao` = p_situacao,
+        `updatedAt` = current_timestamp
     where `id` = p_id;
 end$$
 delimiter ;
 
 delimiter $$
 create procedure EditarSala(
-    p_id int not null,
+    p_id int,
     p_numero int,
     p_bloco int,
     p_apelido varchar(100),
@@ -113,14 +112,15 @@ begin
         `bloco` = p_bloco,
         `apelido` = p_apelido,
         `descricao_tipo` = p_descricao_tipo,
-        `capacidade` = p_capacidade 
-    where `id` = p_id
+        `capacidade` = p_capacidade,
+        `updatedAt` = current_timestamp
+    where `id` = p_id;
 end$$
 delimiter ;
 
 delimiter $$
 create procedure EditarTurma(
-    p_id int not null,
+    p_id int,
     p_apelido varchar(100),
     p_nome_curso varchar(150),
     p_ano_inicio date,
@@ -132,13 +132,14 @@ begin
         `nome_curso` = p_nome_curso,
         `ano_inicio` = p_ano_inicio,
         `duracao` = p_duracao,
+        `updatedAt` = current_timestamp
     where `id` = p_id;
 end$$
 delimiter ;
 
 delimiter $$
 create procedure EditarReserva(
-    p_id int not null,
+    p_id int,
     p_justificativa varchar(150),
     p_dt_reserva datetime,
     p_periodo varchar(20),
@@ -154,13 +155,14 @@ begin
         `id_usuario` = p_id_usuario,
         `id_sala` = p_id_sala,
         `id_turma` = p_id_turma,
-    where `id` = p_id 
+        `updatedAt` = current_timestamp
+    where `id` = p_id;
 end$$
 delimiter ;
 
 delimiter $$
 create procedure DeletarUsuario(
-    p_id int not null
+    p_id int
 )
 begin
     delete from usuario where `id` = p_id;
@@ -169,7 +171,7 @@ delimiter ;
 
 delimiter $$
 create procedure DeletarTurma(
-    p_id int not null
+    p_id int
 )
 begin
     delete from turma where `id` = p_id;
@@ -178,7 +180,7 @@ delimiter ;
 
 delimiter $$
 create procedure DeletarSala(
-    p_id int not null
+    p_id int
 )
 begin
     delete from sala where `id` = p_id;
@@ -187,7 +189,7 @@ delimiter ;
 
 delimiter $$
 create procedure DeletarReserva(
-    p_id int not null
+    p_id int
 )
 begin
     delete from reserva where `id` = p_id;
