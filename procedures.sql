@@ -135,3 +135,25 @@ begin
     where `id` = p_id;
 end$$
 delimiter ;
+
+delimiter $$
+create procedure EditarReserva(
+    p_id int not null,
+    p_justificativa varchar(150),
+    p_dt_reserva datetime,
+    p_periodo varchar(20),
+    p_id_usuario int,
+    p_id_sala int,
+    p_id_turma int
+)
+begin
+    update reserva set
+        `justificativa` = p_justificativa,
+        `dt_reserva` = p_dt_reserva,
+        `periodo` = p_periodo,
+        `id_usuario` = p_id_usuario,
+        `id_sala` = p_id_sala,
+        `id_turma` = p_id_turma,
+    where `id` = p_id 
+end$$
+delimiter ;
