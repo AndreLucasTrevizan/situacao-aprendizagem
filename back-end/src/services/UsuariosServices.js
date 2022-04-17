@@ -1,6 +1,11 @@
 const UsuariosRepository = require('../repositories/UsuarioRepository');
+const dotenv = require('dotenv').config();
 
 class UsuariosServices {
+
+    Login(data) {
+        return UsuariosRepository.ListarUsuarioPorEmail(data);    
+    }
 
     ListarUsuarios() {
         return UsuariosRepository.ListarUsuarios();
