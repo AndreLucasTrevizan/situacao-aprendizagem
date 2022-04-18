@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="./style.css">
+        <title>Situação de Aprendizagem</title>
+    </head>
+    <body>
+        <div id="app">
+            <header>
+                <div class="container">
+                    <h1>Navium</h1>
+                </div>
+            </header>
+
+            <div class="container content">
+                <div class="form-editar">
+                    <div class="errors" v-if="hasError">
+                        {{this.error}}
+                    </div>
+                    <label>
+                        <i class="material-icons">upload</i>
+                        <input type="file" accept='image/*' name="avatar" id="avatar"><br />
+                        <img :src="(Avatar === null) ? Avatar : Avatar" alt="Avatar Usuário" width="250" height="250" /> :
+                        <img :src={{avatarUrl}} alt="Avatar" width="250" height="250" />
+                    </label>
+                    <label>Nome</label>
+                    <input type="text" name="nome" id="nome" v-model="user.nome">
+                    <label>CPF</label>
+                    <input type="text" name="cpf" id="cpf" v-model="user.cpf">
+                    <label>Data de Nascimento</label>
+                    <input type="date" name="data_nascimento" id="data_nascimento" v-model="user.data_nascimento">
+                    <label>Sexo</label>
+                    <select v-model="user.sexo">
+                        <option value="1">Masculino</option>
+                        <option value="2">Feminino</option>
+                        <option value="3">Outro</option>
+                    </select>
+                    <label>Email</label>
+                    <input type="email" name="email" id="email" v-model="user.email">
+                    <label>Situação</label>
+                    <select v-model="user.situacao">
+                        <option value="1">Ativo</option>
+                        <option value="2">Inativo</option>
+                    </select>
+                    <label>Função</label>
+                    <select v-model="user.funcao">
+                        <option value="1">Administrador</option>
+                        <option value="2">Aluno</option>
+                        <option value="3">Professor</option>
+                    </select>
+                    <button style="width: max-content;">{{this.btnText}}</button>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    btnText: 'Cadastrar',
+                    user: {
+                        id: '',
+                        nome: '',
+                        cpf: '',
+                        data_nascimento: '',
+                        sexo: '',
+                        email: '',
+                        situacao: '',
+                        funcao: ''
+                    },
+                    Avatar: './assets/default.jpg'
+                },
+                created() {
+                    
+                },
+                methods: {
+                    
+                }
+            });
+        </script>
+    </body>
+</html>

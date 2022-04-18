@@ -18,6 +18,9 @@
 
             <div class="container content">
                 <div class="form-editar">
+                    <div class="errors" v-if="hasError">
+                        {{this.error}}
+                    </div>
                     <input type="hidden" v-model="user.id">
                     <label>Nome</label>
                     <input type="text" name="nome" id="nome" v-model="user.nome">
@@ -44,7 +47,7 @@
                         <option value="2">Aluno</option>
                         <option value="3">Professor</option>
                     </select>
-                    <button @Click="editar">Editar</button>
+                    <button @Click="editar">{{this.editing}}</button>
                 </div>
             </div>
         </div>
@@ -53,6 +56,10 @@
             var app = new Vue({
                 el: '#app',
                 data: {
+                    loggedUser: null,
+                    hasError: false,
+                    isEditing: false,
+                    editing: 'Editar',
                     user: {
                         id: '',
                         nome: '',
@@ -65,35 +72,31 @@
                     }
                 },
                 created() {
+                    this.loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+                    if(!this.loggedUser) {
+                        window.location = 'login.html';
+                    }
                     let userId = localStorage.getItem('userId');
-                    fetch('http://localhost:3000/api/usuarios/' + userId, {
-                        method: 'get',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Content-Type': 'application/json'
-                        },
-                        mode: 'cors'
-                    })
-                    .then(res => {
-                        return res.json();
-                    })
-                    .then(data => {
-                        let user = {
-                            id: userId,
-                            nome: data[0].nome,
-                            cpf: data[0].cpf,
-                            data_nascimento: new Date(data[0].dt_nascimento).toISOString().substring(10, 0),
-                            sexo: data[0].sexo,
-                            email: data[0].email,
-                            situacao: data[0].situacao,
-                            funcao: data[0].funcao,
-                        }
+                    let users = JSON.parse(localStorage.getItem('usuarios'));
+                    let user = users.indexOf(users.find(user => user.id == userId));
+                    
+                    let userView = {
+                        id: userId,
+                        nome: users[user].nome,
+                        cpf: users[user].cpf,
+                        data_nascimento: new Date(users[user].dt_nascimento).toISOString().substring(10, 0),
+                        sexo: users[user].sexo,
+                        email: users[user].email,
+                        situacao: users[user].situacao,
+                        funcao: users[user].funcao,
+                    };
 
-                        this.user = user;
-                    });
+                    this.user = userView;
                 },
                 methods: {
                     async editar() {
+                        this.isEditing = true;
+                        this.editing = 'Atualizando informações...';
                         let responseApi = await fetch('http://localhost:3000/api/usuarios', {
                             method: 'put',
                             headers: {
@@ -106,10 +109,26 @@
 
                         let resJson = await responseApi.json();
 
-                        if(!resJson.ok) {
-                            alert(resJson);
+                        if(!responseApi.ok) {
+                            this.hasError = true;
+                            this.isEditing = false;
+                            this.editing = 'Entrar';
                             return;
                         }
+
+                        let users = JSON.parse(localStorage.getItem('usuarios'));
+                        let user = users.indexOf(users.find(user => user.id == this.user.id));
+
+                        users[user].nome = this.user.nome;
+                        users[user].cpf = this.user.cpf;
+                        users[user].dt_nascimento = this.user.data_nascimento;
+                        users[user].sexo = this.user.sexo;
+                        users[user].email = this.user.email;
+                        users[user].situacao = this.user.situacao;
+                        users[user].funcao = this.user.funcao;
+
+                        localStorage.removeItem('usuarios');
+                        localStorage.setItem('usuarios', JSON.stringify(users));
 
                         window.location = 'usuarios.html';
                     }

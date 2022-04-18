@@ -1,67 +1,88 @@
 const express = require('express');
-const UsuarioService = require('../services/UsuariosServices');
-
+const db = require('../database/DbConnection');
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
 class UsuarioController {
 
     Login(req, res) {
-        UsuarioService.Login(req.body).then(result => {
-            if(result[0].length > 0 && bcryptjs.compareSync(req.body.senha, result[0][0].senha)) {
+        let {email, senha} = req.body;
+        let sql = 'SELECT * FROM usuario WHERE `email` = ?';
+        db.query(sql, email, (err, rows) => {
+            if(err) res.status(400).json({error: err.message});
+
+            if(rows.length > 0 && bcryptjs.compareSync(senha, rows[0].senha)) {
                 let user = {
-                    nome: result[0][0].nome,
-                    email: result[0][0].email,
-                    funcao: result[0][0].funcao,
+                    nome: rows[0].nome,
+                    email: rows[0].email,
+                    funcao: rows[0].funcao,
                 };
                 let token = jwt.sign(user, process.env.SECRET, {expiresIn: '1h'});
-                
+
                 res.status(200).json({...user, token: token});
             } else {
-                res.status(400).json({msg: 'Email ou senha inválidos.'});    
+                res.status(400).json({error: 'Email ou senha inválidos.'});
             }
-        }).catch(err => {
-            res.status(400).json(err);
         });
     }
 
     ListarUsuarios(req, res) {
-        UsuarioService.ListarUsuarios().then(result => {
-            res.status(200).json(result[0]);
-        }).catch(err => {
-            res.status(400).json({error: err.message});
+        let sql = 'SELECT * FROM RelatorioUsuarios;';
+
+        db.query(sql, (err, rows) => {
+            if(err) res.status(400).json(err.message);
+
+            res.status(200).json(rows);
         });
     }
 
     ListarUsuarioPorId(req, res) {
-        UsuarioService.ListarUsuarioPorId(req.params).then(result => {
-            res.status(200).json(result[0]);
-        }).catch(err => {
-            res.status(400).json({error: err.message});
+        let {id} = req.params;
+        let sql = 'SELECT * FROM usuario WHERE `id` = ?';
+
+        db.query(sql, id, (err, rows) => {
+            if(err) res.status(400).json(err);
+
+            res.status(200).json(rows);
         });
     }
 
     CriarUsuario(req, res) {
-        UsuarioService.CriarUsuario(req.file, req.body).then(result => {
-            res.status(201).json(result);
-        }).catch(err => {
-            res.status(403).json({error: err.message});
+        let {nome, cpf, dataNascimento, sexo, email, senha, funcao} = req.body; 
+        let avatar = (req.file !== undefined) ? req.file.filename : 'default.jpg';
+        let hash = bcryptjs.hashSync(senha, 15);
+        let sql = `CALL InsereUsuario(?, ?, ?, ?, ?, ?, ?, ?);`;
+
+        db.query(sql, [
+            avatar, nome, cpf, dataNascimento, sexo, email, hash, funcao
+        ], (err, rows) => {
+            if(err) res.status(400).json(err);
+
+            res.status(200).json(rows);
         });
     }
 
     EditarUsuario(req, res) {
-        UsuarioService.EditarUsuario(req.body).then(result => {
-            res.status(200).json(result);
-        }).catch(err => {
-            res.status(400).json({error: err.message});
+        let {id, nome, cpf, data_nascimento, sexo, email, situacao, funcao} = req.body;
+        let sql = `CALL EditarUsuario(?, ?, ?, ?, ?, ?, ?, ?);`;
+
+        db.query(sql, [
+            id, nome, cpf, data_nascimento, sexo, email, situacao, funcao
+        ], (err, rows) => {
+            if(err) res.status(400).json(err);
+
+            res.status(200).json(rows);
         });
     }
 
     DeletarUsuario(req, res) {
-        UsuarioService.DeletarUsuario(req.params).then(result => {
-            res.status(200).json(result);
-        }).catch(err => {
-            res.status(400).json({error: err.message});
+        let {id} = req.params;
+        let sql = `CALL DeletarUsuario(?);`;
+
+        db.query(sql, id, (err, rows) => {
+            if(err) res.status(400).json(err);
+
+            res.status(200).json(rows);
         });
     }
 
