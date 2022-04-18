@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./style.css">
+        <title>Situação de Aprendizagem</title>
+    </head>
+    <body>
+        <div id="app">
+            <div class="main">
+                <div class="form">
+                    <div class="errors" v-if="hasError">
+                        {{this.error}}
+                    </div>
+                    <label>Email</label>
+                    <input type="email" name="email" id="email" placeholder="email@example.com" v-model="email"/>
+                    <label>Senha</label>
+                    <input type="password" name="senha" id="senha" placeholder="*****************" v-model="senha">
+                    <button @click="login">{{this.btnText}}</button>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    hasError: false,
+                    error: '',
+                    loading: false,
+                    btnText: 'Entrar',
+                    email: null,
+                    senha: null
+                },
+                methods: {
+                    async login() {
+                        this.loading = true;
+                        this.btnText = 'Entrando...';
+                        
+                        let response = await fetch('http://localhost:3000/api/login', {
+                            method: 'post',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            mode: 'cors',
+                            body: JSON.stringify({
+                                email: this.email,
+                                senha: this.senha
+                            })
+                        });
+
+                        let resJson = await response.json();
+
+                        if(!response.ok) {
+                            this.loading = false;
+                            this.btnText = 'Entrar';
+                            this.hasError = true;
+                            this.error = 'Email ou senha inválidos.';
+                            return;
+                        }
+
+                        localStorage.setItem('loggedUser', JSON.stringify(resJson));
+                        window.location = 'index.html';
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

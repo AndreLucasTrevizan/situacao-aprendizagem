@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="./style.css" />
+        <title>Situação de Aprendizagem</title>
+    </head>
+    <body>
+        <div id="app">
+
+            <header>
+                <div class="container">
+                    <h1>Navium</h1>
+                </div>
+            </header>
+
+            <div class="modal" v-if="logout">
+                <div class="warning">
+                    <h3>Deseja mesmo sair?</h3>
+                    <div class="modal-actions">
+                        <span @Click="confirmLogout">Sim</span>
+                        <button class="confirm-logout" @Click="cancelLogout">Não</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container content">
+                <div class="reservas">
+                    <div class="reserva">
+                        <div class="info">
+                            <div class="img">
+                                <figure>
+                                    <img src="./assets/default.jpg" />
+                                </figure>
+                            </div>
+                            <a>Prof. Ricardo</a>
+                        </div>
+                        <div class="reserva-info">
+                            <span>Sala 509</span>
+                            <a>Laboratório de Informática</a>
+                        </div>
+                        <div class="periodo">
+                            <span>Noite</span>
+                            <span>TINFO 2022</span>
+                        </div>
+                    </div>
+                    <div class="reserva">
+                        <div class="info">
+                            <div class="img">
+                                <figure>
+                                    <img src="./assets/default.jpg" />
+                                </figure>
+                            </div>
+                            <a>Prof. Ricardo</a>
+                        </div>
+                        <div class="reserva-info">
+                            <span>Sala 509</span>
+                            <a>Laboratório de Informática</a>
+                        </div>
+                        <div class="periodo">
+                            <span>Noite</span>
+                            <span>TINFO 2022</span>
+                        </div>
+                    </div>
+                    <div class="reserva">
+                        <div class="info">
+                            <div class="img">
+                                <figure>
+                                    <img src="./assets/default.jpg" />
+                                </figure>
+                            </div>
+                            <a>Prof. Ricardo</a>
+                        </div>
+                        <div class="reserva-info">
+                            <span>Sala 509</span>
+                            <a>Laboratório de Informática</a>
+                        </div>
+                        <div class="periodo">
+                            <span>Noite</span>
+                            <span>TINFO 2022</span>
+                        </div>
+                    </div>
+                    <div class="reserva">
+                        <div class="info">
+                            <div class="img">
+                                <figure>
+                                    <img src="./assets/default.jpg" />
+                                </figure>
+                            </div>
+                            <a>Prof. Ricardo</a>
+                        </div>
+                        <div class="reserva-info">
+                            <span>Sala 509</span>
+                            <a>Laboratório de Informática</a>
+                        </div>
+                        <div class="periodo">
+                            <span>Noite</span>
+                            <span>TINFO 2022</span>
+                        </div>
+                    </div>
+                    <div class="reserva">
+                        <div class="info">
+                            <div class="img">
+                                <figure>
+                                    <img src="./assets/default.jpg" />
+                                </figure>
+                            </div>
+                            <a>Prof. Ricardo</a>
+                        </div>
+                        <div class="reserva-info">
+                            <span>Sala 509</span>
+                            <a>Laboratório de Informática</a>
+                        </div>
+                        <div class="periodo">
+                            <span>Noite</span>
+                            <span>TINFO 2022</span>
+                        </div>
+                    </div>
+                    <div class="reserva">
+                        <div class="info">
+                            <div class="img">
+                                <figure>
+                                    <img src="./assets/default.jpg" />
+                                </figure>
+                            </div>
+                            <a>Prof. Ricardo</a>
+                        </div>
+                        <div class="reserva-info">
+                            <span>Sala 509</span>
+                            <a>Laboratório de Informática</a>
+                        </div>
+                        <div class="periodo">
+                            <span>Noite</span>
+                            <span>TINFO 2022</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="user-logged">
+                    <div class="user-info">
+                        <div class="img-user">
+                            <figure>
+                                <img src="./assets/default.jpg" />
+                            </figure>
+                        </div>
+                        <span>{{this.loggedUser.nome}}</span>
+                        <span class="funcao">{{this.funcao}}</span>
+                        <a @click="sair">Sair</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    loggerUser: null,
+                    funcao: '',
+                    logout: false
+                },
+                created() {
+                    this.loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+                    if(!this.loggedUser) {
+                        window.location = 'login.html';
+                    }
+
+                    if(this.loggedUser.funcao == 1) {
+                        this.funcao = 'Administrador';
+                    }
+
+                    if(this.loggedUser.funcao == 2) {
+                        this.funcao = 'Aluno';
+                    }
+
+                    if(this.loggedUser.funcao == 3) {
+                        this.funcao = 'Professor';
+                    }
+                },
+                methods: {
+                    sair() {
+                        this.logout = true;
+                    },
+
+                    confirmLogout() {
+                        localStorage.removeItem('loggedUser');
+                        window.location = 'login.html';
+                    },
+
+                    cancelLogout() {
+                        this.logout = false;
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

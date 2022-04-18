@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="./style.css">
+        <title>Situação de Aprendizagem</title>
+    </head>
+    <body>
+        <div id="app">
+            <header>
+                <div class="container">
+                    <h1>Navium</h1>
+                </div>
+            </header>
+
+            <div class="container content">
+                <table>
+                    <thead>
+                        <th>Ações</th>
+                        <th>Nome</th>
+                        <th>Data Nascimento</th>
+                        <th>Sexo</th>
+                        <th>Email</th>
+                        <th>Situação</th>
+                        <th>Função</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for='user in users' :key="user.id">
+                            <td style="text-align: center;">
+                                <i class="material-icons" style="color: rgb(255, 204, 0)" @Click="editing(user.id)">edit</i>
+                                <i class="material-icons" style="color: red;">delete</i>
+                            </td>
+                            <td>{{user.nome}}</td>
+                            <td>{{new Date(user.dt_nascimento).toLocaleDateString('pt-BR')}}</td>
+                            <td>{{(user.sexo == 1) ? 'Masculino' : (user.sexo == 2) ? 'Feminino' : 'Outro'}}</td>
+                            <td>{{user.email}}</td>
+                            <td>{{(user.situacao == 1) ? 'Ativo' : 'Inativo'}}</td>
+                            <td>{{(user.funcao == 1) ? 'Administrador' : (user.funcao == 2) ? 'Aluno' : 'Professor'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    users: null
+                },
+                created() {
+                    let loggedUser = JSON.parse(localStorage.getItem('loggedUser'));
+                    fetch('http://localhost:3000/api/usuarios', {
+                        method: 'get',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${loggedUser.token}`
+                        },
+                        mode: 'cors'
+                    })
+                    .then(res => {
+                        return res.json();
+                    })
+                    .then(data => {
+                        this.users = data;
+                    });
+                },
+                methods: {
+                    editing(id) {
+                        localStorage.setItem('userId', id);
+                        window.location = 'editar_usuario.html';
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>

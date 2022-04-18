@@ -66,14 +66,13 @@ create procedure InsereUsuario(
     p_sexo int,
     p_email varchar(100),
     p_senha varchar(250),
-    p_situacao int,
     p_funcao int
 )
 begin
 	insert into usuario (
-		`avatar`, `nome`, `cpf`, `dt_nascimento`, `sexo`, `email`, `senha`, `situacao`, `funcao`
+		`avatar`, `nome`, `cpf`, `dt_nascimento`, `sexo`, `email`, `senha`, `funcao`
     ) values (
-		p_avatar, p_nome, p_cpf, p_dt_nascimento, p_sexo, p_email, p_senha, p_situacao, p_funcao
+		p_avatar, p_nome, p_cpf, p_dt_nascimento, p_sexo, p_email, p_senha, p_funcao
     );
 end$$
 delimiter ;
@@ -130,15 +129,13 @@ end$$
 delimiter ;
 
 delimiter $$
-create procedure EditarUsuario(
+create procedure EditarUsuario (
     p_id int,
-    p_avatar varchar(20),
 	p_nome varchar(100),
     p_cpf varchar(14),
     p_dt_nascimento date,
     p_sexo int,
     p_email varchar(100),
-    p_senha varchar(250),
     p_situacao int,
     p_funcao int
 )
@@ -149,7 +146,6 @@ begin
         `dt_nascimento` = p_dt_nascimento,
         `sexo` = p_sexo,
         `email` = p_email,
-        `senha` = p_senha,
         `situacao` = p_situacao,
         `updatedAt` = current_timestamp
     where `id` = p_id;

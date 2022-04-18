@@ -71,15 +71,13 @@ end$$
 delimiter ;
 
 delimiter $$
-create procedure EditarUsuario(
+create procedure EditarUsuario (
     p_id int,
-    p_avatar varchar(20),
 	p_nome varchar(100),
     p_cpf varchar(14),
     p_dt_nascimento date,
     p_sexo int,
     p_email varchar(100),
-    p_senha varchar(250),
     p_situacao int,
     p_funcao int
 )
@@ -90,7 +88,6 @@ begin
         `dt_nascimento` = p_dt_nascimento,
         `sexo` = p_sexo,
         `email` = p_email,
-        `senha` = p_senha,
         `situacao` = p_situacao,
         `updatedAt` = current_timestamp
     where `id` = p_id;

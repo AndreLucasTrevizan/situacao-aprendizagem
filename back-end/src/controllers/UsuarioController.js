@@ -17,9 +17,11 @@ class UsuarioController {
                 let token = jwt.sign(user, process.env.SECRET, {expiresIn: '1h'});
                 
                 res.status(200).json({...user, token: token});
+            } else {
+                res.status(400).json({msg: 'Email ou senha inválidos.'});    
             }
         }).catch(err => {
-            res.status(400).json({msg: 'Email ou senha inválidos.'});
+            res.status(400).json(err);
         });
     }
 

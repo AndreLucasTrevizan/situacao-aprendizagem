@@ -32,13 +32,13 @@ class UsuarioRepository {
     }
 
     EditarUsuario(data) {
-        let {id, nome, cpf, dataNascimento, sexo, email, situacao, funcao} = data;
+        let {id, nome, cpf, data_nascimento, sexo, email, situacao, funcao} = data;
         let sql = `
-            CALL EditarUsuario(?, ?, ?, ?, ?, ?, ?);
+            CALL EditarUsuario(?, ?, ?, ?, ?, ?, ?, ?);
         `;
 
         return db.promise().query(sql, [
-            nome, cpf, dataNascimento, sexo, email, situacao, funcao, id
+            nome, cpf, data_nascimento, sexo, email, situacao, funcao, id
         ]);
     }
 
