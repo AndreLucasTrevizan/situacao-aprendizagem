@@ -9,9 +9,9 @@
     </head>
     <body>
         <div id="app">
-            <nav class="bg-white border-b-2 border-indigo-500">
+            <nav class="bg-white border-b-2 border-indigo-500 h-20">
                 <div class="container mx-auto">
-                    <div class="relative flex items-center justify-between h-16">
+                    <div class="relative flex items-center justify-between h-20">
                         <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
                             <!-- Mobile menu button-->
                             <button @Click="showingMenuMobile" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
@@ -38,10 +38,10 @@
                                 </svg>
                             </button>
                         </div>
-                        <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+                        <div class="flex items-center justify-center sm:items-stretch sm:justify-start">
                             <div class="flex-shrink-0 flex items-center">
-                                <img class="hidden lg:block h-8 w-auto" src="../assets/SA-LogoSite.png" alt="Workflow">
-                                <img class="hidden lg:hidden h-8 w-auto" src="../assets/SA-LogoSite.png" alt="Workflow">
+                                <img class="hidden lg:block h-12 w-auto" src="../assets/SA-LogoSite.png" alt="Workflow">
+                                <img class="hidden lg:hidden h-12 w-auto" src="../assets/SA-LogoSite.png" alt="Workflow">
                             </div>
                             <div class="hidden sm:block sm:ml-6">
                                 <div class="flex space-x-4">
@@ -64,10 +64,11 @@
                                 <div class="flex items-center">
                                     <button type="button" class="bg-gray-800 mr-2 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                                         <span class="sr-only">Open user menu</span>
-                                        <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                                        <img class="h-12 rounded-full border-black" :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`" alt="">
                                     </button>
                                     <div class="ml-3 relativeflex flex-col items-start">
-                                        <span>André Lucas Trevizan</span>
+                                        <span>{{usuarioLogado.nome}}</span><br>
+                                        <span @Click="logout">Sair</span>
                                     </div>
                                 </div>
 
@@ -147,7 +148,7 @@
                                                 type="date"
                                                 name="dt_nascimento"
                                                 id="dt_nascimento"
-                                                class="p-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"    
+                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"    
                                             >
                                             <small
                                                 class="text-red-600 text-sm flex flex-col"
@@ -163,9 +164,14 @@
                                                 type="text"
                                                 name="cpf"
                                                 id="cpf"
-                                                class="p-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                                 placeholder="CPF do usuário"    
                                             >
+                                            <small
+                                                class="text-red-600 text-sm flex flex-col"
+                                                v-if="cpfErros.length > 0"
+                                                v-for="erro in cpfErros" :key="erro"
+                                            >{{erro}}</small>
                                         </div>
                         
                                         <div class="col-span-6 sm:col-span-3">
@@ -175,9 +181,14 @@
                                                 type="email"
                                                 name="email"
                                                 id="email"
-                                                class="p-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                                 placeholder="email@example.com"    
                                             >
+                                            <small
+                                                class="text-red-600 text-sm flex flex-col"
+                                                v-if="emailErros.length > 0"
+                                                v-for="erro in emailErros" :key="erro"
+                                            >{{erro}}</small>
                                         </div>
 
                                         <div class="col-span-6 sm:col-span-3">
@@ -187,34 +198,55 @@
                                                 type="password"
                                                 name="senha"
                                                 id="senha"
-                                                class="p-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
                                                 placeholder="***********************"    
                                             >
+                                            <small
+                                                class="text-red-600 text-sm flex flex-col"
+                                                v-if="senhaErros.length > 0"
+                                                v-for="erro in senhaErros" :key="erro"
+                                            >{{erro}}</small>
                                         </div>
 
                                         <div class="col-span-6 sm:col-span-3">
                                             <label for="sexo" class="block text-sm font-medium text-gray-700">Sexo</label>
-                                            <select v-model="usuario.sexo" id="sexo" name="sexo" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            <select v-model="usuario.sexo" id="sexo" name="sexo" class="mb-2 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                                 <option selected="selected" disabled>Escolha um sexo</option>
                                                 <option value="1">Masculino</option>
                                                 <option value="2">Feminino</option>
                                                 <option value="3">Outro</option>
                                             </select>
+                                            <small
+                                                class="text-red-600 text-sm flex flex-col"
+                                                v-if="sexoErros.length > 0"
+                                                v-for="erro in sexoErros" :key="erro"
+                                            >{{erro}}</small>
                                         </div>
                         
                                         <div class="col-span-6 sm:col-span-3">
                                             <label for="city" class="block text-sm font-medium text-gray-700">Função</label>
-                                            <select v-model="usuario.funcao" id="city" name="city" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            <select v-model="usuario.funcao" id="city" name="city" class="mb-2 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                                 <option selected="selected" disabled>Escolha uma função</option>
                                                 <option value="1">Administrador</option>
                                                 <option value="2">Aluno</option>
                                                 <option value="3">Professor</option>
                                             </select>
+                                            <small
+                                                class="text-red-600 text-sm flex flex-col"
+                                                v-if="funcaoErros.length > 0"
+                                                v-for="erro in funcaoErros" :key="erro"
+                                            >{{erro}}</small>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button @Click="createUser" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Cadastrar</button>
+                                    <button @Click="createUser" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                                        <img src="../assets/loading.gif" class="h-6 w-auto mr-2" v-if="isRegistering" />
+                                        {{btnText}}
+                                    </button>
+                                </div>
+                                <div v-if="APIError" class="p-2 w-full text-white bg-red-600">
+                                    <h1>Ops! {{APIErrorMsg}}</h1>
                                 </div>
                             </div>
                         </div>
@@ -228,6 +260,10 @@
             var app = new Vue({
                 el: '#app',
                 data: {
+                    APIError: false,
+                    APIErrorMsg: '',
+                    isRegistering: false,
+                    btnText: 'Cadastrar',
                     showMenuMobile: false,
                     usuario: {
                         nome: '',
@@ -239,12 +275,24 @@
                         funcao: ''
                     },
                     nomeErros: [],
-                    dataNascimentoErros: []
+                    dataNascimentoErros: [],
+                    cpfErros: [],
+                    emailErros: [],
+                    senhaErros: [],
+                    sexoErros: [],
+                    funcaoErros: [],
+                    usuarioLogado: null,
+                    avatar: null,
                 },
                 created() {
-                    
+                    this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+                    this.avatar = `http://localhost:3000/api/uploads/avatars/${this.usuarioLogado.avatar}`;
                 },
                 methods: {
+                    logout() {
+                        localStorage.removeItem('usuarioLogado');
+                        window.location = '../index.html';
+                    },
                     showingMenuMobile() {
                         if(this.showMenuMobile) {
                             this.showMenuMobile = false;
@@ -252,14 +300,51 @@
                             this.showMenuMobile = true;
                         }
                     },
-                    createUser() {
-                        this.validacao(this.usuario);
-                        console.log(this.usuario);
+                    async createUser() {
+                        if(this.validacao(this.usuario)) {
+                            this.btnText = 'Cadastrando...';
+                            this.isRegistering = true;
+                            this.APIErrorMsg = '';
+                            this.APIError = false;
+                            
+                            let responseAPI = await fetch('http://localhost:3000/api/usuarios', {
+                                method: 'post',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                mode: 'cors',
+                                body: JSON.stringify(this.usuario)
+                            });
+
+                            let resJson = await responseAPI.json();
+
+                            console.log(resJson);
+
+                            if(!responseAPI.ok) {
+                                this.APIError = true;
+                                this.APIErrorMsg = (resJson.sqlMessage.includes('cpf') ?
+                                                    `CPF já está sendo usado.` :
+                                                    (resJson.sqlMessage.includes('email')) ? `Email já está sendo usado.` : '');
+                                this.btnText = 'Cadastrar';
+                                this.isRegistering = false;
+                                return;
+                            }
+
+                            window.location = './relatorio.html';
+                        }
                     },
                     validacao(data) {
 
                         this.nomeErros = [];
                         this.dataNascimentoErros = [];
+                        this.cpfErros = [];
+                        this.emailErros = [];
+                        this.senhaErros = [];
+                        this.sexoErros = [];
+                        this.funcaoErros = [];
+
+                        let dataAtual = Date.now();
 
                         if(data.nome == '' || data.nome == undefined) {
                             this.nomeErros.push('O nome não pode ser vazio.');
@@ -274,11 +359,57 @@
                         }
 
                         if(new Date(data.dt_nascimento).getFullYear() < 1950) {
-                            this.dataNascimentoErros.push('Somente usuários nascidos depois de 1950 são permitidos.');
+                            this.dataNascimentoErros.push('Valor de data inválido.');
+                        }
+                        
+                        if(new Date(data.dt_nascimento).getFullYear() > new Date(dataAtual).getFullYear()) {
+                            this.dataNascimentoErros.push('Valor de data inválido.');
                         }
 
-                        if(new Date(data.dt_nascimento).getFullYear() > new Date(new Date.now).getFullYear()) {
-                            this.dataNascimentoErros.push('Impossível cadastrar uma data maior que a atual.');
+                        if(data.cpf == '' || data.cpf == undefined) {
+                            this.cpfErros.push('O CPF não pode ser vazio.');
+                        }
+
+                        if(data.cpf.length < 14) {
+                            this.cpfErros.push('O CPF precisa ter pelo menos 14 caracteres.');
+                        }
+
+                        if(data.email == '' || data.email == undefined) {
+                            this.emailErros.push('O email não pode ser vazio.');
+                        } else if(!data.email.includes('@') && data.email.includes('.com')) {
+                            this.emailErros.push(`Email inválido. Esperado caractere '@'.`);
+                        } else if(data.email.includes('@') && !data.email.includes('.com')) {
+                            this.emailErros.push(`Email inválido. Esperado '.com'`);
+                        }
+
+                        if(data.senha == '' || data.senha == undefined) {
+                            this.senhaErros.push('A senha não pode ser vazia.');
+                        }
+
+                        if(data.senha.length < 8) {
+                            this.senhaErros.push('A senha deve ter pelo menos 8 caracteres.');
+                        }
+
+                        if(data.sexo == '' || data.sexo == undefined) {
+                            this.sexoErros.push('O sexo não pode ser vazio.');
+                        }
+
+                        if(data.funcao == '' || data.funcao == undefined) {
+                            this.funcaoErros.push('A função não pode ser vazia.');
+                        }
+
+                        if(
+                            this.nomeErros.length > 0 ||
+                            this.dataNascimentoErros.length > 0 ||
+                            this.cpfErros.length > 0 ||
+                            this.emailErros.length > 0 ||
+                            this.senhaErros.length > 0 ||
+                            this.sexoErros.length > 0 ||
+                            this.funcaoErros.length > 0
+                        ) {
+                            return false;
+                        } else {
+                            return true;
                         }
                     }
                 }

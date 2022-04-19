@@ -13,6 +13,7 @@ class UsuarioController {
 
             if(rows.length > 0 && bcryptjs.compareSync(senha, rows[0].senha)) {
                 let user = {
+                    avatar: rows[0].avatar,
                     nome: rows[0].nome,
                     email: rows[0].email,
                     funcao: rows[0].funcao,
@@ -48,17 +49,17 @@ class UsuarioController {
     }
 
     CriarUsuario(req, res) {
-        let {nome, cpf, dataNascimento, sexo, email, senha, funcao} = req.body; 
+        let {nome, cpf, dt_nascimento, sexo, email, senha, funcao} = req.body; 
         let avatar = (req.file !== undefined) ? req.file.filename : 'default.jpg';
         let hash = bcryptjs.hashSync(senha, 15);
         let sql = `CALL InsereUsuario(?, ?, ?, ?, ?, ?, ?, ?);`;
 
         db.query(sql, [
-            avatar, nome, cpf, dataNascimento, sexo, email, hash, funcao
+            avatar, nome, cpf, dt_nascimento, sexo, email, hash, funcao
         ], (err, rows) => {
             if(err) res.status(400).json(err);
 
-            res.status(200).json(rows);
+            res.status(201).json(rows);
         });
     }
 
