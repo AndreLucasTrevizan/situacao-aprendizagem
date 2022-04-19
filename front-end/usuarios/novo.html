@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>Situação de Aprendizagem</title>
+    </head>
+    <body>
+        <div id="app">
+            <nav class="bg-white border-b-2 border-indigo-500">
+                <div class="container mx-auto">
+                    <div class="relative flex items-center justify-between h-16">
+                        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                            <!-- Mobile menu button-->
+                            <button @Click="showingMenuMobile" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
+                                <span class="sr-only">Open main menu</span>
+                                <!--
+                                Icon when menu is closed.
+                    
+                                Heroicon name: outline/menu
+                    
+                                Menu open: "hidden", Menu closed: "block"
+                                -->
+                                <svg v-if="!showMenuMobile" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                                </svg>
+                                <!--
+                                Icon when menu is open.
+                    
+                                Heroicon name: outline/x
+                    
+                                Menu open: "block", Menu closed: "hidden"
+                                -->
+                                <svg v-if="showMenuMobile" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
+                            <div class="flex-shrink-0 flex items-center">
+                                <img class="hidden lg:block h-8 w-auto" src="../assets/SA-LogoSite.png" alt="Workflow">
+                                <img class="hidden lg:hidden h-8 w-auto" src="../assets/SA-LogoSite.png" alt="Workflow">
+                            </div>
+                            <div class="hidden sm:block sm:ml-6">
+                                <div class="flex space-x-4">
+                                    <!-- Current: "bg-gray-900 text-white", Default: "hover:bg-gray-700 hover:text-white" -->
+                                    <a class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Home</a>
+                
+                                    <a class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Reservas</a>
+                
+                                    <a class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Salas</a>
+                
+                                    <a class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Turmas</a>
+
+                                    <a class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Usuários</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                            <!-- Profile dropdown -->
+                            <div class="ml-3 relative">
+                                <div class="flex items-center">
+                                    <button type="button" class="bg-gray-800 mr-2 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                        <span class="sr-only">Open user menu</span>
+                                        <img class="h-8 w-8 rounded-full" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" alt="">
+                                    </button>
+                                    <div class="ml-3 relativeflex flex-col items-start">
+                                        <span>André Lucas Trevizan</span>
+                                    </div>
+                                </div>
+
+                                <!--
+                                Dropdown menu, show/hide based on menu state.
+                    
+                                Entering: "transition ease-out duration-100"
+                                    From: "transform opacity-0 scale-95"
+                                    To: "transform opacity-100 scale-100"
+                                Leaving: "transition ease-in duration-75"
+                                    From: "transform opacity-100 scale-100"
+                                    To: "transform opacity-0 scale-95"
+                                -->
+                                <div class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
+                                    <!-- Active: "bg-gray-100", Not Active: "" -->
+                                    <a class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
+                                    <a class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
+                                    <a class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+                <!-- Mobile menu, show/hide based on menu state. -->
+                <div v-if="showMenuMobile" class="sm:hidden" id="mobile-menu">
+                     <div class="px-2 pt-2 pb-3 space-y-1">
+                        <!-- Current: "bg-gray-900 text-white", Default: "hover:bg-gray-700 hover:text-white" -->
+                        <a class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Home</a>
+              
+                        <a class="hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Reservas</a>
+              
+                        <a class="hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Salas</a>
+              
+                        <a class="hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Turmas</a>
+
+                        <a class="hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Usuários</a>
+                    </div>
+                </div>
+            </nav>
+              
+
+            <div class="container mx-auto pt-6">
+                <div class="mt-10 sm:mt-0">
+                    <div class="md:grid md:grid-cols-3 md:gap-6">
+                        <div class="md:col-span-1">
+                            <div class="px-4 sm:px-0">
+                                <h3 class="text-lg font-medium leading-6 text-gray-900">Informações Pessoais</h3>
+                                <p class="mt-1 text-sm text-gray-600">Essas informações serão usadas mais tarde para quesitos importantes no sistema, não se preocupe, elas poderão ser alteradas.</p>
+                            </div>
+                        </div>
+                        <div class="mt-5 md:mt-0 md:col-span-2">
+                            <div class="shadow overflow-hidden sm:rounded-md">
+                                <div class="px-4 py-5 bg-white sm:p-6">
+                                    <div class="grid grid-cols-6 gap-6">
+                                        <div class="col-span-6">
+                                            <label for="first-name" class="block text-sm font-medium text-gray-700">Nome</label>
+                                            <input
+                                                v-model="usuario.nome"
+                                                type="text"
+                                                name="first-name"
+                                                id="first-name"
+                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                placeholder="Nome do usuário"
+                                            >
+                                            <small
+                                                class="text-red-600 text-sm flex flex-col"
+                                                v-if="nomeErros.length > 0"
+                                                v-for="erro in nomeErros" :key="erro"
+                                            >{{erro}}</small>
+                                        </div>
+                        
+                                        <div class="col-span-6 sm:col-span-3">
+                                            <label for="dt_nascimento" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                                            <input
+                                                v-model="usuario.dt_nascimento"
+                                                type="date"
+                                                name="dt_nascimento"
+                                                id="dt_nascimento"
+                                                class="p-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"    
+                                            >
+                                            <small
+                                                class="text-red-600 text-sm flex flex-col"
+                                                v-if="dataNascimentoErros.length > 0"
+                                                v-for="erro in dataNascimentoErros" :key="erro"
+                                            >{{erro}}</small>
+                                        </div>
+                        
+                                        <div class="col-span-6 sm:col-span-3">
+                                            <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+                                            <input
+                                                v-model="usuario.cpf"
+                                                type="text"
+                                                name="cpf"
+                                                id="cpf"
+                                                class="p-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                placeholder="CPF do usuário"    
+                                            >
+                                        </div>
+                        
+                                        <div class="col-span-6 sm:col-span-3">
+                                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                                            <input
+                                                v-model="usuario.email"
+                                                type="email"
+                                                name="email"
+                                                id="email"
+                                                class="p-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                placeholder="email@example.com"    
+                                            >
+                                        </div>
+
+                                        <div class="col-span-6 sm:col-span-3">
+                                            <label for="senha" class="block text-sm font-medium text-gray-700">Senha</label>
+                                            <input
+                                                v-model="usuario.senha"
+                                                type="password"
+                                                name="senha"
+                                                id="senha"
+                                                class="p-2 mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                                                placeholder="***********************"    
+                                            >
+                                        </div>
+
+                                        <div class="col-span-6 sm:col-span-3">
+                                            <label for="sexo" class="block text-sm font-medium text-gray-700">Sexo</label>
+                                            <select v-model="usuario.sexo" id="sexo" name="sexo" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                <option selected="selected" disabled>Escolha um sexo</option>
+                                                <option value="1">Masculino</option>
+                                                <option value="2">Feminino</option>
+                                                <option value="3">Outro</option>
+                                            </select>
+                                        </div>
+                        
+                                        <div class="col-span-6 sm:col-span-3">
+                                            <label for="city" class="block text-sm font-medium text-gray-700">Função</label>
+                                            <select v-model="usuario.funcao" id="city" name="city" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                                <option selected="selected" disabled>Escolha uma função</option>
+                                                <option value="1">Administrador</option>
+                                                <option value="2">Aluno</option>
+                                                <option value="3">Professor</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                                    <button @Click="createUser" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Cadastrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <script>
+            var app = new Vue({
+                el: '#app',
+                data: {
+                    showMenuMobile: false,
+                    usuario: {
+                        nome: '',
+                        cpf: '',
+                        dt_nascimento: '',
+                        sexo: '',
+                        email: '',
+                        senha: '',
+                        funcao: ''
+                    },
+                    nomeErros: [],
+                    dataNascimentoErros: []
+                },
+                created() {
+                    
+                },
+                methods: {
+                    showingMenuMobile() {
+                        if(this.showMenuMobile) {
+                            this.showMenuMobile = false;
+                        } else {
+                            this.showMenuMobile = true;
+                        }
+                    },
+                    createUser() {
+                        this.validacao(this.usuario);
+                        console.log(this.usuario);
+                    },
+                    validacao(data) {
+
+                        this.nomeErros = [];
+                        this.dataNascimentoErros = [];
+
+                        if(data.nome == '' || data.nome == undefined) {
+                            this.nomeErros.push('O nome não pode ser vazio.');
+                        }
+
+                        if(data.nome.length < 3) {
+                            this.nomeErros.push('O nome precisa ter pelo menos 3 caracteres.');
+                        }
+
+                        if(data.dt_nascimento == '' || data.dt_nascimento == undefined) {
+                            this.dataNascimentoErros.push('A Data de Nascimento não pode ser vazia.');
+                        }
+
+                        if(new Date(data.dt_nascimento).getFullYear() < 1950) {
+                            this.dataNascimentoErros.push('Somente usuários nascidos depois de 1950 são permitidos.');
+                        }
+
+                        if(new Date(data.dt_nascimento).getFullYear() > new Date(new Date.now).getFullYear()) {
+                            this.dataNascimentoErros.push('Impossível cadastrar uma data maior que a atual.');
+                        }
+                    }
+                }
+            });
+        </script>
+    </body>
+</html>
