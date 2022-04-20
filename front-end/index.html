@@ -4,39 +4,26 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="./style.css">
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
-            <div class="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-                <div class="max-w-md w-full space-y-8">
-                    <div>
-                        <img class="mx-auto h-20 w-auto" src="./assets/SA-LogoSite.png" alt="Workflow">
-                        <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">Entre com sua conta</h2>
+            <div class="form-login">
+                <div class="form">
+                    <img src="./assets/SA-LogoSite.png" alt="Logo do Site" width="150">
+                    <div class="form-control">
+                        <input type="email" name="email" id="email" v-model="email" placeholder="email@example.com">
                     </div>
-                    <input type="hidden" name="remember" value="true">
-                    <div class="rounded-md shadow-sm -space-y-px">
-                        <div>
-                            <input v-model="email" id="email-address" name="email" type="email" autcomplete="off" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Seu endereço de email">
-                        </div>
-                        <div>
-                            <input v-model="senha" id="password" name="password" type="password" autcomplete="off" required class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" placeholder="Senha">
-                        </div>
+                    <div class="form-control">
+                        <input type="password" name="senha" id="senha" v-model="senha" placeholder="******************">
                     </div>
-
-                    <div v-if="errorCredential">
-                        {{errorMsg}}
-                    </div>
-                
-                    <div>
-                        <button @Click="login" class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                            <img src="./assets/loading.gif" class="h-6 w-auto mr-2" v-if="signing" />
-                            {{btnText}}
-                        </button>
-                    </div>
+                    <button @Click="login" class="flex items-center justify-center">
+                        <img v-if="signing" src="./assets/loading.gif" width="20">
+                        {{btnText}}
+                    </button>
                 </div>
-              </div>
+            </div>
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
@@ -88,7 +75,7 @@
                         this.errorCredential = false;
 
                         if(
-                            this.email = '' ||
+                            this.email == '' ||
                             this.email == undefined ||
                             this.senha == '' ||
                             this.senha == undefined

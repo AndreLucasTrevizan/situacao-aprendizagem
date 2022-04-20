@@ -4,262 +4,67 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="../style.css">
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
-            <nav class="bg-white border-b-2 border-indigo-500 h-20">
-                <div class="container mx-auto">
-                    <div class="relative flex items-center justify-between h-20">
-                        <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                            <!-- Mobile menu button-->
-                            <button @Click="showingMenuMobile" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
-                                <span class="sr-only">Open main menu</span>
-                                <!--
-                                Icon when menu is closed.
+            <nav>
+                <div class="nav-normal flex items-center justify-between container">
+                    <svg @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" class="menu-mobile-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
                     
-                                Heroicon name: outline/menu
-                    
-                                Menu open: "hidden", Menu closed: "block"
-                                -->
-                                <svg v-if="!showMenuMobile" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                                <!--
-                                Icon when menu is open.
-                    
-                                Heroicon name: outline/x
-                    
-                                Menu open: "block", Menu closed: "hidden"
-                                -->
-                                <svg v-if="showMenuMobile" class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
+                    <div class="flex items-center">
+                        <div class="nav-logo-img">
+                            <img src="../assets/SA-LogoSite.png" alt="Logo do Site" width="100">
                         </div>
-                        <div class="flex items-center justify-center sm:items-stretch sm:justify-start">
-                            <div class="flex-shrink-0 flex items-center">
-                                <img class="hidden lg:block h-12 w-auto" src="../assets/SA-LogoSite.png" alt="Workflow">
-                                <img class="hidden lg:hidden h-12 w-auto" src="../assets/SA-LogoSite.png" alt="Workflow">
-                            </div>
-                            <div class="hidden sm:block sm:ml-6">
-                                <div class="flex space-x-4">
-                                    <!-- Current: "bg-gray-900 text-white", Default: "hover:bg-gray-700 hover:text-white" -->
-                                    <a class="bg-gray-900 text-white px-3 py-2 rounded-md text-sm font-medium" aria-current="page">Home</a>
-                
-                                    <a class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Reservas</a>
-                
-                                    <a class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Salas</a>
-                
-                                    <a class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Turmas</a>
-
-                                    <a class="hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Usuários</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                            <!-- Profile dropdown -->
-                            <div class="ml-3 relative">
-                                <div class="flex items-center">
-                                    <button type="button" class="bg-gray-800 mr-2 flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
-                                        <span class="sr-only">Open user menu</span>
-                                        <img class="h-12 rounded-full border-black" :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`" alt="">
-                                    </button>
-                                    <div class="ml-3 relativeflex flex-col items-start">
-                                        <span>{{usuarioLogado.nome}}</span><br>
-                                        <span @Click="logout">Sair</span>
-                                    </div>
-                                </div>
-
-                                <!--
-                                Dropdown menu, show/hide based on menu state.
-                    
-                                Entering: "transition ease-out duration-100"
-                                    From: "transform opacity-0 scale-95"
-                                    To: "transform opacity-100 scale-100"
-                                Leaving: "transition ease-in duration-75"
-                                    From: "transform opacity-100 scale-100"
-                                    To: "transform opacity-0 scale-95"
-                                -->
-                                <div class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button" tabindex="-1">
-                                    <!-- Active: "bg-gray-100", Not Active: "" -->
-                                    <a class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-0">Your Profile</a>
-                                    <a class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-1">Settings</a>
-                                    <a class="block px-4 py-2 text-sm text-gray-700" role="menuitem" tabindex="-1" id="user-menu-item-2">Sign out</a>
-                                </div>
-                            </div>
+                        <div class="nav-menu-items">
+                            <a>Home</a>
+                            <a>Reservas</a>
+                            <a>Salas</a>
+                            <a>Turmas</a>
+                            <a>Usuários</a>                        
                         </div>
                     </div>
-                </div>
-              
-                <!-- Mobile menu, show/hide based on menu state. -->
-                <div v-if="showMenuMobile" class="sm:hidden" id="mobile-menu">
-                     <div class="px-2 pt-2 pb-3 space-y-1">
-                        <!-- Current: "bg-gray-900 text-white", Default: "hover:bg-gray-700 hover:text-white" -->
-                        <a class="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium" aria-current="page">Home</a>
-              
-                        <a class="hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Reservas</a>
-              
-                        <a class="hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Salas</a>
-              
-                        <a class="hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Turmas</a>
-
-                        <a class="hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Usuários</a>
+                    <div class="nav-user-options flex items-center">
+                        <div class="nav-info-user-img mr-10" :title="usuarioLogado.nome">
+                            <figure>
+                                <img
+                                    :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`"
+                                >
+                            </figure>
+                        </div>
+                        <div class="nav-menu-user-data flex flex-col">
+                            <span>{{usuarioLogado.nome}}</span> 
+                        </div>
+                        <ul>
+                            <li class="li-user-data">
+                                <img :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`" width="50">
+                                <p>{{usuarioLogado.nome}}</p>
+                                <a>{{usuarioLogado.email}}</a>
+                            </li>
+                            <li>Suas Informações</li>
+                            <li>Sair</li>
+                        </ul>
                     </div>
                 </div>
-            </nav>
-              
-
-            <div class="container mx-auto pt-6">
-                <div class="mt-10 sm:mt-0">
-                    <div class="md:grid md:grid-cols-3 md:gap-6">
-                        <div class="md:col-span-1">
-                            <div class="px-4 sm:px-0">
-                                <h3 class="text-lg font-medium leading-6 text-gray-900">Informações Pessoais</h3>
-                                <p class="mt-1 text-sm text-gray-600">Essas informações serão usadas mais tarde para quesitos importantes no sistema, não se preocupe, elas poderão ser alteradas.</p>
-                            </div>
-                        </div>
-                        <div class="mt-5 md:mt-0 md:col-span-2">
-                            <div class="shadow overflow-hidden sm:rounded-md">
-                                <div class="px-4 py-5 bg-white sm:p-6">
-                                    <div class="grid grid-cols-6 gap-6">
-                                        <div class="col-span-6">
-                                            <label for="first-name" class="block text-sm font-medium text-gray-700">Nome</label>
-                                            <input
-                                                v-model="usuario.nome"
-                                                type="text"
-                                                name="first-name"
-                                                id="first-name"
-                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                                placeholder="Nome do usuário"
-                                            >
-                                            <small
-                                                class="text-red-600 text-sm flex flex-col"
-                                                v-if="nomeErros.length > 0"
-                                                v-for="erro in nomeErros" :key="erro"
-                                            >{{erro}}</small>
-                                        </div>
-                        
-                                        <div class="col-span-6 sm:col-span-3">
-                                            <label for="dt_nascimento" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
-                                            <input
-                                                v-model="usuario.dt_nascimento"
-                                                type="date"
-                                                name="dt_nascimento"
-                                                id="dt_nascimento"
-                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"    
-                                            >
-                                            <small
-                                                class="text-red-600 text-sm flex flex-col"
-                                                v-if="dataNascimentoErros.length > 0"
-                                                v-for="erro in dataNascimentoErros" :key="erro"
-                                            >{{erro}}</small>
-                                        </div>
-                        
-                                        <div class="col-span-6 sm:col-span-3">
-                                            <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
-                                            <input
-                                                v-model="usuario.cpf"
-                                                type="text"
-                                                name="cpf"
-                                                id="cpf"
-                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                                placeholder="CPF do usuário"    
-                                            >
-                                            <small
-                                                class="text-red-600 text-sm flex flex-col"
-                                                v-if="cpfErros.length > 0"
-                                                v-for="erro in cpfErros" :key="erro"
-                                            >{{erro}}</small>
-                                        </div>
-                        
-                                        <div class="col-span-6 sm:col-span-3">
-                                            <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                                            <input
-                                                v-model="usuario.email"
-                                                type="email"
-                                                name="email"
-                                                id="email"
-                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                                placeholder="email@example.com"    
-                                            >
-                                            <small
-                                                class="text-red-600 text-sm flex flex-col"
-                                                v-if="emailErros.length > 0"
-                                                v-for="erro in emailErros" :key="erro"
-                                            >{{erro}}</small>
-                                        </div>
-
-                                        <div class="col-span-6 sm:col-span-3">
-                                            <label for="senha" class="block text-sm font-medium text-gray-700">Senha</label>
-                                            <input
-                                                v-model="usuario.senha"
-                                                type="password"
-                                                name="senha"
-                                                id="senha"
-                                                class="p-2 mt-1 mb-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
-                                                placeholder="***********************"    
-                                            >
-                                            <small
-                                                class="text-red-600 text-sm flex flex-col"
-                                                v-if="senhaErros.length > 0"
-                                                v-for="erro in senhaErros" :key="erro"
-                                            >{{erro}}</small>
-                                        </div>
-
-                                        <div class="col-span-6 sm:col-span-3">
-                                            <label for="sexo" class="block text-sm font-medium text-gray-700">Sexo</label>
-                                            <select v-model="usuario.sexo" id="sexo" name="sexo" class="mb-2 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                <option selected="selected" disabled>Escolha um sexo</option>
-                                                <option value="1">Masculino</option>
-                                                <option value="2">Feminino</option>
-                                                <option value="3">Outro</option>
-                                            </select>
-                                            <small
-                                                class="text-red-600 text-sm flex flex-col"
-                                                v-if="sexoErros.length > 0"
-                                                v-for="erro in sexoErros" :key="erro"
-                                            >{{erro}}</small>
-                                        </div>
-                        
-                                        <div class="col-span-6 sm:col-span-3">
-                                            <label for="city" class="block text-sm font-medium text-gray-700">Função</label>
-                                            <select v-model="usuario.funcao" id="city" name="city" class="mb-2 mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                                <option selected="selected" disabled>Escolha uma função</option>
-                                                <option value="1">Administrador</option>
-                                                <option value="2">Aluno</option>
-                                                <option value="3">Professor</option>
-                                            </select>
-                                            <small
-                                                class="text-red-600 text-sm flex flex-col"
-                                                v-if="funcaoErros.length > 0"
-                                                v-for="erro in funcaoErros" :key="erro"
-                                            >{{erro}}</small>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                    <button @Click="createUser" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                                        <img src="../assets/loading.gif" class="h-6 w-auto mr-2" v-if="isRegistering" />
-                                        {{btnText}}
-                                    </button>
-                                </div>
-                                <div v-if="APIError" class="p-2 w-full text-white bg-red-600">
-                                    <h1>Ops! {{APIErrorMsg}}</h1>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div v-if="showMenuMobile" class="nav-menu-items-mobile">
+                    <a>Home</a>
+                    <a>Reservas</a>
+                    <a>Salas</a>
+                    <a>Turmas</a>
+                    <a>Usuários</a>                        
                 </div>
-            </div>
+            </nav>            
         </div>
-
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
                 el: '#app',
                 data: {
+                    showUserOptions: false,
+                    saindo: false,
                     APIError: false,
                     APIErrorMsg: '',
                     isRegistering: false,
@@ -281,15 +86,16 @@
                     senhaErros: [],
                     sexoErros: [],
                     funcaoErros: [],
-                    usuarioLogado: null,
-                    avatar: null,
+                    usuarioLogado: null
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-                    this.avatar = `http://localhost:3000/api/uploads/avatars/${this.usuarioLogado.avatar}`;
                 },
                 methods: {
                     logout() {
+                        this.saindo = true;
+                    },
+                    confirmaLogout() {
                         localStorage.removeItem('usuarioLogado');
                         window.location = '../index.html';
                     },
