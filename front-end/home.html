@@ -4,21 +4,21 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="/style.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
-            <div class="modal-logout">
+            <div class="modal-logout" v-if="saindo" @Click="saindo = false">
                 <div class="modal-msg">
                     <div class="warning-icon">
                         <i class="material-icons">warning</i>
                     </div>
                     <p>Opa, você pediu pra sair, tem certeza disso?</p>
                     <div class="modal-actions">
-                        <button>Cancelar</button>
-                        <button class="confirm-logout">
+                        <button @Click="saindo = false">Cancelar</button>
+                        <button class="confirm-logout" @Click="confirmaLogout">
                             <i class="material-icons">logout</i>
                             Sair
                         </button>
@@ -37,11 +37,10 @@
                     
                     <div class="flex items-center">
                         <div class="nav-logo-img">
-                            <img src="./assets/SA-LogoSite.png" alt="Logo do Site" width="100">
+                            <img src="/assets/SA-LogoSite.png" alt="Logo do Site" width="100">
                         </div>
                         <div class="nav-menu-items">
                             <a>Home</a>
-                            <a>Reservas</a>
                             <a>Salas</a>
                             <a>Turmas</a>
                             <a>Usuários</a>                        
@@ -65,13 +64,12 @@
                                 <a>{{usuarioLogado.email}}</a>
                             </li>
                             <li>Suas Informações</li>
-                            <li>Sair</li>
+                            <li @Click="logout">Sair</li>
                         </ul>
                     </div>
                 </div>
                 <div v-if="showMenuMobile" class="nav-menu-items-mobile">
                     <a>Home</a>
-                    <a>Reservas</a>
                     <a>Salas</a>
                     <a>Turmas</a>
                     <a>Usuários</a>                        
@@ -128,7 +126,7 @@
                     },
                     confirmaLogout() {
                         localStorage.removeItem('usuarioLogado');
-                        window.location = './index.html';
+                        window.location = '/index.html';
                     },
                     showingMenuMobile() {
                         if(this.showMenuMobile) {

@@ -4,14 +4,31 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="/style.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
             <div class="form-login">
                 <div class="form">
-                    <img src="./assets/SA-LogoSite.png" alt="Logo do Site" width="150">
+                    <img src="/assets/SA-LogoSite.png" alt="Logo do Site" width="150">
+                    <div class="erros-login" v-if="errorAPI.length > 0">
+                        <a v-for="error in errorAPI" :key="error">
+                            <i class="material-icons">warning</i>
+                            {{error}}
+                        </a>
+                    </div>
+                    <div class="erros-login" v-if="errorEmail.length > 0 || errorSenha.length > 0">
+                        <a v-for="error in errorEmail" :key="error">
+                            <i class="material-icons">warning</i>
+                            {{error}}
+                        </a>
+                        <a v-for="error in errorSenha" :key="error">
+                            <i class="material-icons">warning</i>
+                            {{error}}
+                        </a>
+                    </div>
                     <div class="form-control">
                         <input type="email" name="email" id="email" v-model="email" placeholder="email@example.com">
                     </div>
@@ -19,7 +36,7 @@
                         <input type="password" name="senha" id="senha" v-model="senha" placeholder="******************">
                     </div>
                     <button @Click="login" class="flex items-center justify-center">
-                        <img v-if="signing" src="./assets/loading.gif" width="20">
+                        <img v-if="signing" src="/assets/loading.gif" width="20">
                         {{btnText}}
                     </button>
                 </div>
@@ -37,6 +54,9 @@
                     senha: '',
                     signing: false,
                     btnText: 'Entrar',
+                    errorEmail: [],
+                    errorSenha: [],
+                    errorAPI: []
                 },
                 methods: {
                     async login() {
@@ -58,34 +78,50 @@
 
                             let resJson = await responseAPI.json();
 
-                            if(!responseAPI.ok) {
+                            if(responseAPI.status == 400) {
+                                this.errorAPI.push(resJson.error);
                                 this.signing = false;
                                 this.btnText = 'Entrar';
                                 return;
                             }
-
+                            
                             localStorage.setItem('usuarioLogado', JSON.stringify(resJson));
 
-                            window.location = './usuarios/novo.html';
+                            window.location = '/home.html';
 
                         }
                     },
                     validacao() {
 
                         this.errorCredential = false;
+                        this.errorEmail = [];
+                        this.errorSenha = [];
+                        this.errorAPI = [];
 
-                        if(
-                            this.email == '' ||
-                            this.email == undefined ||
-                            this.senha == '' ||
-                            this.senha == undefined
-                        ) {
-                            this.errorCredential = true;
-                            this.errorMsg = 'Email ou senha inválidos.'
-                            return false;
+                        if(this.email == '' || this.email == undefined) {
+                            this.errorEmail.push('Email não pode ser vazio.');
                         }
 
-                        return true;
+                        if(!this.email.includes('@') || !this.email.includes('.com')) {
+                            this.errorEmail.push('Email inválido.');
+                        }
+
+                        if(this.senha == '' || this.senha == undefined) {
+                            this.errorSenha.push('A senha não pode ser vazia.');
+                        }
+
+                        if(this.senha.length < 8) {
+                            this.errorSenha.push('A senha deve ter pelo menos 8 caracteres.');
+                        }
+
+                        if(
+                            this.errorEmail.length > 0 ||
+                            this.errorSenha.length > 0
+                        ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
                 }
             });
