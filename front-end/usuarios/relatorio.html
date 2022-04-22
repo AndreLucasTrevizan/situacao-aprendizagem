@@ -10,7 +10,7 @@
     </head>
     <body>
         <div id="app">
-            <div class="modal-logout" v-if="saindo" @Click="saindo = false">
+            <div class="modal" v-if="saindo" @Click="saindo = false">
                 <div class="modal-msg">
                     <div class="warning-icon">
                         <i class="material-icons">warning</i>
@@ -40,7 +40,7 @@
                             <img src="/assets/SA-LogoSite.png" alt="Logo do Site" width="100">
                         </div>
                         <div class="nav-menu-items">
-                            <a>Home</a>
+                            <a @Click="irParaHome">Home</a>
                             <a>Salas</a>
                             <a>Turmas</a>
                             <a>Usuários</a>                        
@@ -69,37 +69,114 @@
                     </div>
                 </div>
                 <div v-if="showMenuMobile" class="nav-menu-items-mobile">
-                    <a>Home</a>
+                    <a @Click="irParaHome">Home</a>
                     <a>Salas</a>
                     <a>Turmas</a>
                     <a>Usuários</a>                        
                 </div>
             </nav>
             <div class="container">
-                <div class="empty-reservas" v-if="reservas.length == 0">
-                    <h3>Nenhuma reserva cadastrada ainda</h3>
+                <div class="empty-content" v-if="usuarios.length == 0">
+                    <h3>Nenhum um usuário cadastrado.</h3>
                 </div>
                 <div class="flex align-center justify-center">
-                    <button class="add-reserva">
+                    <button class="add-content">
                         <i class="material-icons">add</i>
                     </button>
                 </div>
-                <div v-if="reservas.length > 0">
-                    <h2>Reservas</h2>
+                <div v-if="usuarios.length > 0">
+                    <h2>Usuários</h2>
 
-                    <div class="reserva">
-                        <div class="res-user-data">
-                            <div class="flex items-center">
-                                <img :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`" width="30" alt="Imagem do Professor">
-                                <a>{{usuarioLogado.nome}}</a>
+                    <table class="usuarios-tabela" v-if="usuarios.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Ações</th>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Sexo</th>
+                                <th>Email</th>
+                                <th>Situação</th>
+                                <th>Função</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="user in usuarios">
+                                <td class="usuario-actions">
+                                    <i class="material-icons edit" title="Editar">
+                                        edit
+                                    </i>
+                                    <i class="material-icons delete" title="Deletar" @Click="deletando = true">
+                                        delete
+                                    </i>
+                                </td>
+                                <td>{{user.nome}}</td>
+                                <td>{{user.cpf}}</td>
+                                <td>{{(user.sexo == 1) ? 'Masculino' : 'Feminino'}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{(user.situacao == 1) ? 'Ativo' : 'Inativo'}}</td>
+                                <td>{{
+                                    (user.funcao == 1) ? 'Administrador' :
+                                    (user.funcao == 2) ? 'Aluno' : 'Professor'   
+                                }}</td>
+                                <div class="modal" v-if="deletando" @Click="deletando = false">
+                                    <div class="modal-msg">
+                                        <div class="warning-icon">
+                                            <i class="material-icons">warning</i>
+                                        </div>
+                                        <p>Você tem certeza que deseja deletar este usuário?</p>
+                                        <div class="modal-actions">
+                                            <button @Click="deletando = false">Cancelar</button>
+                                            <button class="confirm-delete" @Click="confirmDelete(user)">
+                                                <i class="material-icons">delete</i>
+                                                Deletar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="usuario" v-for="user in usuarios" :key="user.id">
+                        <div class="usuario-data">
+                            <div class="usuario-status">
+                                <img 
+                                    :src="`http://localhost:3000/api/uploads/${user.avatar}`"
+                                    alt="Avatar do usuário"
+                                >
+                                <div>
+                                    <h3>{{user.nome}}</h3>
+                                    <p>{{user.email}}</p>
+                                </div>
                             </div>
-                            <div class="flex items-center">
-                                20/04 as 14:30
-                            </div>
+                            <i
+                                class="user-status-on"
+                                v-if="user.situacao == 1"
+                                :title="(user.situacao == 1) ? 'Ativo' : ''"
+                            ></i>
+                            <i
+                                class="user-status-off"
+                                v-if="user.situacao == 2"
+                                :title="(user.situacao == 2) ? 'Inativo' : ''"
+                            ></i>
                         </div>
-                        <div class="res-data flex items-center justify-between">
-                            <h3>Sala 509</h3>
-                            <p>Turma AINFO</p>
+                        <div class="usuario-info">
+                            <h4>Função: {{
+                                (user.funcao == 1) ? 'Administrador' :
+                                (user.funcao == 2) ? 'Aluno' : 'Professor'
+                            }}</h4>
+
+                            <h4>Críado em: {{
+                                new Date(user.createdAt).toLocaleDateString('pt-BR')
+                            }}</h4>
+                        </div>
+                        <div class="usuario-actions">
+                            <i class="material-icons edit" title="Editar">
+                                edit
+                            </i>
+                            <i class="material-icons delete" title="Deletar">
+                                delete
+                            </i>
                         </div>
                     </div>
                 </div>
@@ -112,17 +189,59 @@
                 data: {
                     showUserOptions: false,
                     saindo: false,
+                    deletando: false,
                     showMenuMobile: false,
                     usuarioLogado: null,
-                    reservas: [],
+                    usuarios: [],
                     isInMenu: false
                 },
-                created() {
+                async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+                    if(!this.usuarioLogado) {
+                        window.location = '/index.html';
+                    }
+
+                    let responseAPI = await fetch('http://localhost:3000/api/usuarios', {
+                        method: 'get',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${this.usuarioLogado.token}`
+                        }
+                    });
+
+                    let resJson = await responseAPI.json();
+
+                    if(responseAPI.status !== 200) {
+                        let conf = confirm('Você precisa fazer login novamente, seu token expirou.');
+                        if(conf) {
+                            window.location = '/index.html';
+                        }
+                    }
+
+                    if(responseAPI.status == 200) {
+                        this.usuarios = resJson;
+                    }
                 },
                 methods: {
                     logout() {
                         this.saindo = true;
+                    },
+                    deletar() {
+                        this.deletando = true;
+                    },
+                    confirmDelete(user) {
+                        fetch('http://localhost:3000/api/usuarios', {
+                            method: 'delete',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            mode: 'cors',
+                            body: JSON.stringify({
+                                id: user.id
+                            })
+                        });
                     },
                     confirmaLogout() {
                         localStorage.removeItem('usuarioLogado');
@@ -134,6 +253,9 @@
                         } else {
                             this.showMenuMobile = true;
                         }
+                    },
+                    irParaHome() {
+                        window.location = '/home.html';
                     }
                 }
             });

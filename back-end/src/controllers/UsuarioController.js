@@ -77,7 +77,7 @@ class UsuarioController {
     }
 
     DeletarUsuario(req, res) {
-        let {id} = req.params;
+        let {id} = req.body;
         let sql = `CALL DeletarUsuario(?);`;
 
         db.query(sql, id, (err, rows) => {

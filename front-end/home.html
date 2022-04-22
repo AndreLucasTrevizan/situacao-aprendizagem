@@ -43,7 +43,7 @@
                             <a>Home</a>
                             <a>Salas</a>
                             <a>Turmas</a>
-                            <a>Usuários</a>                        
+                            <a @Click="irParaUsuarios">Usuários</a>                        
                         </div>
                     </div>
                     <div class="nav-user-options flex items-center">
@@ -72,15 +72,15 @@
                     <a>Home</a>
                     <a>Salas</a>
                     <a>Turmas</a>
-                    <a>Usuários</a>                        
+                    <a @Click="irParaUsuarios">Usuários</a>                        
                 </div>
             </nav>
             <div class="container">
-                <div class="empty-reservas" v-if="reservas.length == 0">
+                <div class="empty-content" v-if="reservas.length == 0">
                     <h3>Nenhuma reserva cadastrada ainda</h3>
                 </div>
                 <div class="flex align-center justify-center">
-                    <button class="add-reserva">
+                    <button class="add-content">
                         <i class="material-icons">add</i>
                     </button>
                 </div>
@@ -119,6 +119,9 @@
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+                    if(!this.usuarioLogado) {
+                        window.location = '/index.html';
+                    }
                 },
                 methods: {
                     logout() {
@@ -134,6 +137,9 @@
                         } else {
                             this.showMenuMobile = true;
                         }
+                    },
+                    irParaUsuarios() {
+                        window.location = '/usuarios/relatorio.html';
                     }
                 }
             });

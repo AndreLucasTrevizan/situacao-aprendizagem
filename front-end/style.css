@@ -250,12 +250,12 @@ h2 {
     box-shadow: 0px 0px 3px black;
 }
 
-.empty-reservas {
+.empty-content {
     margin: 20px 0px;
     text-align: center;
 }
 
-.add-reserva {
+.add-content {
     background-color: #2962ff;
     color: white;
     border: none;
@@ -264,12 +264,12 @@ h2 {
     margin: 20px 0px;
 }
 
-.add-reserva:hover {
+.add-content:hover {
     background-color: #1e4ed3;
     cursor: pointer;
 }
 
-.modal-logout {
+.modal {
     position: fixed;
     top: 0;
     right: 0;
@@ -336,6 +336,19 @@ h2 {
     margin-right: 10px;
     font-size: 16px;
 }
+.confirm-delete {
+    margin-top: 10px;
+    background-color: rgb(255, 59, 59);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.confirm-delete i {
+    margin-right: 10px;
+    font-size: 16px;
+}
 
 .warning-icon {
     border-radius: 50%;
@@ -344,7 +357,91 @@ h2 {
     margin-bottom: 10px;
 }
 
+.user-status-on {
+    padding: 7px;
+    border-radius: 50%;
+    background-color: green;
+    width: max-content;
+    height: max-content;
+}
+
+.user-status-off {
+    padding: 7px;
+    border-radius: 50%;
+    background-color: red;
+    width: max-content;
+    height: max-content;
+}
+
+.view {
+    color: #9ccc65;
+}
+
+.edit {
+    color: #ffee58;
+}
+
+.delete {
+    color: #ff7043
+}
+
+.view:hover {
+    cursor: pointer;
+    background-color: #9ccc65;
+    color: #FFF;
+    border-radius: 50%;
+}
+
+.edit:hover {
+    cursor: pointer;
+    background-color: #ffee58;
+    color: #FFF;
+    border-radius: 50%;
+}
+
+.delete:hover {
+    cursor: pointer;
+    background-color: #ff7043;
+    color: #FFF;
+    border-radius: 50%;
+}
+
+.usuarios-tabela {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.usuarios-tabela th {
+    padding: 20px;
+    font-size: 20px;
+    font-weight: normal;
+    color: #FFF;
+    border: 1px solid #333333;
+    background-color: #333333;
+}
+
+.usuarios-tabela td {
+    padding: 10px;
+    border: 1px solid #E3E3E3;
+    text-align: center;
+}
+
+.usuarios-tabela td i {
+    padding: 10px;
+}
+
+@media (min-width: 1100px) {
+    .usuario {
+        display: none;
+    }
+}
+
 @media (max-width: 1100px) {
+    .usuarios-tabela {
+        display: none;
+    }
+
     .nav-menu-items {
         display: none;
     }
@@ -406,11 +503,112 @@ h2 {
         border-radius: 50%;
         box-shadow: 0px 0px 3px black;
     }
+
+    .usuario {
+        margin-top: 10px;
+        border: 1px solid #E3E3E3;
+        border-radius: 10px;
+        background-color: #333333;
+        color: white;
+    }
+
+    .usuario-data {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #E3E3E3;
+    }
+
+    .usuario-status {
+        display: flex;
+        align-items: center;
+    }
+
+    .usuario-data img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        box-shadow: 0px 0px 3px black;
+        margin-right: 10px;
+    }
+
+    .usuario-info {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #E3E3E3;
+    }
+
+    .usuario-actions {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .usuario-actions i {
+        padding: 10px;
+        margin: 10px;
+        border-radius: 50%;
+    }
+
+    
 }
 
 @media (max-width: 768px) {
 
-    .modal-logout {
+    .usuarios-tabela {
+        display: none;
+    }
+
+    .usuario {
+        margin-top: 10px;
+        border: 1px solid #E3E3E3;
+        border-radius: 10px;
+        background-color: #333333;
+        color: white;
+    }
+
+    .usuario-data {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #E3E3E3;
+    }
+
+    .usuario-status {
+        display: flex;
+    }
+
+    .usuario-data img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        box-shadow: 0px 0px 3px black;
+        margin-right: 10px;
+    }
+
+    .usuario-info {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #E3E3E3;
+    }
+
+    .usuario-actions {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .usuario-actions i {
+        padding: 10px;
+        margin: 10px;
+        border-radius: 50%;
+    }
+
+    .modal {
         position: fixed;
         top: 0;
         right: 0;
@@ -475,6 +673,20 @@ h2 {
     }
 
     .confirm-logout i {
+        margin-right: 10px;
+        font-size: 16px;
+    }
+
+    .confirm-delete {
+        margin-top: 10px;
+        background-color: rgb(255, 59, 59);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    .confirm-delete i {
         margin-right: 10px;
         font-size: 16px;
     }
