@@ -4,13 +4,15 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
         <link rel="stylesheet" href="/style.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/aa7a1116bd.js" crossorigin="anonymous"></script>
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
-            <div class="modal-logout" v-if="saindo" @Click="saindo = false">
+            <div class="modal" v-if="saindo" @Click="saindo = false">
                 <div class="modal-msg">
                     <div class="warning-icon">
                         <i class="material-icons">warning</i>
@@ -27,6 +29,15 @@
             </div>
             <nav>
                 <div class="nav-normal flex items-center justify-between container">
+                    <div class="success-toast" v-if="toastSuccess">
+                        <div class="container-l">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="container-r">
+                            <h3>Sucesso</h3>
+                            <p>Os dados foram cadastrados com sucesso.</p>
+                        </div>
+                    </div>
                     <svg v-if="!showMenuMobile" @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" class="menu-mobile-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
                     </svg>
@@ -34,13 +45,13 @@
                     <svg v-if="showMenuMobile" @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="menu-mobile-icon-close" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
-                    
+
                     <div class="flex items-center">
                         <div class="nav-logo-img">
                             <img src="/assets/SA-LogoSite.png" alt="Logo do Site" width="100">
                         </div>
                         <div class="nav-menu-items">
-                            <a>Home</a>
+                            <a @Click="irParaHome">Home</a>
                             <a>Salas</a>
                             <a>Turmas</a>
                             <a>Usuários</a>                        
@@ -69,12 +80,29 @@
                     </div>
                 </div>
                 <div v-if="showMenuMobile" class="nav-menu-items-mobile">
-                    <a>Home</a>
+                    <a @Click="irParaHome">Home</a>
                     <a>Salas</a>
                     <a>Turmas</a>
                     <a>Usuários</a>                        
                 </div>
-            </nav>          
+            </nav>
+            <div class="container novo-usuario">
+                <div class="left-novo-usuario">
+                    <h3>Informações Pessoais</h3>
+                    <p>
+                        Aqui é onde você cadastra novos usuários, não se preocupe, as informações podem ser alteradas
+                        pelo usuário dentro da página "Suas Informações".
+                    </p>
+                </div>
+                <div class="right-novo-usuario">
+                    <div class="form-novo-usuario">
+                        <div class="novo-form-control">
+                            <label for="nome">Nome</label>
+                            <input type="text" name="nome" id="nome" placeholder="Nome do usuário">
+                        </div>
+                    </div>
+                </div>
+            </div>         
         </div>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
@@ -113,6 +141,9 @@
                     }
                 },
                 methods: {
+                    irParaHome() {
+                        window.location = '/home.html';
+                    },
                     logout() {
                         this.saindo = true;
                     },

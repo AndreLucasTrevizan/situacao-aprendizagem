@@ -4,13 +4,14 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
         <link rel="stylesheet" href="/style.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
-            <div class="modal-logout" v-if="saindo" @Click="saindo = false">
+            <div class="modal" v-if="saindo" @Click="saindo = false">
                 <div class="modal-msg">
                     <div class="warning-icon">
                         <i class="material-icons">warning</i>
@@ -43,7 +44,7 @@
                             <a>Home</a>
                             <a>Salas</a>
                             <a>Turmas</a>
-                            <a @Click="irParaUsuarios">Usuários</a>                        
+                            <a @Click="irParaUsuarios" v-if="usuarioLogado.funcao != 2">Usuários</a>                        
                         </div>
                     </div>
                     <div class="nav-user-options flex items-center">
@@ -72,14 +73,14 @@
                     <a>Home</a>
                     <a>Salas</a>
                     <a>Turmas</a>
-                    <a @Click="irParaUsuarios">Usuários</a>                        
+                    <a @Click="irParaUsuarios" v-if="usuarioLogado.funcao != 2">Usuários</a>                        
                 </div>
             </nav>
             <div class="container">
                 <div class="empty-content" v-if="reservas.length == 0">
                     <h3>Nenhuma reserva cadastrada ainda</h3>
                 </div>
-                <div class="flex align-center justify-center">
+                <div class="flex align-center justify-center" v-if="usuarioLogado.funcao != 2">
                     <button class="add-content">
                         <i class="material-icons">add</i>
                     </button>

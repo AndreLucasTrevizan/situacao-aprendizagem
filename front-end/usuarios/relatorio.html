@@ -4,8 +4,10 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
         <link rel="stylesheet" href="/style.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/aa7a1116bd.js" crossorigin="anonymous"></script>
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
@@ -23,6 +25,17 @@
                             Sair
                         </button>
                     </div>
+                </div>
+            </div>
+            <div class="modal" v-if="tokenInvalido">
+                <div class="modal-msg">
+                    <div class="warning-icon">
+                        <i class="material-icons">warning</i>
+                    </div>
+                    <p v-if="usuarioLogado.funcao == 1">Seu token expirou, faça login novamente.</p>
+                    <p v-else>
+                        Você não tem permissão de acessar aqui.
+                    </p>
                 </div>
             </div>
             <nav>
@@ -43,7 +56,7 @@
                             <a @Click="irParaHome">Home</a>
                             <a>Salas</a>
                             <a>Turmas</a>
-                            <a>Usuários</a>                        
+                            <a>Usuários</a>
                         </div>
                     </div>
                     <div class="nav-user-options flex items-center">
@@ -81,7 +94,7 @@
                 </div>
                 <div class="flex align-center justify-center">
                     <button class="add-content">
-                        <i class="material-icons">add</i>
+                        <i class="material-icons" @Click="irParaNovo">add</i>
                     </button>
                 </div>
                 <div v-if="usuarios.length > 0">
@@ -105,7 +118,7 @@
                                     <i class="material-icons edit" title="Editar">
                                         edit
                                     </i>
-                                    <i class="material-icons delete" title="Deletar" @Click="deletando = true">
+                                    <i class="material-icons delete" title="Deletar" @Click="deletando = true, deletar(user)">
                                         delete
                                     </i>
                                 </td>
@@ -118,7 +131,7 @@
                                     (user.funcao == 1) ? 'Administrador' :
                                     (user.funcao == 2) ? 'Aluno' : 'Professor'   
                                 }}</td>
-                                <div class="modal" v-if="deletando" @Click="deletando = false">
+                                <div class="modal" v-if="deletando">
                                     <div class="modal-msg">
                                         <div class="warning-icon">
                                             <i class="material-icons">warning</i>
@@ -126,9 +139,9 @@
                                         <p>Você tem certeza que deseja deletar este usuário?</p>
                                         <div class="modal-actions">
                                             <button @Click="deletando = false">Cancelar</button>
-                                            <button class="confirm-delete" @Click="confirmDelete(user)">
+                                            <button class="confirm-delete" @Click="confirmDelete">
                                                 <i class="material-icons">delete</i>
-                                                Deletar
+                                                {{deleteBtnText}}
                                             </button>
                                         </div>
                                     </div>
@@ -174,9 +187,24 @@
                             <i class="material-icons edit" title="Editar">
                                 edit
                             </i>
-                            <i class="material-icons delete" title="Deletar">
+                            <i class="material-icons delete" title="Deletar" @Click="deletando = true, deletar(user)">
                                 delete
                             </i>
+                        </div>
+                        <div class="modal" v-if="deletando">
+                            <div class="modal-msg">
+                                <div class="warning-icon">
+                                    <i class="material-icons">warning</i>
+                                </div>
+                                <p>Você tem certeza que deseja deletar este usuário?</p>
+                                <div class="modal-actions">
+                                    <button @Click="deletando = false">Cancelar</button>
+                                    <button class="confirm-delete" @Click="confirmDelete">
+                                        <i class="material-icons">delete</i>
+                                        {{deleteBtnText}}
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -190,10 +218,12 @@
                     showUserOptions: false,
                     saindo: false,
                     deletando: false,
+                    tokenInvalido: false,
                     showMenuMobile: false,
                     usuarioLogado: null,
                     usuarios: [],
-                    isInMenu: false
+                    isInMenu: false,
+                    deleteBtnText: 'Deletar'
                 },
                 async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -213,10 +243,11 @@
                     let resJson = await responseAPI.json();
 
                     if(responseAPI.status !== 200) {
-                        let conf = confirm('Você precisa fazer login novamente, seu token expirou.');
-                        if(conf) {
+                        this.tokenInvalido = true;
+                        localStorage.removeItem('usuarioLogado');
+                        setTimeout(() => {
                             window.location = '/index.html';
-                        }
+                        }, 5000);
                     }
 
                     if(responseAPI.status == 200) {
@@ -227,11 +258,13 @@
                     logout() {
                         this.saindo = true;
                     },
-                    deletar() {
+                    deletar(user) {
+                        localStorage.setItem('delete_id', user.id);
                         this.deletando = true;
                     },
-                    confirmDelete(user) {
-                        fetch('http://localhost:3000/api/usuarios', {
+                    async confirmDelete() {
+                        let user_id = localStorage.getItem('delete_id');
+                        let responseAPI = await fetch('http://localhost:3000/api/usuarios', {
                             method: 'delete',
                             headers: {
                                 'Accept': 'application/json',
@@ -239,9 +272,15 @@
                             },
                             mode: 'cors',
                             body: JSON.stringify({
-                                id: user.id
+                                id: user_id
                             })
                         });
+
+                        if(responseAPI.status == 200) {
+                            this.deleteBtnText = 'Deletando...';
+                            localStorage.removeItem('delete_id');
+                            window.location.reload();
+                        }
                     },
                     confirmaLogout() {
                         localStorage.removeItem('usuarioLogado');
@@ -256,6 +295,9 @@
                     },
                     irParaHome() {
                         window.location = '/home.html';
+                    },
+                    irParaNovo() {
+                        window.location = '/usuarios/novo.html';
                     }
                 }
             });
