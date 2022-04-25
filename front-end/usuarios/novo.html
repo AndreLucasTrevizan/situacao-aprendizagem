@@ -4,14 +4,37 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+=======
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
+        <link rel="stylesheet" href="/style.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/aa7a1116bd.js" crossorigin="anonymous"></script>
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
+            <div class="modal" v-if="saindo" @Click="saindo = false">
+                <div class="modal-msg">
+                    <div class="warning-icon">
+                        <i class="material-icons">warning</i>
+                    </div>
+                    <p>Opa, você pediu pra sair, tem certeza disso?</p>
+                    <div class="modal-actions">
+                        <button @Click="saindo = false">Cancelar</button>
+                        <button class="confirm-logout" @Click="confirmaLogout">
+                            <i class="material-icons">logout</i>
+                            Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
             <nav>
+<<<<<<< HEAD
                 <div class="container flex between">
                     <div class="menu-icon">
                         <svg v-if="menuMobile" @Click="menuMobile = false" width="40" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -20,6 +43,36 @@
                         <svg v-if="!menuMobile" @Click="menuMobile = true" width="40" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
+=======
+                <div class="nav-normal flex items-center justify-between container">
+                    <div class="success-toast" v-if="toastSuccess">
+                        <div class="container-l">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <div class="container-r">
+                            <h3>Sucesso</h3>
+                            <p>Os dados foram cadastrados com sucesso.</p>
+                        </div>
+                    </div>
+                    <svg v-if="!showMenuMobile" @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" class="menu-mobile-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+
+                    <svg v-if="showMenuMobile" @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="menu-mobile-icon-close" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+
+                    <div class="flex items-center">
+                        <div class="nav-logo-img">
+                            <img src="/assets/SA-LogoSite.png" alt="Logo do Site" width="100">
+                        </div>
+                        <div class="nav-menu-items">
+                            <a @Click="irParaHome">Home</a>
+                            <a>Salas</a>
+                            <a>Turmas</a>
+                            <a>Usuários</a>                        
+                        </div>
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                     </div>
                     <div class="menu-esquerdo">
                         <div class="logo-menu">
@@ -35,6 +88,7 @@
                         <div class="avatar-usuario">
                             <img @Click="userInfoMobile = true" :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário">
                         </div>
+<<<<<<< HEAD
                         <ul class="usuario-menu">
                             <li>{{usuarioLogado.nome}}</li>
                             <li>Sair</li>
@@ -80,6 +134,43 @@
                     Adicionar Reserva
                 </button>
             </div>
+=======
+                        <ul>
+                            <li class="li-user-data">
+                                <img :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`" width="50">
+                                <p>{{usuarioLogado.nome}}</p>
+                                <a>{{usuarioLogado.email}}</a>
+                            </li>
+                            <li>Suas Informações</li>
+                            <li @Click="logout">Sair</li>
+                        </ul>
+                    </div>
+                </div>
+                <div v-if="showMenuMobile" class="nav-menu-items-mobile">
+                    <a @Click="irParaHome">Home</a>
+                    <a>Salas</a>
+                    <a>Turmas</a>
+                    <a>Usuários</a>                        
+                </div>
+            </nav>
+            <div class="container novo-usuario">
+                <div class="left-novo-usuario">
+                    <h3>Informações Pessoais</h3>
+                    <p>
+                        Aqui é onde você cadastra novos usuários, não se preocupe, as informações podem ser alteradas
+                        pelo usuário dentro da página "Suas Informações".
+                    </p>
+                </div>
+                <div class="right-novo-usuario">
+                    <div class="form-novo-usuario">
+                        <div class="novo-form-control">
+                            <label for="nome">Nome</label>
+                            <input type="text" name="nome" id="nome" placeholder="Nome do usuário">
+                        </div>
+                    </div>
+                </div>
+            </div>         
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
         </div>
 
         <script src="/common.js"></script>
@@ -101,8 +192,140 @@
                     }
                 },
                 methods: {
+<<<<<<< HEAD
                     sair() {},
                     confirmarSaida() {}
+=======
+                    irParaHome() {
+                        window.location = '/home.html';
+                    },
+                    logout() {
+                        this.saindo = true;
+                    },
+                    confirmaLogout() {
+                        localStorage.removeItem('usuarioLogado');
+                        window.location = '/index.html';
+                    },
+                    showingMenuMobile() {
+                        if(this.showMenuMobile) {
+                            this.showMenuMobile = false;
+                        } else {
+                            this.showMenuMobile = true;
+                        }
+                    },
+                    async createUser() {
+                        if(this.validacao(this.usuario)) {
+                            this.btnText = 'Cadastrando...';
+                            this.isRegistering = true;
+                            this.APIErrorMsg = '';
+                            this.APIError = false;
+                            
+                            let responseAPI = await fetch('http://localhost:3000/api/usuarios', {
+                                method: 'post',
+                                headers: {
+                                    'Accept': 'application/json',
+                                    'Content-Type': 'application/json'
+                                },
+                                mode: 'cors',
+                                body: JSON.stringify(this.usuario)
+                            });
+
+                            let resJson = await responseAPI.json();
+
+                            console.log(resJson);
+
+                            if(!responseAPI.ok) {
+                                this.APIError = true;
+                                this.APIErrorMsg = (resJson.sqlMessage.includes('cpf') ?
+                                                    `CPF já está sendo usado.` :
+                                                    (resJson.sqlMessage.includes('email')) ? `Email já está sendo usado.` : '');
+                                this.btnText = 'Cadastrar';
+                                this.isRegistering = false;
+                                return;
+                            }
+
+                            window.location = '/relatorio.html';
+                        }
+                    },
+                    validacao(data) {
+
+                        this.nomeErros = [];
+                        this.dataNascimentoErros = [];
+                        this.cpfErros = [];
+                        this.emailErros = [];
+                        this.senhaErros = [];
+                        this.sexoErros = [];
+                        this.funcaoErros = [];
+
+                        let dataAtual = Date.now();
+
+                        if(data.nome == '' || data.nome == undefined) {
+                            this.nomeErros.push('O nome não pode ser vazio.');
+                        }
+
+                        if(data.nome.length < 3) {
+                            this.nomeErros.push('O nome precisa ter pelo menos 3 caracteres.');
+                        }
+
+                        if(data.dt_nascimento == '' || data.dt_nascimento == undefined) {
+                            this.dataNascimentoErros.push('A Data de Nascimento não pode ser vazia.');
+                        }
+
+                        if(new Date(data.dt_nascimento).getFullYear() < 1950) {
+                            this.dataNascimentoErros.push('Valor de data inválido.');
+                        }
+                        
+                        if(new Date(data.dt_nascimento).getFullYear() > new Date(dataAtual).getFullYear()) {
+                            this.dataNascimentoErros.push('Valor de data inválido.');
+                        }
+
+                        if(data.cpf == '' || data.cpf == undefined) {
+                            this.cpfErros.push('O CPF não pode ser vazio.');
+                        }
+
+                        if(data.cpf.length < 14) {
+                            this.cpfErros.push('O CPF precisa ter pelo menos 14 caracteres.');
+                        }
+
+                        if(data.email == '' || data.email == undefined) {
+                            this.emailErros.push('O email não pode ser vazio.');
+                        } else if(!data.email.includes('@') && data.email.includes('.com')) {
+                            this.emailErros.push(`Email inválido. Esperado caractere '@'.`);
+                        } else if(data.email.includes('@') && !data.email.includes('.com')) {
+                            this.emailErros.push(`Email inválido. Esperado '.com'`);
+                        }
+
+                        if(data.senha == '' || data.senha == undefined) {
+                            this.senhaErros.push('A senha não pode ser vazia.');
+                        }
+
+                        if(data.senha.length < 8) {
+                            this.senhaErros.push('A senha deve ter pelo menos 8 caracteres.');
+                        }
+
+                        if(data.sexo == '' || data.sexo == undefined) {
+                            this.sexoErros.push('O sexo não pode ser vazio.');
+                        }
+
+                        if(data.funcao == '' || data.funcao == undefined) {
+                            this.funcaoErros.push('A função não pode ser vazia.');
+                        }
+
+                        if(
+                            this.nomeErros.length > 0 ||
+                            this.dataNascimentoErros.length > 0 ||
+                            this.cpfErros.length > 0 ||
+                            this.emailErros.length > 0 ||
+                            this.senhaErros.length > 0 ||
+                            this.sexoErros.length > 0 ||
+                            this.funcaoErros.length > 0
+                        ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
+                    }
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                 }
             });
         </script>

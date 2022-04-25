@@ -10,7 +10,7 @@ router.get('/usuarios', isAdmin, UsuariosController.ListarUsuarios);
 router.get('/usuarios/:id', UsuariosController.ListarUsuarioPorId);
 router.post('/usuarios', uploadAvatar, UsuariosController.CriarUsuario);
 router.put('/usuarios', UsuariosController.EditarUsuario);
-router.delete('/usuarios/:id', UsuariosController.DeletarUsuario);
+router.delete('/usuarios', UsuariosController.DeletarUsuario);
 
 router.post('/login', UsuariosController.Login);
 

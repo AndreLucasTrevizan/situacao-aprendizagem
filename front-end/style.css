@@ -21,6 +21,60 @@ h2 {
     font-size: 30px;
 }
 
+.success-toast {
+    display: flex;
+    border-radius: 10px;
+    box-shadow: 0px 0px 2px black;
+    width: max-content;
+    position: fixed;
+    right: 230px;
+    top: 120px;
+    background-color: #FFF;
+}
+
+.container-l {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    border-left: 10px solid greenyellow;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
+.container-l i{
+    font-size: 35px;
+    color: greenyellow;
+}
+
+.container-r {
+    padding: 12px 0px;
+    padding-right: 10px;
+}
+
+.container-r h3 {
+    font-weight: bold;
+}
+
+.erros-login {
+    display: flex;
+    flex-direction: column;
+    background-color: rgb(255, 59, 59);
+    color: white;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.erros-login a {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.erros-login a i {
+    margin-right: 10px;
+}
+
 .content {
     padding: 10px;
 }
@@ -231,12 +285,12 @@ h2 {
     box-shadow: 0px 0px 3px black;
 }
 
-.empty-reservas {
+.empty-content {
     margin: 20px 0px;
     text-align: center;
 }
 
-.add-reserva {
+.add-content {
     background-color: #2962ff;
     color: white;
     border: none;
@@ -245,14 +299,457 @@ h2 {
     margin: 20px 0px;
 }
 
-.add-reserva:hover {
+.add-content:hover {
     background-color: #1e4ed3;
     cursor: pointer;
 }
 
-@media (max-width: 1280px) {
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    .modal-logout {
+.modal-msg {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #FFF;
+    padding: 10px;
+    margin: 20px;
+    border-radius: 10px;
+}
+
+.modal-msg p {
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #E3E3E3;
+}
+
+.modal-msg i {
+    color: white;
+}
+
+.modal-actions {
+    padding: 10px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.modal-actions button {
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+}
+
+.modal-actions button:hover {
+    box-shadow: 0px 0px 3px black;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.confirm-logout {
+    margin-top: 10px;
+    background-color: rgb(255, 59, 59);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.confirm-logout i {
+    margin-right: 10px;
+    font-size: 16px;
+}
+.confirm-delete {
+    margin-top: 10px;
+    background-color: rgb(255, 59, 59);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.confirm-delete i {
+    margin-right: 10px;
+    font-size: 16px;
+}
+
+.warning-icon {
+    border-radius: 50%;
+    padding: 10px;
+    background-color: rgb(255, 59, 59);
+    margin-bottom: 10px;
+}
+
+.user-status-on {
+    padding: 7px;
+    border-radius: 50%;
+    background-color: green;
+    width: max-content;
+    height: max-content;
+}
+
+.user-status-off {
+    padding: 7px;
+    border-radius: 50%;
+    background-color: red;
+    width: max-content;
+    height: max-content;
+}
+
+.view {
+    color: #9ccc65;
+}
+
+.edit {
+    color: #ffee58;
+}
+
+.delete {
+    color: #ff7043
+}
+
+.view:hover {
+    cursor: pointer;
+    background-color: #9ccc65;
+    color: #FFF;
+    border-radius: 50%;
+}
+
+.edit:hover {
+    cursor: pointer;
+    background-color: #ffee58;
+    color: #FFF;
+    border-radius: 50%;
+}
+
+.delete:hover {
+    cursor: pointer;
+    background-color: #ff7043;
+    color: #FFF;
+    border-radius: 50%;
+}
+
+.usuarios-tabela {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.usuarios-tabela th {
+    padding: 20px;
+    font-size: 20px;
+    font-weight: normal;
+    color: #FFF;
+    border: 1px solid #333333;
+    background-color: #333333;
+}
+
+.usuarios-tabela td {
+    padding: 10px;
+    border: 1px solid #E3E3E3;
+    text-align: center;
+}
+
+.usuarios-tabela td i {
+    padding: 10px;
+}
+
+.novo-usuario {
+    display: flex;
+    justify-content: space-between;
+}
+
+.left-novo-usuario {
+    width: 50%;
+    padding: 20px
+}
+
+.left-novo-usuario h3 {
+    margin-bottom: 20px;
+    font-size: 25px;
+}
+
+.left-novo-usuario p {
+    line-height: 1.2rem;
+}
+
+.right-novo-usuario {
+    width: 50%;
+    padding: 20px;
+}
+
+.right-novo-usuario label {
+    font-size: 20px;
+}
+
+@media (min-width: 1100px) {
+    .usuario {
+        display: none;
+    }
+}
+
+@media (max-width: 1100px) {
+    .usuarios-tabela {
+        display: none;
+    }
+
+    .nav-menu-items {
+        display: none;
+    }
+
+    .menu-mobile-icon {
+        display: block;
+    }
+
+    .nav-menu-user-data {
+        display: none;
+    }
+
+    .nav-menu-items-mobile {
+        border-top: 1px solid black;
+        margin-top: 15px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .nav-menu-items-mobile a {
+        padding: 10px;
+    }
+
+    .nav-menu-items-mobile a:hover {
+        background-color: #E3E3E3;
+        cursor: pointer;
+    }
+
+    .nav-user-options:hover {
+        display: flex;
+    }
+    
+    .nav-user-options:hover ul {
+        display: block;
+        position: fixed;
+        right: 10px;
+    }
+
+    .nav-user-options ul li {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .nav-user-options ul li:hover {
+        cursor: pointer;
+        background-color: #E3E3E3
+    }
+
+    .li-user-data {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+    }
+
+    .li-user-data img {
+        margin-bottom: 10px;
+        border-radius: 50%;
+        box-shadow: 0px 0px 3px black;
+    }
+
+    .usuario {
+        margin-top: 10px;
+        border: 1px solid #E3E3E3;
+        border-radius: 10px;
+        background-color: #333333;
+        color: white;
+    }
+
+    .usuario-data {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #E3E3E3;
+    }
+
+    .usuario-status {
+        display: flex;
+        align-items: center;
+    }
+
+    .usuario-data img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        box-shadow: 0px 0px 3px black;
+        margin-right: 10px;
+    }
+
+    .usuario-info {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #E3E3E3;
+    }
+
+    .usuario-actions {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .usuario-actions i {
+        padding: 10px;
+        margin: 10px;
+        border-radius: 50%;
+    }
+
+    .modal p {
+        color: black;
+    }
+
+    .success-toast {
+        display: flex;
+        border-radius: 10px;
+        box-shadow: 0px 0px 2px black;
+        width: max-content;
+        position: fixed;
+        right: 180px;
+        top: 140px;
+        background-color: #FFF;
+    }
+    
+    .container-l {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border-left: 10px solid greenyellow;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+    
+    .container-l i{
+        font-size: 35px;
+        color: greenyellow;
+    }
+    
+    .container-r {
+        padding: 12px 0px;
+        padding-right: 10px;
+    }
+    
+    .container-r h3 {
+        font-weight: bold;
+    }
+
+    
+}
+
+@media (max-width: 768px) {
+
+    .success-toast {
+        display: flex;
+        border-radius: 10px;
+        box-shadow: 0px 0px 2px black;
+        width: max-content;
+        position: fixed;
+        right: 35px;
+        top: 140px;
+        background-color: #FFF;
+    }
+    
+    .container-l {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px;
+        border-left: 10px solid greenyellow;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+    
+    .container-l i{
+        font-size: 35px;
+        color: greenyellow;
+    }
+    
+    .container-r {
+        padding: 12px 0px;
+        padding-right: 10px;
+    }
+    
+    .container-r h3 {
+        font-weight: bold;
+    }
+
+    .modal p {
+        color: black;
+    }
+
+    .usuarios-tabela {
+        display: none;
+    }
+
+    .usuario {
+        margin-top: 10px;
+        border: 1px solid #E3E3E3;
+        border-radius: 10px;
+        background-color: #333333;
+        color: white;
+    }
+
+    .usuario-data {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        border-bottom: 1px solid #E3E3E3;
+    }
+
+    .usuario-status {
+        display: flex;
+    }
+
+    .usuario-data img {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        box-shadow: 0px 0px 3px black;
+        margin-right: 10px;
+    }
+
+    .usuario-info {
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid #E3E3E3;
+    }
+
+    .usuario-actions {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+    .usuario-actions i {
+        padding: 10px;
+        margin: 10px;
+        border-radius: 50%;
+    }
+
+    .modal {
         position: fixed;
         top: 0;
         right: 0;
@@ -290,25 +787,49 @@ h2 {
         padding: 10px;
         width: 100%;
         display: flex;
+        flex-direction: column;
         justify-content: space-between;
     }
 
     .modal-actions button {
         border: none;
-        padding: 5px;
+        padding: 10px;
         border-radius: 10px;
         font-size: 16px;
     }
 
+    .modal-actions button:hover {
+        box-shadow: 0px 0px 3px black;
+        transition: 0.3s;
+        cursor: pointer;
+    }
+
     .confirm-logout {
+        margin-top: 10px;
         background-color: rgb(255, 59, 59);
         display: flex;
+        justify-content: center;
         align-items: center;
         color: white;
     }
 
     .confirm-logout i {
         margin-right: 10px;
+        font-size: 16px;
+    }
+
+    .confirm-delete {
+        margin-top: 10px;
+        background-color: rgb(255, 59, 59);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+    }
+
+    .confirm-delete i {
+        margin-right: 10px;
+        font-size: 16px;
     }
 
     .warning-icon {

@@ -4,17 +4,45 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
+=======
+        <link rel="stylesheet" href="/style.css">
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
+<<<<<<< HEAD
             <div class="container">
                 <div class="row">
                     <div class="col-12 center">
                         <img src="assets/SA-LogoSite.png" alt="Logo do Sistema" class="logo">
+=======
+            <div class="form-login">
+                <div class="form">
+                    <img src="/assets/SA-LogoSite.png" alt="Logo do Site" width="150">
+                    <div class="erros-login" v-if="errorAPI.length > 0">
+                        <a v-for="error in errorAPI" :key="error">
+                            <i class="material-icons">warning</i>
+                            {{error}}
+                        </a>
+                    </div>
+                    <div class="erros-login" v-if="errorEmail.length > 0 || errorSenha.length > 0">
+                        <a v-for="error in errorEmail" :key="error">
+                            <i class="material-icons">warning</i>
+                            {{error}}
+                        </a>
+                        <a v-for="error in errorSenha" :key="error">
+                            <i class="material-icons">warning</i>
+                            {{error}}
+                        </a>
+                    </div>
+                    <div class="form-control">
+                        <input type="email" name="email" id="email" v-model="email" placeholder="email@example.com">
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                     </div>
                 </div>
                 <div class="row">
@@ -39,6 +67,13 @@
                     <div class="col-12 form-control">
                         <button class="btn btn-primary" @Click="login">{{btnText}}</button>
                     </div>
+<<<<<<< HEAD
+=======
+                    <button @Click="login" class="flex items-center justify-center">
+                        <img v-if="signing" src="/assets/loading.gif" width="20">
+                        {{btnText}}
+                    </button>
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                 </div>
             </div>
         </div>
@@ -50,9 +85,15 @@
                 el: '#app',
                 data: {
                     btnText: 'Entrar',
+<<<<<<< HEAD
                     emailErros: [],
                     senhaErros: [],
                     apiErros: [],
+=======
+                    errorEmail: [],
+                    errorSenha: [],
+                    errorAPI: []
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                 },
                 methods: {
                     async login() {
@@ -70,12 +111,18 @@
 
                             let resJson = await responseAPI.json();
 
+<<<<<<< HEAD
                             if(!responseAPI.ok) {
+=======
+                            if(responseAPI.status == 400) {
+                                this.errorAPI.push(resJson.error);
+                                this.signing = false;
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                                 this.btnText = 'Entrar';
                                 this.apiErros.push(resJson.error);
                                 return;
                             }
-
+                            
                             localStorage.setItem('usuarioLogado', JSON.stringify(resJson));
 
                             window.location = '/home.html';
@@ -84,6 +131,7 @@
                     },
                     validacao() {
 
+<<<<<<< HEAD
                         this.emailErros = [];
                         this.senhaErros = [];
                         this.apiErros = [];
@@ -101,6 +149,32 @@
                         if(
                             this.emailErros.length > 0 ||
                             this.senhaErros.length > 0
+=======
+                        this.errorCredential = false;
+                        this.errorEmail = [];
+                        this.errorSenha = [];
+                        this.errorAPI = [];
+
+                        if(this.email == '' || this.email == undefined) {
+                            this.errorEmail.push('Email não pode ser vazio.');
+                        }
+
+                        if(!this.email.includes('@') || !this.email.includes('.com')) {
+                            this.errorEmail.push('Email inválido.');
+                        }
+
+                        if(this.senha == '' || this.senha == undefined) {
+                            this.errorSenha.push('A senha não pode ser vazia.');
+                        }
+
+                        if(this.senha.length < 8) {
+                            this.errorSenha.push('A senha deve ter pelo menos 8 caracteres.');
+                        }
+
+                        if(
+                            this.errorEmail.length > 0 ||
+                            this.errorSenha.length > 0
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                         ) {
                             return false;
                         } else {

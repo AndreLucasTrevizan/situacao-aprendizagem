@@ -4,13 +4,21 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+=======
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
+        <link rel="stylesheet" href="/style.css">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <script src="https://kit.fontawesome.com/aa7a1116bd.js" crossorigin="anonymous"></script>
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
+<<<<<<< HEAD
             <nav>
                 <div class="container flex between">
                     <div class="menu-icon">
@@ -83,11 +91,212 @@
         </div>
 
         <script src="/common.js"></script>
+=======
+            <div class="modal" v-if="saindo" @Click="saindo = false">
+                <div class="modal-msg">
+                    <div class="warning-icon">
+                        <i class="material-icons">warning</i>
+                    </div>
+                    <p>Opa, você pediu pra sair, tem certeza disso?</p>
+                    <div class="modal-actions">
+                        <button @Click="saindo = false">Cancelar</button>
+                        <button class="confirm-logout" @Click="confirmaLogout">
+                            <i class="material-icons">logout</i>
+                            Sair
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" v-if="tokenInvalido">
+                <div class="modal-msg">
+                    <div class="warning-icon">
+                        <i class="material-icons">warning</i>
+                    </div>
+                    <p v-if="usuarioLogado.funcao == 1">Seu token expirou, faça login novamente.</p>
+                    <p v-else>
+                        Você não tem permissão de acessar aqui.
+                    </p>
+                </div>
+            </div>
+            <nav>
+                <div class="nav-normal flex items-center justify-between container">
+                    <svg v-if="!showMenuMobile" @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" class="menu-mobile-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+
+                    <svg v-if="showMenuMobile" @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="menu-mobile-icon-close" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    
+                    <div class="flex items-center">
+                        <div class="nav-logo-img">
+                            <img src="/assets/SA-LogoSite.png" alt="Logo do Site" width="100">
+                        </div>
+                        <div class="nav-menu-items">
+                            <a @Click="irParaHome">Home</a>
+                            <a>Salas</a>
+                            <a>Turmas</a>
+                            <a>Usuários</a>
+                        </div>
+                    </div>
+                    <div class="nav-user-options flex items-center">
+                        <div class="nav-info-user-img mr-10" :title="usuarioLogado.nome">
+                            <figure>
+                                <img
+                                    :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`"
+                                >
+                            </figure>
+                        </div>
+                        <div class="nav-menu-user-data flex flex-col">
+                            <span>{{usuarioLogado.nome}}</span> 
+                        </div>
+                        <ul>
+                            <li class="li-user-data">
+                                <img :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`" width="50">
+                                <p>{{usuarioLogado.nome}}</p>
+                                <a>{{usuarioLogado.email}}</a>
+                            </li>
+                            <li>Suas Informações</li>
+                            <li @Click="logout">Sair</li>
+                        </ul>
+                    </div>
+                </div>
+                <div v-if="showMenuMobile" class="nav-menu-items-mobile">
+                    <a @Click="irParaHome">Home</a>
+                    <a>Salas</a>
+                    <a>Turmas</a>
+                    <a>Usuários</a>                        
+                </div>
+            </nav>
+            <div class="container">
+                <div class="empty-content" v-if="usuarios.length == 0">
+                    <h3>Nenhum um usuário cadastrado.</h3>
+                </div>
+                <div class="flex align-center justify-center">
+                    <button class="add-content">
+                        <i class="material-icons" @Click="irParaNovo">add</i>
+                    </button>
+                </div>
+                <div v-if="usuarios.length > 0">
+                    <h2>Usuários</h2>
+
+                    <table class="usuarios-tabela" v-if="usuarios.length > 0">
+                        <thead>
+                            <tr>
+                                <th>Ações</th>
+                                <th>Nome</th>
+                                <th>CPF</th>
+                                <th>Sexo</th>
+                                <th>Email</th>
+                                <th>Situação</th>
+                                <th>Função</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="user in usuarios">
+                                <td class="usuario-actions">
+                                    <i class="material-icons edit" title="Editar">
+                                        edit
+                                    </i>
+                                    <i class="material-icons delete" title="Deletar" @Click="deletando = true, deletar(user)">
+                                        delete
+                                    </i>
+                                </td>
+                                <td>{{user.nome}}</td>
+                                <td>{{user.cpf}}</td>
+                                <td>{{(user.sexo == 1) ? 'Masculino' : 'Feminino'}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{(user.situacao == 1) ? 'Ativo' : 'Inativo'}}</td>
+                                <td>{{
+                                    (user.funcao == 1) ? 'Administrador' :
+                                    (user.funcao == 2) ? 'Aluno' : 'Professor'   
+                                }}</td>
+                                <div class="modal" v-if="deletando">
+                                    <div class="modal-msg">
+                                        <div class="warning-icon">
+                                            <i class="material-icons">warning</i>
+                                        </div>
+                                        <p>Você tem certeza que deseja deletar este usuário?</p>
+                                        <div class="modal-actions">
+                                            <button @Click="deletando = false">Cancelar</button>
+                                            <button class="confirm-delete" @Click="confirmDelete">
+                                                <i class="material-icons">delete</i>
+                                                {{deleteBtnText}}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="usuario" v-for="user in usuarios" :key="user.id">
+                        <div class="usuario-data">
+                            <div class="usuario-status">
+                                <img 
+                                    :src="`http://localhost:3000/api/uploads/${user.avatar}`"
+                                    alt="Avatar do usuário"
+                                >
+                                <div>
+                                    <h3>{{user.nome}}</h3>
+                                    <p>{{user.email}}</p>
+                                </div>
+                            </div>
+                            <i
+                                class="user-status-on"
+                                v-if="user.situacao == 1"
+                                :title="(user.situacao == 1) ? 'Ativo' : ''"
+                            ></i>
+                            <i
+                                class="user-status-off"
+                                v-if="user.situacao == 2"
+                                :title="(user.situacao == 2) ? 'Inativo' : ''"
+                            ></i>
+                        </div>
+                        <div class="usuario-info">
+                            <h4>Função: {{
+                                (user.funcao == 1) ? 'Administrador' :
+                                (user.funcao == 2) ? 'Aluno' : 'Professor'
+                            }}</h4>
+
+                            <h4>Críado em: {{
+                                new Date(user.createdAt).toLocaleDateString('pt-BR')
+                            }}</h4>
+                        </div>
+                        <div class="usuario-actions">
+                            <i class="material-icons edit" title="Editar">
+                                edit
+                            </i>
+                            <i class="material-icons delete" title="Deletar" @Click="deletando = true, deletar(user)">
+                                delete
+                            </i>
+                        </div>
+                        <div class="modal" v-if="deletando">
+                            <div class="modal-msg">
+                                <div class="warning-icon">
+                                    <i class="material-icons">warning</i>
+                                </div>
+                                <p>Você tem certeza que deseja deletar este usuário?</p>
+                                <div class="modal-actions">
+                                    <button @Click="deletando = false">Cancelar</button>
+                                    <button class="confirm-delete" @Click="confirmDelete">
+                                        <i class="material-icons">delete</i>
+                                        {{deleteBtnText}}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
                 el: '#app',
                 data: {
+<<<<<<< HEAD
                     api_url: api_url,
                     usuarioLogado: null,
                     menuMobile: true,
@@ -95,14 +304,99 @@
                     reservas: []
                 },
                 created() {
+=======
+                    showUserOptions: false,
+                    saindo: false,
+                    deletando: false,
+                    tokenInvalido: false,
+                    showMenuMobile: false,
+                    usuarioLogado: null,
+                    usuarios: [],
+                    isInMenu: false,
+                    deleteBtnText: 'Deletar'
+                },
+                async created() {
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
                     }
+<<<<<<< HEAD
                 },
                 methods: {
                     sair() {},
                     confirmarSaida() {}
+=======
+
+                    let responseAPI = await fetch('http://localhost:3000/api/usuarios', {
+                        method: 'get',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${this.usuarioLogado.token}`
+                        }
+                    });
+
+                    let resJson = await responseAPI.json();
+
+                    if(responseAPI.status !== 200) {
+                        this.tokenInvalido = true;
+                        localStorage.removeItem('usuarioLogado');
+                        setTimeout(() => {
+                            window.location = '/index.html';
+                        }, 5000);
+                    }
+
+                    if(responseAPI.status == 200) {
+                        this.usuarios = resJson;
+                    }
+                },
+                methods: {
+                    logout() {
+                        this.saindo = true;
+                    },
+                    deletar(user) {
+                        localStorage.setItem('delete_id', user.id);
+                        this.deletando = true;
+                    },
+                    async confirmDelete() {
+                        let user_id = localStorage.getItem('delete_id');
+                        let responseAPI = await fetch('http://localhost:3000/api/usuarios', {
+                            method: 'delete',
+                            headers: {
+                                'Accept': 'application/json',
+                                'Content-Type': 'application/json'
+                            },
+                            mode: 'cors',
+                            body: JSON.stringify({
+                                id: user_id
+                            })
+                        });
+
+                        if(responseAPI.status == 200) {
+                            this.deleteBtnText = 'Deletando...';
+                            localStorage.removeItem('delete_id');
+                            window.location.reload();
+                        }
+                    },
+                    confirmaLogout() {
+                        localStorage.removeItem('usuarioLogado');
+                        window.location = '/index.html';
+                    },
+                    showingMenuMobile() {
+                        if(this.showMenuMobile) {
+                            this.showMenuMobile = false;
+                        } else {
+                            this.showMenuMobile = true;
+                        }
+                    },
+                    irParaHome() {
+                        window.location = '/home.html';
+                    },
+                    irParaNovo() {
+                        window.location = '/usuarios/novo.html';
+                    }
+>>>>>>> c186180b61aa7fc403c559f1d3d1ba9fee92eae4
                 }
             });
         </script>
