@@ -73,13 +73,13 @@
             </nav>
 
             <div class="flex-column center">
-                <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
+                <h3 class="msg-vazias">Ainda não há turmas cadastradas</h3>
                 <div class="add-button">
                     <i class="material-icons">add</i>
                 </div>
                 <button class="add-button-mx">
                     <i class="material-icons">add</i>
-                    Adicionar Reserva
+                    Adicionar Usuário
                 </button>
             </div>
 
@@ -112,7 +112,7 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
-                    reservas: []
+                    turmas: []
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));

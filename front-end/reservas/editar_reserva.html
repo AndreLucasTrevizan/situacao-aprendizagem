@@ -5,7 +5,9 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/mobile.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
+        <link href="/assets/SA-LogoSite.png" type="image/x-icon">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
@@ -26,9 +28,9 @@
                             <img src="/assets/SA-LogoSite.png" width="70" />
                         </div>
                         <ul class="menu-items">
-                            <li>Salas</li>
-                            <li>Turmas</li>
-                            <li>Usuários</li>
+                            <li @Click="irParaSalas">Salas</li>
+                            <li @Click="irParaTurmas">Turmas</li>
+                            <li @Click="irParaUsuarios">Usuários</li>
                         </ul>
                     </div>
                     <div class="menu-direito">
@@ -37,21 +39,21 @@
                         </div>
                         <ul class="usuario-menu">
                             <li>{{usuarioLogado.nome}}</li>
-                            <li>Sair</li>
+                            <li @Click="saindo = true">Sair</li>
                         </ul>
                     </div>
                 </div>
                 <div class="container" v-if="!menuMobile">
                     <ul class="menu-items-mobile">
-                        <li style="border-top: none;">
+                        <li @Click="irParaSalas" style="border-top: none;">
                             <i class="material-icons">meeting_room</i>
                             Salas
                         </li>
-                        <li style="border-top: none;">
+                        <li @Click="irParaTurmas" style="border-top: none;">
                             <i class="material-icons">groups</i>
                             Turmas
                         </li>
-                        <li style="border-top: none;">
+                        <li @Click="irParaUsuarios" style="border-top: none;">
                             <i class="material-icons">account_circle</i>
                             Usuários
                         </li>
@@ -66,19 +68,29 @@
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
                     </li>
-                    <li>Sair</li>
+                    <li @Click="saindo = true">Sair</li>
                 </ul>
             </nav>
 
-            <div class="flex-column center">
-                <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
-                <div class="add-button">
-                    <i class="material-icons">add</i>
+            <div class="container">
+                
+            </div>
+
+            <div class="modal" v-if="saindo">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>Tem certeza que deseja sair?</p>
+                    <div class="modal-actions">
+                        <div class="cancel-modal" @Click="saindo = false">
+                            <i class="material-icons">close</i>
+                            Não
+                        </div>
+                        <div class="accept-modal" @Click="confirmarSaida">
+                            <i class="material-icons">check_circle</i>
+                            Sim
+                        </div>
+                    </div>
                 </div>
-                <button class="add-button-mx">
-                    <i class="material-icons">add</i>
-                    Adicionar Reserva
-                </button>
             </div>
         </div>
 
@@ -92,7 +104,7 @@
                     usuarioLogado: null,
                     menuMobile: true,
                     userInfoMobile: false,
-                    reservas: []
+                    saindo: false,
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -101,8 +113,19 @@
                     }
                 },
                 methods: {
-                    sair() {},
-                    confirmarSaida() {}
+                    confirmarSaida() {
+                        localStorage.removeItem('usuarioLogado');
+                        window.location = '/index.html';
+                    },
+                    irParaTurmas() {
+                        window.location = '/turmas/relatorio_turmas.html';
+                    },
+                    irParaSalas() {
+                        window.location = '/salas/relatorio_salas.html';
+                    },
+                    irParaUsuarios() {
+                        window.location = '/usuarios/relatorio_usuarios.html';
+                    }
                 }
             });
         </script>

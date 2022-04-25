@@ -72,15 +72,56 @@
                 </ul>
             </nav>
 
-            <div class="flex-column center">
-                <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
-                <div class="add-button">
-                    <i class="material-icons">add</i>
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <h3>Adicionando Usuário</h3>
+                        <p>
+                            As informações cadastradas aqui serão usadas em todo o sistema, fique tranquilo, se algo estiver errado
+                            o usuário pode editar na sua página de perfil.
+                        </p>
+                    </div>
                 </div>
-                <button class="add-button-mx">
-                    <i class="material-icons">add</i>
-                    Adicionar Reserva
-                </button>
+                <div class="row">
+                    <div class="col-12 flex-column">
+                        <label for="nome">Nome</label>
+                        <input type="text" name="nome" id="nome" v-model="usuario.nome" placeholder="Nome do usuário">
+                    </div>
+                    <div class="col-6 flex-column">
+                        <label for="cpf">CPF</label>
+                        <input type="text" name="cpf" id="cpf" v-model="usuario.cpf" placeholder="CPF do usuário">
+                    </div>
+                    <div class="col-6 flex-column">
+                        <label for="dt_nascimento">Data de Nascimento</label>
+                        <input type="date" name="dt_nascimento" id="dt_nascimento" v-model="usuario.dt_nascimento">
+                    </div>
+                    <div class="col-6 flex-column">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" v-model="usuario.email" placeholder="Email do usuário">
+                    </div>
+                    <div class="col-6 flex-column">
+                        <label for="senha">Senha</label>
+                        <input type="password" name="senha" id="senha" v-model="usuario.senha" placeholder="********************">
+                    </div>
+                    <div class="col-6 flex-column">
+                        <label for="sexo">Sexo</label>
+                        <select v-model="usuario.sexo" id="sexo">
+                            <option selected="true" disable>Escolha o sexo...</option>
+                            <option value="1">Masculino</option>
+                            <option value="2">Feminino</option>
+                            <option value="3">Outro</option>
+                        </select>
+                    </div>
+                    <div class="col-6 flex-column">
+                        <label for="funcao">Função</label>
+                        <select v-model="usuario.funcao" id="funcao">
+                            <option selected="true" disable>Escolha a função...</option>
+                            <option value="1">Administrador</option>
+                            <option value="2">Aluno</option>
+                            <option value="3">Professor</option>
+                        </select>
+                    </div>
+                </div>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -112,7 +153,15 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
-                    reservas: []
+                    usuario: {
+                        nome: '',
+                        cpf: '',
+                        dt_nascimento: '',
+                        sexo: '',
+                        email: '',
+                        senha: '',
+                        funcao: ''
+                    }
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));

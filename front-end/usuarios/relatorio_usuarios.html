@@ -73,13 +73,13 @@
             </nav>
 
             <div class="flex-column center">
-                <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
-                <div class="add-button">
+                <h3 class="msg-vazias">Ainda não há usuários cadastrados</h3>
+                <div class="add-button" @Click="irParaNovoUsuario">
                     <i class="material-icons">add</i>
                 </div>
-                <button class="add-button-mx">
+                <button class="add-button-mx" @Click="irParaNovoUsuario">
                     <i class="material-icons">add</i>
-                    Adicionar Reserva
+                    Adicionar Usuário
                 </button>
             </div>
 
@@ -112,7 +112,7 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
-                    reservas: []
+                    usuarios: []
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -133,6 +133,9 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    irParaNovoUsuario() {
+                        window.location = '/usuarios/novo_usuario.html';
                     }
                 }
             });
