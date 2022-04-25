@@ -4,139 +4,121 @@
         <meta charset="UTF-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="./style.css">
+        <link rel="stylesheet" href="/css/style.css">
+        <link rel="stylesheet" href="/css/simple-grid.min.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
     <body>
         <div id="app">
-            <div class="modal-logout">
-                <div class="modal-msg">
-                    <div class="warning-icon">
-                        <i class="material-icons">warning</i>
-                    </div>
-                    <p>Opa, você pediu pra sair, tem certeza disso?</p>
-                    <div class="modal-actions">
-                        <button>Cancelar</button>
-                        <button class="confirm-logout">
-                            <i class="material-icons">logout</i>
-                            Sair
-                        </button>
-                    </div>
-                </div>
-            </div>
             <nav>
-                <div class="nav-normal flex items-center justify-between container">
-                    <svg v-if="!showMenuMobile" @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" class="menu-mobile-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-
-                    <svg v-if="showMenuMobile" @Click="showingMenuMobile" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="menu-mobile-icon-close" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                    
-                    <div class="flex items-center">
-                        <div class="nav-logo-img">
-                            <img src="./assets/SA-LogoSite.png" alt="Logo do Site" width="100">
-                        </div>
-                        <div class="nav-menu-items">
-                            <a>Home</a>
-                            <a>Reservas</a>
-                            <a>Salas</a>
-                            <a>Turmas</a>
-                            <a>Usuários</a>                        
-                        </div>
+                <div class="container flex between">
+                    <div class="menu-icon">
+                        <svg v-if="menuMobile" @Click="menuMobile = false" width="40" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg v-if="!menuMobile" @Click="menuMobile = true" width="40" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </div>
-                    <div class="nav-user-options flex items-center">
-                        <div class="nav-info-user-img mr-10" :title="usuarioLogado.nome">
-                            <figure>
-                                <img
-                                    :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`"
-                                >
-                            </figure>
+                    <div class="menu-esquerdo">
+                        <div class="logo-menu">
+                            <img src="/assets/SA-LogoSite.png" width="70" />
                         </div>
-                        <div class="nav-menu-user-data flex flex-col">
-                            <span>{{usuarioLogado.nome}}</span> 
+                        <ul class="menu-items">
+                            <li>Salas</li>
+                            <li>Turmas</li>
+                            <li>Usuários</li>
+                        </ul>
+                    </div>
+                    <div class="menu-direito">
+                        <div class="avatar-usuario">
+                            <img @Click="userInfoMobile = true" :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário">
                         </div>
-                        <ul>
-                            <li class="li-user-data">
-                                <img :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`" width="50">
-                                <p>{{usuarioLogado.nome}}</p>
-                                <a>{{usuarioLogado.email}}</a>
-                            </li>
-                            <li>Suas Informações</li>
+                        <ul class="usuario-menu">
+                            <li>{{usuarioLogado.nome}}</li>
                             <li>Sair</li>
                         </ul>
                     </div>
                 </div>
-                <div v-if="showMenuMobile" class="nav-menu-items-mobile">
-                    <a>Home</a>
-                    <a>Reservas</a>
-                    <a>Salas</a>
-                    <a>Turmas</a>
-                    <a>Usuários</a>                        
+                <div class="container" v-if="!menuMobile">
+                    <ul class="menu-items-mobile">
+                        <li style="border-top: none;">
+                            <i class="material-icons">meeting_room</i>
+                            Salas
+                        </li>
+                        <li style="border-top: none;">
+                            <i class="material-icons">groups</i>
+                            Turmas
+                        </li>
+                        <li style="border-top: none;">
+                            <i class="material-icons">account_circle</i>
+                            Usuários
+                        </li>
+                    </ul>
                 </div>
-            </nav>
-            <div class="container">
-                <div class="empty-reservas" v-if="reservas.length == 0">
-                    <h3>Nenhuma reserva cadastrada ainda</h3>
-                </div>
-                <div class="flex align-center justify-center">
-                    <button class="add-reserva">
-                        <i class="material-icons">add</i>
-                    </button>
-                </div>
-                <div v-if="reservas.length > 0">
-                    <h2>Reservas</h2>
-
-                    <div class="reserva">
-                        <div class="res-user-data">
-                            <div class="flex items-center">
-                                <img :src="`http://localhost:3000/api/uploads/${usuarioLogado.avatar}`" width="30" alt="Imagem do Professor">
-                                <a>{{usuarioLogado.nome}}</a>
-                            </div>
-                            <div class="flex items-center">
-                                20/04 as 14:30
-                            </div>
+                <ul class="user-info-mobile" v-if="userInfoMobile">
+                    <li><i class="large material-icons" @Click="userInfoMobile = false">close</i></li>
+                    <li class="flex-column center">
+                        <div class="avatar-usuario">
+                            <img :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário">
                         </div>
-                        <div class="res-data flex items-center justify-between">
-                            <h3>Sala 509</h3>
-                            <p>Turma AINFO</p>
+                        {{usuarioLogado.nome}}
+                        <small>{{usuarioLogado.email}}</small>
+                    </li>
+                    <li>Sair</li>
+                </ul>
+                <div class="modal">
+                    <div class="modal-msg">
+                        <i class="material-icons cancel-modal-icon">cancel</i>
+                        <p>Tem certeza que deseja sair?</p>
+                        <div class="modal-actions">
+                            <div class="cancel-modal">
+                                <i class="material-icons">close</i>
+                                Não
+                            </div>
+                            <div class="accept-modal">
+                                <i class="material-icons">check_circle</i>
+                                Sim
+                            </div>
                         </div>
                     </div>
                 </div>
+            </nav>
+
+            <div class="flex-column center">
+                <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
+                <div class="add-button">
+                    <i class="material-icons">add</i>
+                </div>
+                <button class="add-button-mx">
+                    <i class="material-icons">add</i>
+                    Adicionar Reserva
+                </button>
             </div>
         </div>
+
+        <script src="/common.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
                 el: '#app',
                 data: {
-                    showUserOptions: false,
-                    saindo: false,
-                    showMenuMobile: false,
+                    api_url: api_url,
                     usuarioLogado: null,
-                    reservas: [],
-                    isInMenu: false
+                    menuMobile: true,
+                    userInfoMobile: false,
+                    reservas: []
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+                    if(!this.usuarioLogado) {
+                        window.location = '/index.html';
+                    }
                 },
                 methods: {
-                    logout() {
-                        this.saindo = true;
-                    },
-                    confirmaLogout() {
-                        localStorage.removeItem('usuarioLogado');
-                        window.location = './index.html';
-                    },
-                    showingMenuMobile() {
-                        if(this.showMenuMobile) {
-                            this.showMenuMobile = false;
-                        } else {
-                            this.showMenuMobile = true;
-                        }
-                    }
+                    sair() {},
+                    confirmarSaida() {}
                 }
             });
         </script>
