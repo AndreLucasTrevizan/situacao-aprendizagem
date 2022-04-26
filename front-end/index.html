@@ -39,7 +39,10 @@
                 </div>
                 <div class="row">
                     <div class="col-12 form-control">
-                        <button class="btn btn-primary" @Click="login">{{btnText}}</button>
+                        <button class="btn btn-primary flex center" style="width: 100%;" @Click="login">
+                            <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="logando">
+                            {{btnText}}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -52,6 +55,7 @@
                 el: '#app',
                 data: {
                     btnText: 'Entrar',
+                    logando: false,
                     emailErros: [],
                     senhaErros: [],
                     apiErros: [],
@@ -60,6 +64,7 @@
                     async login() {
                         if(this.validacao()) {
                             this.btnText = 'Entrando...';
+                            this.logando = true;
                             let responseAPI = await fetch(api_url + '/login', {
                                 method: 'post',
                                 headers: api_header,
@@ -73,6 +78,7 @@
                             let resJson = await responseAPI.json();
 
                             if(!responseAPI.ok) {
+                                this.logando = false;
                                 this.btnText = 'Entrar';
                                 this.apiErros.push(resJson.error);
                                 return;

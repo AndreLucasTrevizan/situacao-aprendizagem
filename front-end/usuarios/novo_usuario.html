@@ -73,53 +73,96 @@
             </nav>
 
             <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <h3>Adicionando Usuário</h3>
-                        <p>
-                            As informações cadastradas aqui serão usadas em todo o sistema, fique tranquilo, se algo estiver errado
-                            o usuário pode editar na sua página de perfil.
-                        </p>
-                    </div>
+                <div class="novo-usuario-txt">
+                    <h3>Adicionando Usuário</h3>
+                    <p>
+                        As informações cadastradas aqui serão usadas em todo o sistema, fique tranquilo, se algo estiver errado
+                        o usuário pode editar na sua página de perfil.
+                    </p>
                 </div>
+
                 <div class="row">
-                    <div class="col-12 flex-column">
+                    <div class="flex-column form-group">
                         <label for="nome">Nome</label>
-                        <input type="text" name="nome" id="nome" v-model="usuario.nome" placeholder="Nome do usuário">
+                        <input
+                            type="text"
+                            name="nome"
+                            id="nome"
+                            v-model="usuario.nome"
+                            placeholder="Nome do usuário"
+                        >
+                        <small class="error" v-if="nomeErros.length > 0" v-for="erro in nomeErros">{{erro}}</small>
                     </div>
-                    <div class="col-6 flex-column">
-                        <label for="cpf">CPF</label>
-                        <input type="text" name="cpf" id="cpf" v-model="usuario.cpf" placeholder="CPF do usuário">
+                    <div class="form-control">
+                        <div class="flex-column form-group">
+                            <label for="cpf">CPF</label>
+                            <input
+                                type="text"
+                                name="cpf"
+                                id="cpf"
+                                v-model="usuario.cpf"
+                                placeholder="CPF do usuário"
+                            >
+                            <small class="error" v-if="cpfErros.length > 0" v-for="erro in cpfErros">{{erro}}</small>
+                        </div>
+                        <div class="flex-column form-group">
+                            <label for="dt_nascimento">Data de Nascimento</label>
+                            <input
+                                type="date"
+                                name="dt_nascimento"
+                                id="dt_nascimento"
+                                v-model="usuario.dt_nascimento"
+                            >
+                            <small class="error" v-if="dataErros.length > 0" v-for="erro in dataErros">{{erro}}</small>
+                        </div>
                     </div>
-                    <div class="col-6 flex-column">
-                        <label for="dt_nascimento">Data de Nascimento</label>
-                        <input type="date" name="dt_nascimento" id="dt_nascimento" v-model="usuario.dt_nascimento">
+                    <div class="form-control">
+                        <div class="flex-column form-group">
+                            <label for="email">Email</label>
+                            <input
+                                type="email"
+                                autocomplete="off"
+                                name="email"
+                                id="email"
+                                v-model="usuario.email"
+                                placeholder="Email do usuário"
+                            >
+                            <small class="error" v-if="emailErros.length > 0" v-for="erro in emailErros">{{erro}}</small>
+                        </div>
+                        <div class="flex-column form-group">
+                            <label for="senha">Senha</label>
+                            <input
+                                type="password"
+                                autocomplete="off"
+                                name="senha"
+                                id="senha"
+                                v-model="usuario.senha"
+                                placeholder="********************"
+                            >
+                            <small class="error" v-if="senhaErros.length > 0" v-for="erro in senhaErros">{{erro}}</small>
+                        </div>
                     </div>
-                    <div class="col-6 flex-column">
-                        <label for="email">Email</label>
-                        <input type="email" name="email" id="email" v-model="usuario.email" placeholder="Email do usuário">
-                    </div>
-                    <div class="col-6 flex-column">
-                        <label for="senha">Senha</label>
-                        <input type="password" name="senha" id="senha" v-model="usuario.senha" placeholder="********************">
-                    </div>
-                    <div class="col-6 flex-column">
-                        <label for="sexo">Sexo</label>
-                        <select v-model="usuario.sexo" id="sexo">
-                            <option selected="true" disable>Escolha o sexo...</option>
-                            <option value="1">Masculino</option>
-                            <option value="2">Feminino</option>
-                            <option value="3">Outro</option>
-                        </select>
-                    </div>
-                    <div class="col-6 flex-column">
-                        <label for="funcao">Função</label>
-                        <select v-model="usuario.funcao" id="funcao">
-                            <option selected="true" disable>Escolha a função...</option>
-                            <option value="1">Administrador</option>
-                            <option value="2">Aluno</option>
-                            <option value="3">Professor</option>
-                        </select>
+                    <div class="form-control">
+                        <div class="flex-column form-group">
+                            <label for="sexo">Sexo</label>
+                            <select v-model="usuario.sexo" id="sexo">
+                                <option disable>Escolha o sexo...</option>
+                                <option value="1">Masculino</option>
+                                <option value="2">Feminino</option>
+                                <option value="3">Outro</option>
+                            </select>
+                            <small class="error" v-if="sexoErros.length > 0" v-for="erro in sexoErros">{{erro}}</small>
+                        </div>
+                        <div class="flex-column form-group">
+                            <label for="funcao">Função</label>
+                            <select v-model="usuario.funcao" id="funcao">
+                                <option disable>Escolha a função...</option>
+                                <option value="1">Administrador</option>
+                                <option value="2">Aluno</option>
+                                <option value="3">Professor</option>
+                            </select>
+                            <small class="error" v-if="funcaoErros.length > 0" v-for="erro in nomeErros">{{erro}}</small>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -161,7 +204,14 @@
                         email: '',
                         senha: '',
                         funcao: ''
-                    }
+                    },
+                    nomeErros: [],
+                    cpfErros: [],
+                    dataErros: [],
+                    sexoErros: [],
+                    emailErros: [],
+                    senhaErros: [],
+                    funcaoErros: []
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -182,6 +232,44 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    validacao() {
+                        this.nomeErros = [];
+                        this.cpfErros = [];
+                        this.dataErros = [];
+                        this.sexoErros = [];
+                        this.emailErros = [];
+                        this.senhaErros = [];
+                        this.funcaoErros = [];
+                        this.apiErros = [];
+
+                        if(this.usuario.nome == '' || this.usuario.nome == undefined) {
+                            this.nomeErros.push('O nome não pode ser vazio.');
+                        } else if(this.usuario.nome.length > 50) {
+                            this.nomeErros.push('O nome não pode conter mais de 50 caracteres.');
+                        } else if(this.usuario.nome.length < 3) {
+                            this.nomeErros.push('O nome não pode conter menos de 03 caracteres.');
+                        }
+
+                        if(this.email == '' || this.email == undefined) {
+                            this.emailErros.push('Email não pode ser vazio');
+                        } else if (!this.email.includes('@') || !this.email.includes('.com')) {
+                            this.emailErros.push('Email inválido');
+                        }
+
+                        if(this.senha == '' || this.senha == undefined) {
+                            this.senhaErros.push('Senha não pode ser vazia');
+                        }
+
+                        if(
+                            this.nomeErros.length > 0 ||
+                            this.emailErros.length > 0 ||
+                            this.senhaErros.length > 0
+                        ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
                 }
             });

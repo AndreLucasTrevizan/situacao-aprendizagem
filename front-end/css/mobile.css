@@ -1,5 +1,9 @@
 @media (max-width: 768px) {
 
+    .form-control {
+        flex-wrap: wrap;
+    }
+
     .modal {
         position: fixed;
         top: 0;
@@ -74,8 +78,7 @@
     }
 
     nav {
-        position: sticky;
-        top: 0;
+        background-color: #FFF;
         padding: 20px;
     }
 
@@ -108,6 +111,7 @@
         background-color: #FFF;
         right: 40px;
         top: 20px;
+        
     }
 
     .usuario-menu {
@@ -143,4 +147,10 @@
         background-color: #E3E3E3;
         cursor: pointer;
     }
+
+    .novo-usuario-txt {
+        margin: 20px 0px;
+    }
+
+
 }
