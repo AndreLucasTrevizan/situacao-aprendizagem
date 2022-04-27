@@ -1,5 +1,28 @@
 @media (max-width: 768px) {
 
+    .alert-warning {
+        display: flex;
+        align-items: center;
+        padding: 20px;
+        margin-top: 20px;
+        border-radius: 10px;
+        background-color: #ccce3a;
+    }
+
+    .alert-warning svg {
+        width: 30px;
+    }
+
+    fieldset legend {
+        margin-left: 10px;
+    }
+
+    fieldset p {
+        margin-bottom: 10px;
+        padding: 20px 10px;
+        text-align: justify;
+    }
+
     .form-control {
         flex-wrap: wrap;
     }
@@ -104,14 +127,37 @@
         flex-direction: column;
         align-items: center;
         border: 1px solid #E3E3E3;
-        width: max-content;
+        width: 70%;
+        font-size: 20px;
         padding: 10px;
         border-radius: 10px;
         position: fixed;
         background-color: #FFF;
-        right: 40px;
+        right: 35px;
         top: 20px;
         
+    }
+
+    .avatar-usuario-mobile {
+        width: 60px;
+        height: 60px;
+        margin-top: 20px;
+    }
+    
+    .avatar-usuario-mobile img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 1px solid #E3E3E3;
+    }
+
+    .sair-mobile {
+        width: 100%;
+        background-color: #d60b0b;
+        color: #FFF;
+        font-weight: bold;
+        text-align: center;
+        margin-top: 20px;
     }
 
     .usuario-menu {

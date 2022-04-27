@@ -24,14 +24,14 @@
                         <i class="material-icons">warning</i>
                         {{erro}}
                     </div>
-                    <div class="col-12 form-control">
+                    <div class="col-12 flex-column">
                         <label for="email">Email</label>
                         <input type="email" autocomplete="off" name="email" id="email" placeholder="email@example.com" v-model="email">
                         <small class="error" v-if="emailErros.length > 0" v-for="erro in emailErros">{{erro}}</small>
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-12 form-control">
+                    <div class="col-12 flex-column">
                         <label for="senha">Senha</label>
                         <input type="password" name="senha" id="senha" placeholder="*********" v-model="senha">
                         <small class="error" v-if="senhaErros.length > 0" v-for="erro in senhaErros">{{erro}}</small>

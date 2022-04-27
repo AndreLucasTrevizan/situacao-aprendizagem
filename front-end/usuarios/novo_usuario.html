@@ -60,111 +60,136 @@
                     </ul>
                 </div>
                 <ul class="user-info-mobile" v-if="userInfoMobile">
-                    <li><i class="large material-icons" @Click="userInfoMobile = false">close</i></li>
+                    <li><i class="large material-icons close-mobile" @Click="userInfoMobile = false">close</i></li>
                     <li class="flex-column center">
-                        <div class="avatar-usuario">
-                            <img :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário">
+                        <div class="avatar-usuario-mobile">
+                            <img :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário" width="60" height="60">
                         </div>
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
                     </li>
-                    <li @Click="saindo = true">Sair</li>
+                    <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
             </nav>
 
             <div class="container">
-                <div class="novo-usuario-txt">
-                    <h3>Adicionando Usuário</h3>
-                    <p>
+                <div class="alert-warning" v-if="apiErro">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <h5 v-for="erro in apiErros">{{erro}}</h5>
+                </div>
+
+                <fieldset>
+                    <legend>
+                        <h3>Adicionando Usuário</h3>
+                    </legend>
+                    <p style="border-bottom: 1px solid #e3e3e3;">
                         As informações cadastradas aqui serão usadas em todo o sistema, fique tranquilo, se algo estiver errado
                         o usuário pode editar na sua página de perfil.
                     </p>
-                </div>
-
-                <div class="row">
-                    <div class="flex-column form-group">
-                        <label for="nome">Nome</label>
-                        <input
-                            type="text"
-                            name="nome"
-                            id="nome"
-                            v-model="usuario.nome"
-                            placeholder="Nome do usuário"
-                        >
-                        <small class="error" v-if="nomeErros.length > 0" v-for="erro in nomeErros">{{erro}}</small>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="flex-column">
+                                <label for="nome">Nome</label>
+                                <input
+                                    type="text"
+                                    name="nome"
+                                    id="nome"
+                                    v-model="usuario.nome"
+                                    placeholder="Nome do usuário"
+                                >
+                                <small class="error" v-if="nomeErros.length > 0" v-for="erro in nomeErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="cpf">CPF</label>
+                                <input
+                                    type="text"
+                                    name="cpf"
+                                    id="cpf"
+                                    v-model="usuario.cpf"
+                                    placeholder="CPF do usuário"
+                                >
+                                <small class="error" v-if="cpfErros.length > 0" v-for="erro in cpfErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="dt_nascimento">Data de Nascimento</label>
+                                <input
+                                    type="date"
+                                    name="dt_nascimento"
+                                    id="dt_nascimento"
+                                    v-model="usuario.dt_nascimento"
+                                >
+                                <small class="error" v-if="dataErros.length > 0" v-for="erro in dataErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="email">Email</label>
+                                <input
+                                    type="email"
+                                    autocomplete="off"
+                                    name="email"
+                                    id="email"
+                                    v-model="usuario.email"
+                                    placeholder="Email do usuário"
+                                >
+                                <small class="error" v-if="emailErros.length > 0" v-for="erro in emailErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="senha">Senha</label>
+                                <input
+                                    type="password"
+                                    autocomplete="off"
+                                    name="senha"
+                                    id="senha"
+                                    v-model="usuario.senha"
+                                    placeholder="********************"
+                                >
+                                <small class="error" v-if="senhaErros.length > 0" v-for="erro in senhaErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="sexo">Sexo</label>
+                                <select v-model="usuario.sexo" id="sexo">
+                                    <option disable>Escolha o sexo...</option>
+                                    <option value="1">Masculino</option>
+                                    <option value="2">Feminino</option>
+                                    <option value="3">Outro</option>
+                                </select>
+                                <small class="error" v-if="sexoErros.length > 0" v-for="erro in sexoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="funcao">Função</label>
+                                <select v-model="usuario.funcao" id="funcao">
+                                    <option disable>Escolha a função...</option>
+                                    <option value="1">Administrador</option>
+                                    <option value="2">Aluno</option>
+                                    <option value="3">Professor</option>
+                                </select>
+                                <small class="error" v-if="funcaoErros.length > 0" v-for="erro in funcaoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-12 flex between">
+                            <button class="btn btn-danger">
+                                Cancelar
+                            </button>
+                            <button class="btn btn-primary" @Click="criarUsuario">
+                                <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
+                                {{btnText}}
+                            </button>
+                        </div>
                     </div>
-                    <div class="form-control">
-                        <div class="flex-column form-group">
-                            <label for="cpf">CPF</label>
-                            <input
-                                type="text"
-                                name="cpf"
-                                id="cpf"
-                                v-model="usuario.cpf"
-                                placeholder="CPF do usuário"
-                            >
-                            <small class="error" v-if="cpfErros.length > 0" v-for="erro in cpfErros">{{erro}}</small>
-                        </div>
-                        <div class="flex-column form-group">
-                            <label for="dt_nascimento">Data de Nascimento</label>
-                            <input
-                                type="date"
-                                name="dt_nascimento"
-                                id="dt_nascimento"
-                                v-model="usuario.dt_nascimento"
-                            >
-                            <small class="error" v-if="dataErros.length > 0" v-for="erro in dataErros">{{erro}}</small>
-                        </div>
-                    </div>
-                    <div class="form-control">
-                        <div class="flex-column form-group">
-                            <label for="email">Email</label>
-                            <input
-                                type="email"
-                                autocomplete="off"
-                                name="email"
-                                id="email"
-                                v-model="usuario.email"
-                                placeholder="Email do usuário"
-                            >
-                            <small class="error" v-if="emailErros.length > 0" v-for="erro in emailErros">{{erro}}</small>
-                        </div>
-                        <div class="flex-column form-group">
-                            <label for="senha">Senha</label>
-                            <input
-                                type="password"
-                                autocomplete="off"
-                                name="senha"
-                                id="senha"
-                                v-model="usuario.senha"
-                                placeholder="********************"
-                            >
-                            <small class="error" v-if="senhaErros.length > 0" v-for="erro in senhaErros">{{erro}}</small>
-                        </div>
-                    </div>
-                    <div class="form-control">
-                        <div class="flex-column form-group">
-                            <label for="sexo">Sexo</label>
-                            <select v-model="usuario.sexo" id="sexo">
-                                <option disable>Escolha o sexo...</option>
-                                <option value="1">Masculino</option>
-                                <option value="2">Feminino</option>
-                                <option value="3">Outro</option>
-                            </select>
-                            <small class="error" v-if="sexoErros.length > 0" v-for="erro in sexoErros">{{erro}}</small>
-                        </div>
-                        <div class="flex-column form-group">
-                            <label for="funcao">Função</label>
-                            <select v-model="usuario.funcao" id="funcao">
-                                <option disable>Escolha a função...</option>
-                                <option value="1">Administrador</option>
-                                <option value="2">Aluno</option>
-                                <option value="3">Professor</option>
-                            </select>
-                            <small class="error" v-if="funcaoErros.length > 0" v-for="erro in nomeErros">{{erro}}</small>
-                        </div>
-                    </div>
-                </div>
+                </fieldset>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -192,10 +217,13 @@
                 el: '#app',
                 data: {
                     api_url: api_url,
+                    apiErro: false,
+                    cadastrando: false,
                     usuarioLogado: null,
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    btnText: 'Cadastrar',
                     usuario: {
                         nome: '',
                         cpf: '',
@@ -211,7 +239,8 @@
                     sexoErros: [],
                     emailErros: [],
                     senhaErros: [],
-                    funcaoErros: []
+                    funcaoErros: [],
+                    apiErros: []
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -233,6 +262,39 @@
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
                     },
+                    async criarUsuario() {
+                        if(this.validacao()) {
+                            this.cadastrando = true;
+                            this.btnText = 'Cadastrando...';
+                            let responseAPI = await fetch(`${api_url}/usuarios`, {
+                                method: 'post',
+                                headers: api_header,
+                                mode: 'cors',
+                                body: JSON.stringify(this.usuario)
+                            });
+
+                            let resJson = await responseAPI.json();
+
+                            if(responseAPI.status != 200) {
+                                this.cadastrando = false;
+                                this.apiErro = true;
+                                this.btnText = 'Cadastrar'
+                                if(resJson.sqlMessage.includes('email')) {
+                                    this.apiErros.push('Email inválido.');
+                                }
+
+                                if(resJson.sqlMessage.includes('cpf')) {
+                                    this.apiErros.push('CPF inválido.');
+                                }
+                                setTimeout(() => {
+                                    this.apiErro = false;
+                                }, 3000);
+                                return;
+                            }
+                            
+                            window.location = '/usuarios/relatorio_usuarios.html';
+                        }
+                    },
                     validacao() {
                         this.nomeErros = [];
                         this.cpfErros = [];
@@ -251,20 +313,47 @@
                             this.nomeErros.push('O nome não pode conter menos de 03 caracteres.');
                         }
 
-                        if(this.email == '' || this.email == undefined) {
+                        if(this.usuario.cpf == '' || this.usuario.cpf == undefined) {
+                            this.cpfErros.push('O CPF não pode ser vazio.');
+                        } else if (this.usuario.cpf.length > 14) {
+                            this.cpfErros.push('O CPF não pode ter mais de 14 caracteres.');
+                        }
+
+                        if(this.usuario.dt_nascimento == '' || this.usuario.dt_nascimento == undefined) {
+                            this.dataErros.push('A data não pode ser vazia.');
+                        } else if (
+                            new Date(this.usuario.dt_nascimento).getFullYear() < 1950 ||
+                            new Date(this.usuario.dt_nascimento) > Date.now()
+                        ) {
+                            this.dataErros.push('Data Inválida');
+                        }
+
+                        if(this.usuario.sexo == '' || this.usuario.sexo == undefined) {
+                            this.sexoErros.push('O sexo não pode ser vazio.');
+                        }
+
+                        if(this.usuario.funcao == '' || this.usuario.funcao == undefined) {
+                            this.funcaoErros.push('O função não pode ser vazio.');
+                        }
+
+                        if(this.usuario.email == '' || this.usuario.email == undefined) {
                             this.emailErros.push('Email não pode ser vazio');
-                        } else if (!this.email.includes('@') || !this.email.includes('.com')) {
+                        } else if (!this.usuario.email.includes('@') || !this.usuario.email.includes('.com')) {
                             this.emailErros.push('Email inválido');
                         }
 
-                        if(this.senha == '' || this.senha == undefined) {
+                        if(this.usuario.senha == '' || this.usuario.senha == undefined) {
                             this.senhaErros.push('Senha não pode ser vazia');
                         }
 
                         if(
                             this.nomeErros.length > 0 ||
+                            this.cpfErros.length > 0 ||
+                            this.dataErros.length > 0 ||
+                            this.sexoErros.length > 0 ||
                             this.emailErros.length > 0 ||
-                            this.senhaErros.length > 0
+                            this.senhaErros.length > 0 ||
+                            this.funcaoErros.length > 0
                         ) {
                             return false;
                         } else {
