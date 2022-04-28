@@ -72,7 +72,7 @@
                 </ul>
             </nav>
 
-            <div class="flex-column center">
+            <div class="flex-column center" v-if="usuarios.length == 0">
                 <h3 class="msg-vazias">Ainda não há usuários cadastrados</h3>
                 <div class="add-button" @Click="irParaNovoUsuario">
                     <i class="material-icons">add</i>
@@ -81,6 +81,36 @@
                     <i class="material-icons">add</i>
                     Adicionar Usuário
                 </button>
+            </div>
+
+            <div class="container">
+                <table class="tabela-usuarios">
+                    <thead>
+                        <tr>
+                            <th>Ações</th>
+                            <th>Nome</th>
+                            <th>CPF</th>
+                            <th>Email</th>
+                            <th>Sexo</th>
+                            <th>Função</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="usuario in usuarios">
+                            <td class="table-actions">
+                                <i class="material-icons edit">edit</i>
+                                <i class="material-icons delete">delete</i>
+                            </td>
+                            <td>{{usuario.nome}}</td>
+                            <td>{{usuario.cpf}}</td>
+                            <td>{{usuario.email}}</td>
+                            <td>{{(usuario.sexo == 1) ? 'Masculino' : (usuario.sexo == 2) ? 'Feminino' : 'Outro'}}</td>
+                            <td>{{(usuario.funcao == 1) ? 'Administrador' : (usuario.funcao == 2) ? 'Aluno' : 'Professor'}}</td>
+                            <td>{{(usuario.situacao == 1) ? 'Ativo' : 'Inativo'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -114,10 +144,27 @@
                     saindo: false,
                     usuarios: []
                 },
-                created() {
+                async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
+                    }
+
+                    let responseAPI = await fetch(`${api_url}/usuarios`, {
+                        method: 'get',
+                        headers: {...api_header, 'Authorization': `Bearer ${this.usuarioLogado.token}`},
+                        mode: 'cors'
+                    });
+
+                    let resJson = await responseAPI.json();
+
+                    if(responseAPI.status == 406) {
+                        alert('Token expirou');
+                        window.location = '/index.html';
+                    }
+
+                    if(responseAPI.status == 200) {
+                        this.usuarios = resJson;
                     }
                 },
                 methods: {

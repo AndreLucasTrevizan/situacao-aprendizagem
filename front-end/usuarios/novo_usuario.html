@@ -80,6 +80,13 @@
                     <h5 v-for="erro in apiErros">{{erro}}</h5>
                 </div>
 
+                <div class="alert-success" v-if="criado">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                      </svg>
+                    <h5>Usuário críado com sucesso</h5>
+                </div>
+
                 <fieldset>
                     <legend>
                         <h3>Adicionando Usuário</h3>
@@ -183,7 +190,7 @@
                             <button class="btn btn-danger">
                                 Cancelar
                             </button>
-                            <button class="btn btn-primary" @Click="criarUsuario">
+                            <button class="btn btn-primary create-flex" @Click="criarUsuario">
                                 <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
                                 {{btnText}}
                             </button>
@@ -216,6 +223,7 @@
             var app = new Vue({
                 el: '#app',
                 data: {
+                    criado: false,
                     api_url: api_url,
                     apiErro: false,
                     cadastrando: false,
@@ -275,7 +283,12 @@
 
                             let resJson = await responseAPI.json();
 
-                            if(responseAPI.status != 200) {
+                            if(responseAPI.status == 201) {
+                                this.criado = true;
+                                setTimeout(() => {
+                                    window.location = '/usuarios/relatorio_usuarios.html';
+                                }, 3000); 
+                            } else {
                                 this.cadastrando = false;
                                 this.apiErro = true;
                                 this.btnText = 'Cadastrar'
@@ -291,8 +304,6 @@
                                 }, 3000);
                                 return;
                             }
-                            
-                            window.location = '/usuarios/relatorio_usuarios.html';
                         }
                     },
                     validacao() {

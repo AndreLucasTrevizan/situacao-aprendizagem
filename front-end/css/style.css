@@ -45,16 +45,70 @@ select {
     outline: none;
 }
 
+.edit:hover {
+    color: #856404;
+}
+
+.delete:hover {
+    color: #d60b0b;
+}
+
+.table-actions {
+    text-align: center;
+}
+
+.table-actions svg {
+    width: 20px;
+}
+
+.tabela-usuarios {
+    width: 100%;
+    margin-top: 20px;
+    border-collapse: collapse;
+}
+
+.tabela-usuarios th {
+    padding: 20px;
+    background-color: #0053cf;
+    border: 1px solid #0053cf;
+    color: #FFF;
+}
+
+.tabela-usuarios td {
+    padding: 10px;
+    border: 1px solid #E3E3E3;
+}
+
+.create-flex {
+    display: flex;
+    align-items: center;
+}
+
 .alert-warning {
     display: flex;
     align-items: center;
     padding: 20px;
     margin-top: 20px;
     border-radius: 10px;
-    background-color: #ccce3a;
+    color: #856404;
+    background-color: #fff3cd;
 }
 
 .alert-warning svg {
+    width: 30px;
+}
+
+.alert-success {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    color: #155724;
+    background-color: #d4edda;
+}
+
+.alert-success svg {
     width: 30px;
 }
 
