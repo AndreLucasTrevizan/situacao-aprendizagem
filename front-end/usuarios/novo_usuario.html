@@ -39,7 +39,7 @@
                         </div>
                         <ul class="usuario-menu">
                             <li>{{usuarioLogado.nome}}</li>
-                            <li @Click="saindo = true">Sair</li>
+                            <li @Click="saindo = true" class="delete">Sair</li>
                         </ul>
                     </div>
                 </div>
@@ -186,13 +186,13 @@
                                 <small class="error" v-if="funcaoErros.length > 0" v-for="erro in funcaoErros">{{erro}}</small>
                             </div>
                         </div>
-                        <div class="col-12 flex between">
-                            <button class="btn btn-danger">
-                                Cancelar
-                            </button>
+                        <div class="col-12 flex between action-mobile">
                             <button class="btn btn-primary create-flex" @Click="criarUsuario">
                                 <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
                                 {{btnText}}
+                            </button>
+                            <button class="btn btn-danger">
+                                Cancelar
                             </button>
                         </div>
                     </div>

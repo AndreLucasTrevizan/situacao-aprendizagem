@@ -45,12 +45,18 @@ select {
     outline: none;
 }
 
+.usuario-mobile {
+    display: none;
+}
+
 .edit:hover {
     color: #856404;
+    cursor: pointer;
 }
 
 .delete:hover {
     color: #d60b0b;
+    cursor: pointer;
 }
 
 .table-actions {

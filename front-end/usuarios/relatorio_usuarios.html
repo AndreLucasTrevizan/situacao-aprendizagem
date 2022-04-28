@@ -39,7 +39,7 @@
                         </div>
                         <ul class="usuario-menu">
                             <li>{{usuarioLogado.nome}}</li>
-                            <li @Click="saindo = true">Sair</li>
+                            <li @Click="saindo = true" class="delete">Sair</li>
                         </ul>
                     </div>
                 </div>
@@ -60,23 +60,30 @@
                     </ul>
                 </div>
                 <ul class="user-info-mobile" v-if="userInfoMobile">
-                    <li><i class="large material-icons" @Click="userInfoMobile = false">close</i></li>
+                    <li><i class="large material-icons close-mobile" @Click="userInfoMobile = false">close</i></li>
                     <li class="flex-column center">
-                        <div class="avatar-usuario">
-                            <img :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário">
+                        <div class="avatar-usuario-mobile">
+                            <img :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário" width="60" height="60">
                         </div>
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
                     </li>
-                    <li @Click="saindo = true">Sair</li>
+                    <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
             </nav>
 
             <div class="flex-column center" v-if="usuarios.length == 0">
                 <h3 class="msg-vazias">Ainda não há usuários cadastrados</h3>
+            </div>
+
+            <div class="flex center" style="padding-top: 20px;">
                 <div class="add-button" @Click="irParaNovoUsuario">
                     <i class="material-icons">add</i>
                 </div>
+            </div>
+
+            <div class="container">
+                
                 <button class="add-button-mx" @Click="irParaNovoUsuario">
                     <i class="material-icons">add</i>
                     Adicionar Usuário
@@ -99,8 +106,8 @@
                     <tbody>
                         <tr v-for="usuario in usuarios">
                             <td class="table-actions">
-                                <i class="material-icons edit">edit</i>
-                                <i class="material-icons delete">delete</i>
+                                <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
+                                <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
                             </td>
                             <td>{{usuario.nome}}</td>
                             <td>{{usuario.cpf}}</td>
@@ -111,6 +118,39 @@
                         </tr>
                     </tbody>
                 </table>
+                <details class="usuario-mobile" v-for="usuario in usuarios">
+                    <summary>
+                        <div class="usuario-header">
+                            <img :src="`${api_url}/uploads/${usuario.avatar}`">
+                            <div class="flex-column">
+                                <h4>{{usuario.nome}}</h4>
+                                <small>Críado em {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}</small>
+                            </div>
+                        </div>
+                        <a class="ativo" v-if="usuario.situacao == 1"></a>
+                        <a class="inativo" v-if="usuario.situacao == 2"></a>
+                    </summary>
+                    <ul class="usuario-body">
+                        <li class="flex-column">
+                            <small><strong>Críado em:</strong> {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}
+                                às {{new Date(usuario.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
+                            </small>
+                            <small>
+                                <strong>Ultima atualização:</strong> {{new Date(usuario.updatedAt).toLocaleDateString('pt-BR')}}
+                                 às {{new Date(usuario.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
+                            
+                            </small>
+                        </li>
+                        <li><strong>CPF:</strong> {{usuario.cpf}}</li>
+                        <li><strong>Email:</strong> {{usuario.email}}</li>
+                        <li><strong>Sexo:</strong> {{(usuario.sexo == 1) ? 'Masculino' : (usuario.sexo == 2) ? 'Feminino' : 'Outro'}}</li>
+                        <li><strong>Função:</strong> {{(usuario.funcao == 1) ? 'Administrador' : (usuario.funcao == 2) ? 'Aluno' : 'Professor'}}</li>
+                        <li class="usuario-actions-mobile">
+                            <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
+                            <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
+                        </li>
+                    </ul>
+                </details>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -123,6 +163,22 @@
                             Não
                         </div>
                         <div class="accept-modal" @Click="confirmarSaida">
+                            <i class="material-icons">check_circle</i>
+                            Sim
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" v-if="deletando">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>Tem certeza que quer deletar este usuário?</p>
+                    <div class="modal-actions">
+                        <div class="cancel-modal" @Click="deletandoUsuario">
+                            <i class="material-icons">close</i>
+                            Não
+                        </div>
+                        <div class="accept-modal" @Click="confirmarDelete">
                             <i class="material-icons">check_circle</i>
                             Sim
                         </div>
@@ -142,6 +198,7 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    deletando: false,
                     usuarios: []
                 },
                 async created() {
@@ -183,6 +240,34 @@
                     },
                     irParaNovoUsuario() {
                         window.location = '/usuarios/novo_usuario.html';
+                    },
+                    irParaEditarUsuario(id) {
+                        localStorage.setItem('id_usuario', id);
+                        window.location = '/usuarios/editar_usuario.html';
+                    },
+                    deletandoUsuario(id) {
+                        localStorage.setItem('id_delete', id);
+                        if(this.deletando) {
+                            this.deletando = false;
+                        } else {
+                            this.deletando = true;
+                        }
+                    },
+                    async confirmarDelete() {
+                        let id = JSON.parse(localStorage.getItem('id_delete'));
+                        let responseAPI = await fetch(`${api_url}/usuarios`, {
+                            method: 'delete',
+                            headers: api_header,
+                            mode: 'cors',
+                            body: JSON.stringify({id: id})
+                        });
+
+                        let resJson = await responseAPI.json();
+
+                        if(responseAPI.status == 200) {
+                            localStorage.removeItem('id_delete');
+                            window.location.reload();
+                        }
                     }
                 }
             });

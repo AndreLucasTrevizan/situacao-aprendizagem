@@ -39,7 +39,7 @@
                         </div>
                         <ul class="usuario-menu">
                             <li>{{usuarioLogado.nome}}</li>
-                            <li @Click="saindo = true">Sair</li>
+                            <li @Click="saindo = true" class="delete">Sair</li>
                         </ul>
                     </div>
                 </div>
@@ -60,15 +60,15 @@
                     </ul>
                 </div>
                 <ul class="user-info-mobile" v-if="userInfoMobile">
-                    <li><i class="large material-icons" @Click="userInfoMobile = false">close</i></li>
+                    <li><i class="large material-icons close-mobile" @Click="userInfoMobile = false">close</i></li>
                     <li class="flex-column center">
-                        <div class="avatar-usuario">
-                            <img :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário">
+                        <div class="avatar-usuario-mobile">
+                            <img :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário" width="60" height="60">
                         </div>
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
                     </li>
-                    <li @Click="saindo = true">Sair</li>
+                    <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
             </nav>
 
