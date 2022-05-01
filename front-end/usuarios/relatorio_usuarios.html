@@ -25,12 +25,12 @@
                     </div>
                     <div class="menu-esquerdo">
                         <div class="logo-menu">
-                            <img src="/assets/SA-LogoSite.png" width="70" />
+                            <img src="/assets/SA-LogoSite.png" />
                         </div>
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
                             <li @Click="irParaTurmas">Turmas</li>
-                            <li @Click="irParaUsuarios">Usuários</li>
+                            <li @Click="irParaUsuarios" v-if="usuarioLogado.funcao == 1">Usuários</li>
                         </ul>
                     </div>
                     <div class="menu-direito">
@@ -53,7 +53,7 @@
                             <i class="material-icons">groups</i>
                             Turmas
                         </li>
-                        <li @Click="irParaUsuarios" style="border-top: none;">
+                        <li @Click="irParaUsuarios" style="border-top: none;" v-if="usuarioLogado.funcao == 1">
                             <i class="material-icons">account_circle</i>
                             Usuários
                         </li>
@@ -141,6 +141,9 @@
                             
                             </small>
                         </li>
+                        <li><strong>Data de Nascimento:</strong>
+                            {{new Date(usuario.dt_nascimento).toLocaleDateString('pt-BR')}}
+                        </li>
                         <li><strong>CPF:</strong> {{usuario.cpf}}</li>
                         <li><strong>Email:</strong> {{usuario.email}}</li>
                         <li><strong>Sexo:</strong> {{(usuario.sexo == 1) ? 'Masculino' : (usuario.sexo == 2) ? 'Feminino' : 'Outro'}}</li>
@@ -185,6 +188,18 @@
                     </div>
                 </div>
             </div>
+            <div class="modal" v-if="naoautorizado">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>Você não tem permissão de acessar aqui!</p>
+                </div>
+            </div>
+            <div class="modal" v-if="tokenexpirou">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>Seu token expirou, redirecionando para página de login...</p>
+                </div>
+            </div>
         </div>
 
         <script src="/common.js"></script>
@@ -193,6 +208,8 @@
             var app = new Vue({
                 el: '#app',
                 data: {
+                    naoautorizado: false,
+                    tokenexpirou: false,
                     api_url: api_url,
                     usuarioLogado: null,
                     menuMobile: true,
@@ -215,9 +232,18 @@
 
                     let resJson = await responseAPI.json();
 
+                    if(responseAPI.status == 401) {
+                        this.naoautorizado = true;
+                        setTimeout(() => {
+                            window.location = '/home.html';
+                        }, 3000);
+                    }
+
                     if(responseAPI.status == 406) {
-                        alert('Token expirou');
-                        window.location = '/index.html';
+                        this.tokenexpirou = true;
+                        setTimeout(() => {
+                            window.location = '/index.html';
+                        }, 3000);
                     }
 
                     if(responseAPI.status == 200) {

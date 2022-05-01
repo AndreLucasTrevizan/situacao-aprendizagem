@@ -80,7 +80,7 @@
                     <h5 v-for="erro in apiErros">{{erro}}</h5>
                 </div>
 
-                <div class="alert-success" v-if="criado">
+                <div class="alert-success" v-if="editado">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                       </svg>
@@ -212,23 +212,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="modal" v-if="saindo">
-                <div class="modal-msg">
-                    <i class="modal-main-icon material-icons">cancel</i>
-                    <p>Tem certeza que deseja sair?</p>
-                    <div class="modal-actions">
-                        <div class="cancel-modal" @Click="saindo = false">
-                            <i class="material-icons">close</i>
-                            Não
-                        </div>
-                        <div class="accept-modal" @Click="confirmarSaida">
-                            <i class="material-icons">check_circle</i>
-                            Sim
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <script src="/common.js"></script>
@@ -237,7 +220,7 @@
             var app = new Vue({
                 el: '#app',
                 data: {
-                    criado: false,
+                    editado: false,
                     api_url: api_url,
                     apiErro: false,
                     editando: false,
@@ -283,8 +266,9 @@
                     let resJson = await responseAPI.json();
 
                     if(responseAPI.status == 200) {
-                        let dt_nascimento = new Date(resJson[0].dt_nascimento).toISOString().substring(10, 0);
+                        let dt_nascimento = new Date(resJson[0].dt_nascimento).toISOString().substring(0, 10);
                         this.usuario = {...resJson[0], dt_nascimento: dt_nascimento};
+                        console.log(this.usuario);
                     }
                 },
                 methods: {
@@ -315,7 +299,7 @@
                             let resJson = await responseAPI.json();
 
                             if(responseAPI.status == 200) {
-                                this.criado = true;
+                                this.editado = true;
                                 setTimeout(() => {
                                     window.location = '/usuarios/relatorio_usuarios.html';
                                 }, 3000); 

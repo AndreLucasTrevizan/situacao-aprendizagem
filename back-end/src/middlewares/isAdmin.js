@@ -11,7 +11,7 @@ module.exports = (req, res, next) => {
             } else if(encoded.funcao == 1) {
                 next();
             } else {
-                res.status(406).json({msg: 'Você não tem permissão para acessar aqui.'});
+                res.status(401).json({msg: 'Você não tem permissão para acessar aqui.'});
             }
         });
     } else {

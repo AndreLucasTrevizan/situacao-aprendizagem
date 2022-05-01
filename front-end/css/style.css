@@ -219,14 +219,19 @@ select {
     margin-right: 10px;
 }
 
+.logo-menu img {
+    width: 90px;
+    padding: 10px 0px;
+}
+
 .menu-items li {
     padding: 20px 10px;
     height: 100%;
 }
 
 .menu-items li:hover {
-    background-color: #E3E3E3;
     cursor: pointer;
+    text-decoration: underline;
 }
 
 .menu-direito {
