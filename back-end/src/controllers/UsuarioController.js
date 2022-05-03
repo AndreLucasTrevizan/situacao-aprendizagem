@@ -64,11 +64,11 @@ class UsuarioController {
     }
 
     EditarUsuario(req, res) {
-        let {id, nome, cpf, data_nascimento, sexo, email, situacao, funcao} = req.body;
+        let {id, nome, cpf, dt_nascimento, sexo, email, situacao, funcao} = req.body;
         let sql = `CALL EditarUsuario(?, ?, ?, ?, ?, ?, ?, ?);`;
 
         db.query(sql, [
-            id, nome, cpf, data_nascimento, sexo, email, situacao, funcao
+            id, nome, cpf, dt_nascimento, sexo, email, situacao, funcao
         ], (err, rows) => {
             if(err) res.status(400).json(err);
 
