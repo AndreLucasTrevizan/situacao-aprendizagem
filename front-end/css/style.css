@@ -67,20 +67,20 @@ select {
     width: 20px;
 }
 
-.tabela-usuarios {
+.tabela {
     width: 100%;
     margin-top: 20px;
     border-collapse: collapse;
 }
 
-.tabela-usuarios th {
+.tabela th {
     padding: 20px;
     background-color: #0053cf;
     border: 1px solid #0053cf;
     color: #FFF;
 }
 
-.tabela-usuarios td {
+.tabela td {
     padding: 10px;
     border: 1px solid #E3E3E3;
 }

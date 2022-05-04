@@ -83,6 +83,32 @@
                 </button>
             </div>
 
+            <div class="container">
+                <table class="tabela">
+                    <thead>
+                        <tr>
+                            <th>Ações</th>
+                            <th>Apelido</th>
+                            <th>Curso</th>
+                            <th>Data de Ínicio</th>
+                            <th>Duração (Semestres)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="turma in turmas">
+                            <td class="table-actions">
+                                <i class="material-icons edit" @Click="irParaEditarTurma(turma.id)">edit</i>
+                                <i class="material-icons delete" @Click="deletandoTurma(turma.id)">delete</i>
+                            </td>
+                            <td>{{turma.apelido}}</td>
+                            <td>{{turma.nome_curso}}</td>
+                            <td>{{new Date(turma.ano_inicio).toLocaleDateString('pt-BR')}}</td>
+                            <td>{{turma.duracao}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
             <div class="modal" v-if="saindo">
                 <div class="modal-msg">
                     <i class="modal-main-icon material-icons">cancel</i>
@@ -114,10 +140,22 @@
                     saindo: false,
                     turmas: []
                 },
-                created() {
+                async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
+                    }
+
+                    let responseAPI = await fetch(`${api_url}/turmas`, {
+                        method: 'get',
+                        headers: api_header,
+                        mode: 'cors',
+                    });
+
+                    let resJson = await responseAPI.json();
+
+                    if(responseAPI.status == 200) {
+                        this.turmas = resJson;
                     }
                 },
                 methods: {
