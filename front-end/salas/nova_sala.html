@@ -30,7 +30,7 @@
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
                             <li @Click="irParaTurmas">Turmas</li>
-                            <li @Click="irParaUsuarios">Usuários</li>
+                            <li @Click="irParaUsuarios" v-if="usuarioLogado.funcao == 1">Usuários</li>
                         </ul>
                     </div>
                     <div class="menu-direito">
@@ -53,7 +53,7 @@
                             <i class="material-icons">groups</i>
                             Turmas
                         </li>
-                        <li @Click="irParaUsuarios" style="border-top: none;">
+                        <li @Click="irParaUsuarios" style="border-top: none;" v-if="usuarioLogado.funcao == 1">
                             <i class="material-icons">account_circle</i>
                             Usuários
                         </li>
@@ -73,7 +73,106 @@
             </nav>
 
             <div class="container">
-                
+                <div class="alert-warning" v-if="apiErro">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <h5 v-for="erro in apiErros">{{erro}}</h5>
+                </div>
+
+                <div class="alert-success" v-if="criado">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                      </svg>
+                    <h5>Sala críada com sucesso</h5>
+                </div>
+
+                <fieldset>
+                    <legend>
+                        <h3>Adicionando Salas</h3>
+                    </legend>
+                    <p style="border-bottom: 1px solid #e3e3e3;">
+                        As salas são fundamentais para a criação de reservas pelos professores dentro do sistema, seus dados também
+                        podem ser alterados mais tarde, fique tranquilo.
+                    </p>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="numero">Numero</label>
+                                <input
+                                    type="number"
+                                    name="numero"
+                                    id="numero"
+                                    v-model="sala.numero"
+                                    placeholder="Número da sala"
+                                >
+                                <small class="error" v-if="numeroErros.length > 0" v-for="erro in numeroErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="bloco">Bloco</label>
+                                <input
+                                    type="number"
+                                    name="bloco"
+                                    id="bloco"
+                                    v-model="sala.bloco"
+                                    placeholder="Bloco da sala"
+                                >
+                                <small class="error" v-if="blocoErros.length > 0" v-for="erro in blocoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="apelido">Apelido</label>
+                                <input
+                                    type="text"
+                                    name="apelido"
+                                    id="apelido"
+                                    v-model="sala.apelido"
+                                    placeholder="Apelido da sala"
+                                >
+                                <small class="error" v-if="apelidoErros.length > 0" v-for="erro in apelidoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="capacidade">Capacidade</label>
+                                <input
+                                    type="number"
+                                    name="capacidade"
+                                    id="capacidade"
+                                    v-model="sala.capacidade"
+                                    placeholder="Capacidade da sala"
+                                >
+                                <small class="error" v-if="capacidadeErros.length > 0" v-for="erro in capacidadeErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="flex-column">
+                                <label for="descricao_tipo">Descrição</label>
+                                <input
+                                    type="text"
+                                    autocomplete="off"
+                                    name="descricao_tipo"
+                                    id="descricao_tipo"
+                                    v-model="sala.descricao_tipo"
+                                    placeholder="Descrição do tipo da sala"
+                                >
+                                <small class="error" v-if="descricaoTipoErros.length > 0" v-for="erro in descricaoTipoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-12 flex between action-mobile">
+                            <button class="btn btn-primary create-flex" @Click="criarSala">
+                                <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
+                                {{btnText}}
+                            </button>
+                            <button class="btn btn-danger">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -105,6 +204,23 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    cadastrando: false,
+                    criado: false,
+                    apiErro: false,
+                    btnText: 'Cadastrar',
+                    sala: {
+                        numero: '',
+                        bloco: '',
+                        apelido: '',
+                        descricao_tipo: '',
+                        capacidade: ''
+                    },
+                    numeroErros: [],
+                    blocoErros: [],
+                    apelidoErros: [],
+                    descricaoTipoErros: [],
+                    capacidadeErros: [],
+                    apiErros: []
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -125,6 +241,92 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    async criarSala() {
+                        if(this.validacao()) {
+                            this.cadastrando = true;
+                            this.btnText = 'Cadastrando...';
+                            let responseAPI = await fetch(`${api_url}/salas`, {
+                                method: 'post',
+                                headers: api_header,
+                                mode: 'cors',
+                                body: JSON.stringify(this.sala)
+                            });
+
+                            let resJson = await responseAPI.json();
+
+                            if(responseAPI.status == 201) {
+                                this.criado = true;
+                                setTimeout(() => {
+                                    window.location = '/salas/relatorio_salas.html';
+                                }, 3000); 
+                            } else {
+                                this.cadastrando = false;
+                                this.apiErro = true;
+                                this.btnText = 'Cadastrar';
+                                this.apiErros.push(resJson.error);
+                                setTimeout(() => {
+                                    this.apiErro = false;
+                                }, 3000);
+                                return;
+                            }
+                        }
+                    },
+                    validacao() {
+                        this.numeroErros = [];
+                        this.blocoErros = [];
+                        this.apelidoErros = [];
+                        this.descricaoTipoErros = [];
+                        this.capacidadeErros = [];
+                        this.apiErros = [];
+
+                        if(this.sala.numero == '' || this.sala.numero == undefined) {
+                            this.numeroErros.push('O numero não pode ser vazio.');
+                        } else if(this.sala.numero < 0) {
+                            this.numeroErros.push('Número inválido');
+                        }
+
+                        if(this.sala.bloco == '' || this.sala.bloco == undefined) {
+                            this.blocoErros.push('O bloco não pode ser vazio.');
+                        } else if(this.sala.bloco < 0) {
+                            this.blocoErros.push('Bloco inválido');
+                        }
+
+                        if(this.sala.apelido == '' || this.sala.apelido == undefined) {
+                            this.apelidoErros.push('O apelido não pode ser vazio.');
+                        } else if(this.sala.apelido.length > 15) {
+                            this.apelidoErros.push('O apelido não pode conter mais de 50 caracteres.');
+                        } else if(this.sala.apelido.length < 3) {
+                            this.apelidoErros.push('O apelido não pode conter menos de 03 caracteres.');
+                        }
+
+                        if(this.sala.descricao_tipo == '' || this.sala.descricao_tipo == undefined) {
+                            this.descricaoTipoErros.push('A descrição não pode ser vazia.');
+                        } else if(this.sala.descricao_tipo.length > 50) {
+                            this.descricaoTipoErros.push('A descrição não pode conter mais de 50 caracteres.');
+                        } else if(this.sala.descricao_tipo.length < 15) {
+                            this.descricaoTipoErros.push('A descrição não pode conter menos de 15 caracteres.');
+                        }
+
+                        if(this.sala.capacidade == '' || this.sala.capacidade == undefined) {
+                            this.capacidadeErros.push('A capacidade não pode ser vazia');
+                        } else if(this.sala.capacidade > 40) {
+                            this.capacidadeErros.push('A capacidade pode ter no máximo 40 alunos');
+                        } else if(this.sala.capacidade < 15) {
+                            this.capacidadeErros.push('A capacidade precisa ser de pelo menos 15 alunos');
+                        }
+
+                        if(
+                            this.numeroErros.length > 0 ||
+                            this.blocoErros.length > 0 ||
+                            this.apelidoErros.length > 0 ||
+                            this.descricaoTipoErros.length > 0 ||
+                            this.capacidadeErros.length > 0
+                        ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
                 }
             });

@@ -30,7 +30,7 @@
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
                             <li @Click="irParaTurmas">Turmas</li>
-                            <li @Click="irParaUsuarios">Usuários</li>
+                            <li @Click="irParaUsuarios" v-if="usuarioLogado.funcao == 1">Usuários</li>
                         </ul>
                     </div>
                     <div class="menu-direito">
@@ -53,7 +53,7 @@
                             <i class="material-icons">groups</i>
                             Turmas
                         </li>
-                        <li @Click="irParaUsuarios" style="border-top: none;">
+                        <li @Click="irParaUsuarios" style="border-top: none;" v-if="usuarioLogado.funcao == 1">
                             <i class="material-icons">account_circle</i>
                             Usuários
                         </li>
@@ -72,22 +72,28 @@
                 </ul>
             </nav>
 
-            <div class="flex-column center">
+            <div class="flex-column center" v-if="turmas.length == 0">
                 <h3 class="msg-vazias">Ainda não há turmas cadastradas</h3>
-                <div class="add-button">
+            </div>
+
+            <div class="flex center" style="padding-top: 20px;" v-if="usuarioLogado.funcao == 1">
+                <div class="add-button" @Click="irParaNovaTurma">
                     <i class="material-icons">add</i>
                 </div>
-                <button class="add-button-mx">
+            </div>
+
+            <div class="container" v-if="usuarioLogado.funcao == 1">
+                <button class="add-button-mx" @Click="irParaNovaTurma">
                     <i class="material-icons">add</i>
-                    Adicionar Usuário
+                    Adicionar Turma
                 </button>
             </div>
 
             <div class="container">
-                <table class="tabela">
+                <table class="tabela" v-if="turmas.length > 0">
                     <thead>
                         <tr>
-                            <th>Ações</th>
+                            <th v-if="usuarioLogado.funcao == 1">Ações</th>
                             <th>Apelido</th>
                             <th>Curso</th>
                             <th>Data de Ínicio</th>
@@ -96,17 +102,41 @@
                     </thead>
                     <tbody>
                         <tr v-for="turma in turmas">
-                            <td class="table-actions">
+                            <td class="table-actions" v-if="usuarioLogado.funcao == 1">
                                 <i class="material-icons edit" @Click="irParaEditarTurma(turma.id)">edit</i>
                                 <i class="material-icons delete" @Click="deletandoTurma(turma.id)">delete</i>
                             </td>
                             <td>{{turma.apelido}}</td>
                             <td>{{turma.nome_curso}}</td>
                             <td>{{new Date(turma.ano_inicio).toLocaleDateString('pt-BR')}}</td>
-                            <td>{{turma.duracao}}</td>
+                            <td>{{turma.duracao + ' semestres'}}</td>
                         </tr>
                     </tbody>
                 </table>
+                <div class="turma-mobile" v-for="turma in turmas">
+                    <h3>Turma {{turma.apelido}}</h3>
+                    <div class="flex-column">
+                        <small><strong>Curso </strong>{{turma.nome_curso}}</small>                        
+                    </div>
+                    <div class="flex between">
+                        <small><strong>Início em </strong>{{new Date(turma.ano_inicio).toLocaleDateString('pt-BR')}}</small>
+                        <small><strong>Duração de {{turma.duracao}} semestres</strong></small>
+                    </div>
+                    <div class="flex between">
+                        <small>
+                            <strong>Criada em: </strong>{{new Date(turma.createdAt).toLocaleDateString('pt-BR')}}
+                            {{new Date(turma.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
+                        </small>
+                        <small>
+                            <strong>Atualizada em: </strong>{{new Date(turma.updatedAt).toLocaleDateString('pt-BR')}}
+                            {{new Date(turma.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
+                        </small>
+                    </div>
+                    <div class="turma-actions-mobile">
+                        <i class="material-icons edit" @Click="irParaEditarTurma(turma.id)">edit</i>
+                        <i class="material-icons delete" @Click="deletandoTurma(turma.id)">delete</i>
+                    </div>
+                </div>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -119,6 +149,22 @@
                             Não
                         </div>
                         <div class="accept-modal" @Click="confirmarSaida">
+                            <i class="material-icons">check_circle</i>
+                            Sim
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" v-if="deletando">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>Tem certeza que quer deletar essa turma?</p>
+                    <div class="modal-actions">
+                        <div class="cancel-modal" @Click="deletandoTurma">
+                            <i class="material-icons">close</i>
+                            Não
+                        </div>
+                        <div class="accept-modal" @Click="confirmarDelete">
                             <i class="material-icons">check_circle</i>
                             Sim
                         </div>
@@ -138,6 +184,7 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    deletando: false,
                     turmas: []
                 },
                 async created() {
@@ -171,6 +218,37 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    irParaNovaTurma() {
+                        window.location = '/turmas/nova_turma.html';
+                    },
+                    irParaEditarTurma(id) {
+                        localStorage.setItem('id_turma', id);
+                        window.location = '/turmas/editar_turma.html';
+                    },
+                    deletandoTurma(id) {
+                        localStorage.setItem('id_turma', id);
+                        if(this.deletando) {
+                            this.deletando = false;
+                        } else {
+                            this.deletando = true;
+                        }
+                    },
+                    async confirmarDelete() {
+                        let id = JSON.parse(localStorage.getItem('id_turma'));
+                        let responseAPI = await fetch(`${api_url}/turmas`, {
+                            method: 'delete',
+                            headers: api_header,
+                            mode: 'cors',
+                            body: JSON.stringify({id: id})
+                        });
+
+                        let resJson = await responseAPI.json();
+
+                        if(responseAPI.status == 200) {
+                            localStorage.removeItem('id_turma');
+                            window.location.reload();
+                        }
                     }
                 }
             });

@@ -83,7 +83,6 @@
             </div>
 
             <div class="container">
-                
                 <button class="add-button-mx" @Click="irParaNovoUsuario">
                     <i class="material-icons">add</i>
                     Adicionar Usuário
@@ -118,42 +117,60 @@
                         </tr>
                     </tbody>
                 </table>
-                <details class="usuario-mobile" v-for="usuario in usuarios">
-                    <summary>
-                        <div class="usuario-header">
-                            <img :src="`${api_url}/uploads/${usuario.avatar}`">
-                            <div class="flex-column">
-                                <h4>{{usuario.nome}}</h4>
-                                <small>Críado em {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}</small>
-                            </div>
+                <div class="usuario-mobile" v-for="usuario in usuarios">
+                    <div class="usuario-header">
+                        <img :src="`${api_url}/uploads/${usuario.avatar}`">
+                        <div class="flex between" style="width: 100%;">
+                            <h4>{{usuario.nome}}</h4>
+                            <a class="ativo" v-if="usuario.situacao == 1"></a>
+                            <a class="inativo" v-if="usuario.situacao == 2"></a>
                         </div>
-                        <a class="ativo" v-if="usuario.situacao == 1"></a>
-                        <a class="inativo" v-if="usuario.situacao == 2"></a>
-                    </summary>
-                    <ul class="usuario-body">
-                        <li class="flex-column">
-                            <small><strong>Críado em:</strong> {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}
+                    </div>
+                    <hr style="margin: 10px 0px;">
+                    <div class="flex between">
+                        <strong>
+                            <small>
+                                Nascido em {{new Date(usuario.dt_nascimento).toLocaleDateString('pt-BR')}}
+                            </small>
+                        </strong>
+                        <strong>
+                            <small>{{
+                                new Date(Date.now()).getFullYear() - new Date(usuario.dt_nascimento).getFullYear()    
+                                }} anos
+                            </small>
+                        </strong>
+                    </div>
+                    <div class="flex between">
+                        <strong>
+                            <small>
+                                CPF {{usuario.cpf}}
+                            </small>
+                        </strong>
+                        <strong>
+                            <small>
+                                {{usuario.email}}
+                            </small>
+                        </strong>
+                    </div>
+                    <div class="flex between">
+                        <strong>
+                            <small>
+                                Críado em {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}
                                 às {{new Date(usuario.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
                             </small>
+                        </strong>
+                        <strong>
                             <small>
-                                <strong>Ultima atualização:</strong> {{new Date(usuario.updatedAt).toLocaleDateString('pt-BR')}}
-                                 às {{new Date(usuario.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
-                            
+                                Atualizado em {{new Date(usuario.updatedAt).toLocaleDateString('pt-BR')}}
+                                às {{new Date(usuario.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
                             </small>
-                        </li>
-                        <li><strong>Data de Nascimento:</strong>
-                            {{new Date(usuario.dt_nascimento).toLocaleDateString('pt-BR')}}
-                        </li>
-                        <li><strong>CPF:</strong> {{usuario.cpf}}</li>
-                        <li><strong>Email:</strong> {{usuario.email}}</li>
-                        <li><strong>Sexo:</strong> {{(usuario.sexo == 1) ? 'Masculino' : (usuario.sexo == 2) ? 'Feminino' : 'Outro'}}</li>
-                        <li><strong>Função:</strong> {{(usuario.funcao == 1) ? 'Administrador' : (usuario.funcao == 2) ? 'Aluno' : 'Professor'}}</li>
-                        <li class="usuario-actions-mobile">
-                            <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
-                            <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
-                        </li>
-                    </ul>
-                </details>
+                        </strong>
+                    </div>
+                    <div class="flex evenly usuario-actions-mobile">
+                        <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
+                        <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
+                    </div>
+                </div>
             </div>
 
             <div class="modal" v-if="saindo">

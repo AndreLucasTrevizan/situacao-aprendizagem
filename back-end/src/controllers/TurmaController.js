@@ -12,8 +12,19 @@ class TurmaController {
         });
     }
 
+    ListarTurmaPorId(req, res) {
+        let id = req.params.id;
+        let sql = 'SELECT * FROM turma WHERE turma.id = ?';
+
+        db.query(sql, id, (err, rows) => {
+            if(err) res.status(400).json(err.message);
+
+            res.status(200).json(rows[0]);
+        });
+    }
+
     CriarTurma(req, res) {
-        let {apelido, curso, ano_de_inicio, duracao} = req.body;   
+        let {apelido, nome_curso, ano_inicio, duracao} = req.body;   
         
         let sql = 'SELECT * FROM turma WHERE turma.apelido = ?';
 
@@ -26,23 +37,23 @@ class TurmaController {
                 let sql_dois = 'CALL InsereTurma(?, ?, ?, ?)';
 
                 db.query(sql_dois, [
-                    apelido, curso, ano_de_inicio, duracao
+                    apelido, nome_curso, ano_inicio, duracao
                 ], (err, rows) => {
                     if(err) res.status(400).json({error: err.message});
 
-                    res.status(200).json(rows);
+                    res.status(201).json(rows);
                 });
             }
         });
     }
 
     EditarTurma(req, res) {
-        let {id, apelido, curso, ano_de_inicio, duracao} = req.body;
+        let {id, apelido, nome_curso, ano_inicio, duracao} = req.body;
 
         let sql = 'CALL EditarTurma(?, ?, ?, ?, ?)';
 
         db.query(sql, [
-            id, apelido, curso, ano_de_inicio, duracao
+            id, apelido, nome_curso, ano_inicio, duracao
         ], (err, rows) => {
             if(err) res.status(400).json(err.message);
 
@@ -51,9 +62,9 @@ class TurmaController {
     }
 
     DeletarTurma(req, res) {
-        let {id} = req.params;
+        let {id} = req.body;
 
-        let sql = 'CALL DeletarTurma(?)';
+        let sql = 'CALL DeletarTurma(?);';
 
         db.query(sql, id, (err, rows) => {
             if(err) res.status(400).json(err.message);

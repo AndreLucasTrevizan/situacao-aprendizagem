@@ -30,7 +30,7 @@
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
                             <li @Click="irParaTurmas">Turmas</li>
-                            <li @Click="irParaUsuarios">Usuários</li>
+                            <li @Click="irParaUsuarios" v-if="usuarioLogado.funcao == 1">Usuários</li>
                         </ul>
                     </div>
                     <div class="menu-direito">
@@ -53,7 +53,7 @@
                             <i class="material-icons">groups</i>
                             Turmas
                         </li>
-                        <li @Click="irParaUsuarios" style="border-top: none;">
+                        <li @Click="irParaUsuarios" style="border-top: none;" v-if="usuarioLogado.funcao == 1">
                             <i class="material-icons">account_circle</i>
                             Usuários
                         </li>
@@ -72,15 +72,64 @@
                 </ul>
             </nav>
 
-            <div class="flex-column center">
+            <div class="flex-column center" v-if="salas.length == 0">
                 <h3 class="msg-vazias">Ainda não há salas cadastradas</h3>
-                <div class="add-button">
+            </div>
+
+            <div class="flex center" style="padding-top: 20px;" v-if="usuarioLogado.funcao == 1">
+                <div class="add-button" @Click="irParaNovaSala">
                     <i class="material-icons">add</i>
                 </div>
-                <button class="add-button-mx">
+            </div>
+
+            <div class="container" v-if="usuarioLogado.funcao == 1">
+                <button class="add-button-mx" @Click="irParaNovaSala">
                     <i class="material-icons">add</i>
-                    Adicionar Usuário
+                    Adicionar Sala
                 </button>
+            </div>
+
+            <div class="container">
+                <table class="tabela" v-if="salas.length > 0">
+                    <thead>
+                        <tr>
+                            <th v-if="usuarioLogado.funcao == 1">Ações</th>
+                            <th>Número</th>
+                            <th>Bloco</th>
+                            <th>Apelido</th>
+                            <th>Descrição</th>
+                            <th>Capacidade</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="sala in salas">
+                            <td class="table-actions" v-if="usuarioLogado.funcao == 1">
+                                <i class="material-icons edit" @Click="irParaEditarSala(sala.id)">edit</i>
+                                <i class="material-icons delete" @Click="deletandoSala(sala.id)">delete</i>
+                            </td>
+                            <td>{{sala.numero}}</td>
+                            <td>{{sala.bloco}}</td>
+                            <td>{{sala.apelido}}</td>
+                            <td>{{sala.descricao_tipo}}</td>
+                            <td>{{sala.capacidade}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="sala-mobile" v-for="sala in salas">
+                    <h3>Sala {{sala.numero}}</h3>
+                    <div class="flex-column">
+                        <small>{{sala.apelido}}</small>
+                        <small>{{sala.descricao_tipo}</small>
+                    </div>
+                    <div class="flex between">
+                        <small><strong>Bloco </strong>{{sala.bloco}}</small>
+                        <small><strong>Capacidade {{sala.capacidade}}</strong></small>
+                    </div>
+                    <div class="sala-actions-mobile">
+                        <i class="material-icons edit" @Click="irParaEditarSala(sala.id)">edit</i>
+                        <i class="material-icons delete" @Click="deletandoSala(sala.id)">delete</i>
+                    </div>
+                </div>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -112,12 +161,29 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
-                    salas: []
+                    salas: [],
+                    apiErro: false,
+                    apiErros: []
                 },
-                created() {
+                async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
+                    }
+
+                    let responseAPI = await fetch(`${api_url}/salas`, {
+                        method: 'get',
+                        headers: api_header,
+                        mode: 'cors'
+                    });
+
+                    let resJson = await responseAPI.json();
+
+                    if(responseAPI.status == 200) {
+                        this.salas = resJson;
+                    } else {
+                        this.apiErro = true;
+                        this.apiErros.push(resJson);
                     }
                 },
                 methods: {
@@ -133,6 +199,36 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    irParaNovaSala() {
+                        window.location = '/salas/nova_sala.html';
+                    },
+                    irParaEditarSala() {
+                        window.location = '/salas/editar_sala.html';
+                    },
+                    deletandoSala(id) {
+                        localStorage.setItem('id_sala');
+                        if(this.deletando) {
+                            this.deletando = false;
+                        } else {
+                            this.deletando = true;
+                        }
+                    },
+                    async confirmarDelete() {
+                        let id = JSON.parse(localStorage.getItem('id_sala'));
+                        let responseAPI = await fetch(`${api_url}/salas`, {
+                            method: 'delete',
+                            headers: api_header,
+                            mode: 'cors',
+                            body: JSON.stringify({id: id})
+                        });
+
+                        let resJson = await responseAPI.json();
+
+                        if(responseAPI.status == 200) {
+                            localStorage.removeItem('id_salas');
+                            window.location.reload();
+                        }
                     }
                 }
             });

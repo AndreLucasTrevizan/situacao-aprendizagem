@@ -45,6 +45,10 @@ select {
     outline: none;
 }
 
+.turma-mobile {
+    display: none;
+}
+
 .usuario-mobile {
     display: none;
 }

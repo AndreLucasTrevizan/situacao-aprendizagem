@@ -30,7 +30,7 @@
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
                             <li @Click="irParaTurmas">Turmas</li>
-                            <li @Click="irParaUsuarios">Usuários</li>
+                            <li @Click="irParaUsuarios" v-if="usuarioLogado.funcao == 1">Usuários</li>
                         </ul>
                     </div>
                     <div class="menu-direito">
@@ -53,7 +53,7 @@
                             <i class="material-icons">groups</i>
                             Turmas
                         </li>
-                        <li @Click="irParaUsuarios" style="border-top: none;">
+                        <li @Click="irParaUsuarios" style="border-top: none;" v-if="usuarioLogado.funcao == 1">
                             <i class="material-icons">account_circle</i>
                             Usuários
                         </li>
@@ -73,7 +73,92 @@
             </nav>
 
             <div class="container">
-                
+                <div class="alert-warning" v-if="apiErro">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <h5 v-for="erro in apiErros">{{erro}}</h5>
+                </div>
+
+                <div class="alert-success" v-if="criado">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                      </svg>
+                    <h5>Usuário críado com sucesso</h5>
+                </div>
+
+                <fieldset>
+                    <legend>
+                        <h3>Adicionando Turmas</h3>
+                    </legend>
+                    <p style="border-bottom: 1px solid #e3e3e3;">
+                        As turmas são fundamentais para a criação de reservas pelos professores dentro do sistema, seus dados também
+                        podem ser alterados mais tarde, fique tranquilo.
+                    </p>
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="apelido">Apelido</label>
+                                <input
+                                    type="text"
+                                    name="apelido"
+                                    id="apelido"
+                                    v-model="turma.apelido"
+                                    placeholder="Apelido da turma"
+                                >
+                                <small class="error" v-if="apelidoErros.length > 0" v-for="erro in apelidoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="curso">Curso</label>
+                                <input
+                                    type="text"
+                                    name="curso"
+                                    id="curso"
+                                    v-model="turma.curso"
+                                    placeholder="Curso da turma"
+                                >
+                                <small class="error" v-if="cursoErros.length > 0" v-for="erro in cursoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="ano_de_inicio">Data de Inicio</label>
+                                <input
+                                    type="date"
+                                    name="ano_de_inicio"
+                                    id="ano_de_inicio"
+                                    v-model="turma.ano_de_inicio"
+                                >
+                                <small class="error" v-if="dataErros.length > 0" v-for="erro in dataErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="duracao">Duração (Semestres)</label>
+                                <input
+                                    type="number"
+                                    autocomplete="off"
+                                    name="duracao"
+                                    id="duracao"
+                                    v-model="turma.duracao"
+                                    placeholder="Duração da turma"
+                                >
+                                <small class="error" v-if="duracaoErros.length > 0" v-for="erro in duracaoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-12 flex between action-mobile">
+                            <button class="btn btn-primary create-flex" @Click="criarTurma">
+                                <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
+                                {{btnText}}
+                            </button>
+                            <button class="btn btn-danger">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -105,6 +190,21 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    cadastrando: false,
+                    apiErro: false,
+                    criado: false,
+                    btnText: 'Cadastrar',
+                    turma: {
+                        apelido: '',
+                        curso: '',
+                        ano_de_inicio: '',
+                        duracao: ''
+                    },
+                    apelidoErros: [],
+                    cursoErros: [],
+                    dataErros: [],
+                    duracaoErros: [],
+                    apiErros: []
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -125,8 +225,84 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    async criarTurma() {
+                        if(this.validacao()) {
+                            this.cadastrando = true;
+                            this.btnText = 'Cadastrando...';
+                            let responseAPI = await fetch(`${api_url}/turmas`, {
+                                method: 'post',
+                                headers: api_header,
+                                mode: 'cors',
+                                body: JSON.stringify(this.turma)
+                            });
+
+                            let resJson = await responseAPI.json();
+
+                            if(responseAPI.status == 201) {
+                                this.criado = true;
+                                setTimeout(() => {
+                                    window.location = '/turmas/relatorio_turmas.html';
+                                }, 3000); 
+                            } else {
+                                this.cadastrando = false;
+                                this.apiErro = true;
+                                this.btnText = 'Cadastrar';
+                                this.apiErros.push(resJson.error);
+                                setTimeout(() => {
+                                    this.apiErro = false;
+                                }, 3000);
+                                return;
+                            }
+                        }
+                    },
+                    validacao() {
+                        this.apelidoErros = [];
+                        this.cursoErros = [];
+                        this.dataErros = [];
+                        this.duracaoErros = [];
+                        this.apiErros = [];
+
+                        if(this.turma.apelido == '' || this.turma.apelido == undefined) {
+                            this.apelidoErros.push('O apelido não pode ser vazio.');
+                        } else if(this.turma.apelido.length > 15) {
+                            this.apelidoErros.push('O apelido não pode conter mais de 50 caracteres.');
+                        } else if(this.turma.apelido.length < 3) {
+                            this.apelidoErros.push('O apelido não pode conter menos de 03 caracteres.');
+                        }
+
+                        if(this.turma.curso == '' || this.turma.curso == undefined) {
+                            this.cursoErros.push('O curso não pode ser vazio.');
+                        } else if(this.turma.curso.length > 50) {
+                            this.cursoErros.push('O curso não pode conter mais de 50 caracteres.');
+                        } else if(this.turma.curso.length < 10) {
+                            this.cursoErros.push('O curso não pode conter menos de 03 caracteres.');
+                        }
+
+                        if(this.turma.ano_de_inicio == '' || this.turma.ano_de_inicio == undefined) {
+                            this.dataErros.push('A data não pode ser vazia.');
+                        } else if (
+                            new Date(this.turma.ano_de_inicio) < Date.now()
+                        ) {
+                            this.dataErros.push('Data Inválida');
+                        }
+
+                        if(this.turma.duracao == '' || this.turma.duracao == undefined) {
+                            this.duracaoErros.push('A duração não pode ser vazia');
+                        }
+
+                        if(
+                            this.apelidoErros.length > 0 ||
+                            this.cursoErros.length > 0 ||
+                            this.dataErros.length > 0 ||
+                            this.duracaoErros.length > 0
+                        ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
-                }
+                },
             });
         </script>
     </body>
