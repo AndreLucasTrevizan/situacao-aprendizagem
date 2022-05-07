@@ -257,6 +257,8 @@
 
                             if(responseAPI.status == 201) {
                                 this.criado = true;
+                                this.cadastrando = false;
+                                this.btnText = 'Cadastrar';
                                 setTimeout(() => {
                                     window.location = '/salas/relatorio_salas.html';
                                 }, 3000); 

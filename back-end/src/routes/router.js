@@ -28,5 +28,4 @@ router.post('/salas', SalasController.CriarSala);
 router.put('/salas', SalasController.EditarSala);
 router.delete('/salas', SalasController.DeletarSala);
 
-
 module.exports = router;

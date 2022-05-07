@@ -1,5 +1,27 @@
 @media (max-width: 768px) {
 
+    .sala-mobile {
+        display: block;
+        border: 1px solid #E3E3E3;
+        border-radius: 10px;
+        padding: 10px;
+        margin: 20px 0px;
+    }
+
+    .sala-mobile small {
+        font-size: 18px;
+    }
+
+    .sala-actions-mobile {
+        text-align: center;
+    }
+
+    .sala-actions-mobile i {
+        font-size: 40px;
+        margin: 0px 50px;
+        padding-top: 20px;
+    }
+
     .turma-mobile {
         display: block;
         border: 1px solid #E3E3E3;
@@ -223,7 +245,7 @@
     }
 
     .add-button i {
-        padding: 10px;
+        padding: 20px;
         font-size: 25px;
         color: #FFF;
         background-color: #0053cf;

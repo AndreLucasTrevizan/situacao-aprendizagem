@@ -90,6 +90,11 @@
             </div>
 
             <div class="container">
+                <div v-if="apiErros.length > 0" class="col-12 alert-danger" v-for="erro in apiErros" style="margin-top: 20px; width: 100%;">
+                    <i class="material-icons">warning</i>
+                    {{erro}}
+                </div>
+                
                 <table class="tabela" v-if="salas.length > 0">
                     <thead>
                         <tr>
@@ -117,13 +122,14 @@
                 </table>
                 <div class="sala-mobile" v-for="sala in salas">
                     <h3>Sala {{sala.numero}}</h3>
-                    <div class="flex-column">
+                    <hr style="margin: 10px 0px;">
+                    <div class="flex between">
                         <small>{{sala.apelido}}</small>
-                        <small>{{sala.descricao_tipo}</small>
+                        <small>{{sala.descricao_tipo}}</small>
                     </div>
                     <div class="flex between">
-                        <small><strong>Bloco </strong>{{sala.bloco}}</small>
-                        <small><strong>Capacidade {{sala.capacidade}}</strong></small>
+                        <small>Bloco {{sala.bloco}}</small>
+                        <small>Capacidade {{sala.capacidade}}</small>
                     </div>
                     <div class="sala-actions-mobile">
                         <i class="material-icons edit" @Click="irParaEditarSala(sala.id)">edit</i>
@@ -148,6 +154,22 @@
                     </div>
                 </div>
             </div>
+            <div class="modal" v-if="deletando">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>Tem certeza que quer deletar essa sala?</p>
+                    <div class="modal-actions">
+                        <div class="cancel-modal" @Click="deletandoSala">
+                            <i class="material-icons">close</i>
+                            Não
+                        </div>
+                        <div class="accept-modal" @Click="confirmarDelete">
+                            <i class="material-icons">check_circle</i>
+                            Sim
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <script src="/common.js"></script>
@@ -161,6 +183,7 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    deletando: false,
                     salas: [],
                     apiErro: false,
                     apiErros: []
@@ -203,11 +226,12 @@
                     irParaNovaSala() {
                         window.location = '/salas/nova_sala.html';
                     },
-                    irParaEditarSala() {
+                    irParaEditarSala(id) {
+                        localStorage.setItem('id_sala', id);
                         window.location = '/salas/editar_sala.html';
                     },
                     deletandoSala(id) {
-                        localStorage.setItem('id_sala');
+                        localStorage.setItem('id_sala', id);
                         if(this.deletando) {
                             this.deletando = false;
                         } else {
@@ -226,8 +250,12 @@
                         let resJson = await responseAPI.json();
 
                         if(responseAPI.status == 200) {
-                            localStorage.removeItem('id_salas');
+                            localStorage.removeItem('id_sala');
                             window.location.reload();
+                        } else {
+                            this.apiErro = true;
+                            this.deletando = false;
+                            this.apiErros.push(resJson.error);
                         }
                     }
                 }

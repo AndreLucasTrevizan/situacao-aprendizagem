@@ -45,6 +45,10 @@ select {
     outline: none;
 }
 
+.sala-mobile {
+    display: none;
+}
+
 .turma-mobile {
     display: none;
 }
@@ -120,6 +124,7 @@ select {
 
 .alert-success svg {
     width: 30px;
+    margin-right: 10px;
 }
 
 .form-actions {
