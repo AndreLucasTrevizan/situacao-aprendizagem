@@ -131,6 +131,21 @@
                         <small>Bloco {{sala.bloco}}</small>
                         <small>Capacidade {{sala.capacidade}}</small>
                     </div>
+                    <div class="flex between">
+                        <small>
+                            Criada {{new Date(sala.createdAt).toLocaleDateString('pt-BR')}}
+                        </small>
+                        <small>
+                            <div v-if="
+                                !(sala.createdAt == sala.updatedAt)
+                            ">
+                                Atualizada {{new Date(sala.updatedAt).toLocaleDateString('pt-BR')}}
+                            </div>
+                            <div v-else>
+                                Sem Atualizações
+                            </div>
+                        </small>
+                    </div>
                     <div class="sala-actions-mobile">
                         <i class="material-icons edit" @Click="irParaEditarSala(sala.id)">edit</i>
                         <i class="material-icons delete" @Click="deletandoSala(sala.id)">delete</i>

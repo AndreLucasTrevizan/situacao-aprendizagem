@@ -121,6 +121,10 @@
         margin: 20px 0px;
     }
 
+    .usuario-mobile small {
+        font-size: 16px;
+    }
+
     .usuario-mobile summary {
         display: flex;
         align-items: center;

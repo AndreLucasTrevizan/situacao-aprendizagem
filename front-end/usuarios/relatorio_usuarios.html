@@ -156,14 +156,13 @@
                         <strong>
                             <small>
                                 Críado em {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}
-                                às {{new Date(usuario.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
                             </small>
                         </strong>
                         <strong>
-                            <small>
+                            <small v-if="usuario.createdAt != usuario.updatedAt">
                                 Atualizado em {{new Date(usuario.updatedAt).toLocaleDateString('pt-BR')}}
-                                às {{new Date(usuario.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
                             </small>
+                            <small v-else>Sem Atualizações</small>
                         </strong>
                     </div>
                     <div class="flex evenly usuario-actions-mobile">
