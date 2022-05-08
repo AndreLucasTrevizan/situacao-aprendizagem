@@ -84,7 +84,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                       </svg>
-                    <h5>Usuário críado com sucesso</h5>
+                    <h5>Turma críada com sucesso</h5>
                 </div>
 
                 <fieldset>
@@ -116,7 +116,7 @@
                                     type="text"
                                     name="curso"
                                     id="curso"
-                                    v-model="turma.curso"
+                                    v-model="turma.nome_curso"
                                     placeholder="Curso da turma"
                                 >
                                 <small class="error" v-if="cursoErros.length > 0" v-for="erro in cursoErros">{{erro}}</small>
@@ -129,7 +129,7 @@
                                     type="date"
                                     name="ano_de_inicio"
                                     id="ano_de_inicio"
-                                    v-model="turma.ano_de_inicio"
+                                    v-model="turma.ano_inicio"
                                 >
                                 <small class="error" v-if="dataErros.length > 0" v-for="erro in dataErros">{{erro}}</small>
                             </div>
@@ -196,8 +196,8 @@
                     btnText: 'Cadastrar',
                     turma: {
                         apelido: '',
-                        curso: '',
-                        ano_de_inicio: '',
+                        nome_curso: '',
+                        ano_inicio: '',
                         duracao: ''
                     },
                     apelidoErros: [],
@@ -271,18 +271,18 @@
                             this.apelidoErros.push('O apelido não pode conter menos de 03 caracteres.');
                         }
 
-                        if(this.turma.curso == '' || this.turma.curso == undefined) {
+                        if(this.turma.nome_curso == '' || this.turma.nome_curso == undefined) {
                             this.cursoErros.push('O curso não pode ser vazio.');
-                        } else if(this.turma.curso.length > 50) {
+                        } else if(this.turma.nome_curso.length > 50) {
                             this.cursoErros.push('O curso não pode conter mais de 50 caracteres.');
-                        } else if(this.turma.curso.length < 10) {
+                        } else if(this.turma.nome_curso.length < 10) {
                             this.cursoErros.push('O curso não pode conter menos de 03 caracteres.');
                         }
 
-                        if(this.turma.ano_de_inicio == '' || this.turma.ano_de_inicio == undefined) {
+                        if(this.turma.ano_inicio == '' || this.turma.ano_inicio == undefined) {
                             this.dataErros.push('A data não pode ser vazia.');
                         } else if (
-                            new Date(this.turma.ano_de_inicio) < Date.now()
+                            new Date(this.turma.ano_inicio) < Date.now()
                         ) {
                             this.dataErros.push('Data Inválida');
                         }

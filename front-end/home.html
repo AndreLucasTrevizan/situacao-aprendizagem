@@ -114,11 +114,12 @@
                     saindo: false,
                     reservas: []
                 },
-                created() {
+                async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
                     }
+
                 },
                 methods: {
                     confirmarSaida() {

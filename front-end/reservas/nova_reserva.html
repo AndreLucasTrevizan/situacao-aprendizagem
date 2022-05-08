@@ -105,12 +105,34 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    salas: [],
+                    turmas: [],
                 },
                 created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
                     }
+
+                    let responseSalasAPI = await fetch(`${api_url}/salas`, {
+                        method: 'get',
+                        headers: api_header,
+                        mode: 'cors'
+                    });
+
+                    let responseTurmasAPI = await fetch(`${api_url}/turmas`, {
+                        method: 'get',
+                        headers: api_header,
+                        mode: 'cors'
+                    });
+
+                    let resSalasJson = await responseSalasAPI.json();
+                    let resTurmasJson = await responseTurmasAPI.json();
+
+                    this.salas = resSalasJson;
+                    this.turmas = resTurmasJson;
+                    console.log(this.salas);
+                    console.log(this.turmas);
                 },
                 methods: {
                     confirmarSaida() {
