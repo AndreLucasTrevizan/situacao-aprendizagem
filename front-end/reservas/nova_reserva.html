@@ -25,7 +25,7 @@
                     </div>
                     <div class="menu-esquerdo">
                         <div class="logo-menu">
-                            <img src="/assets/SA-LogoSite.png" width="70" />
+                            <img @Click="irParaHome" src="/assets/SA-LogoSite.png" width="70" />
                         </div>
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
@@ -73,7 +73,96 @@
             </nav>
 
             <div class="container">
-                
+                <div class="alert-warning" v-if="apiErro">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <h5 v-for="erro in apiErros">{{erro}}</h5>
+                </div>
+
+                <div class="alert-success" v-if="criado">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                      </svg>
+                    <h5>Reserva críada com sucesso</h5>
+                </div>
+
+                <fieldset>
+                    <legend>
+                        <h3>Adicionando Reservas</h3>
+                    </legend>
+                    <p style="border-bottom: 1px solid #e3e3e3;">
+                        As reservas são podem ser feitas pelos professores e por usuários administradores, elas podem ser
+                        editadas mais tarde pelo professor que a criou ou pelo administrador.
+                    </p>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="flex-column">
+                                <label for="justificativa">Justificativa</label>
+                                <input
+                                    type="text"
+                                    name="justificativa"
+                                    id="justificativa"
+                                    v-model="reserva.justificativa"
+                                    placeholder="Justificativa da reserva"
+                                >
+                                <small class="error" v-if="justificativaErros.length > 0" v-for="erro in justificativaErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="dt_reserva">Data da Reserva</label>
+                                <input
+                                    type="date"
+                                    name="dt_reserva"
+                                    id="dt_reserva"
+                                    v-model="reserva.dt_reserva"
+                                >
+                                <small class="error" v-if="dateErros.length > 0" v-for="erro in dateErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="periodo">Periodo</label>
+                                <select v-model="reserva.periodo">
+                                    <option value="Matutino">Matutino</option>
+                                    <option value="Vespertino">Vespertino</option>
+                                    <option value="Noturno">Noturno</option>
+                                </select>
+                                <small class="error" v-if="periodoErros.length > 0" v-for="erro in periodoErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="id_sala">Sala/Lab de Aula</label>
+                                <select id="id_sala" v-model="reserva.id_sala">
+                                    <option v-for="sala in salas" :value="sala.id">{{sala.apelido}}</option>
+                                </select>
+                                <small class="error" v-if="salaErros.length > 0" v-for="erro in salaErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="id_turma">Turma</label>
+                                <select id="id_turma" v-model="reserva.id_turma">
+                                    <option v-for="turma in turmas" :value="turma.id">
+                                        {{turma.apelido}} - {{turma.nome_curso}}
+                                    </option>
+                                </select>
+                                <small class="error" v-if="turmaErros.length > 0" v-for="erro in turmaErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-12 flex between action-mobile">
+                            <button class="btn btn-primary create-flex" @Click="criarReserva">
+                                <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
+                                {{btnText}}
+                            </button>
+                            <button class="btn btn-danger">
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </fieldset>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -105,10 +194,26 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    apiErro: false,
+                    criado: false,
+                    cadastrando: false,
+                    btnText: 'Cadastrar',
+                    reserva: {
+                        justificativa: '',
+                        dt_reserva: new Date(Date.now()).toISOString().substring(0, 10),
+                        periodo: '',
+                        id_sala: '',
+                        id_turma: ''
+                    },
+                    justificativaErros: [],
+                    dateErros: [],
+                    periodoErros: [],
+                    salaErros: [],
+                    turmaErros: [],
                     salas: [],
                     turmas: [],
                 },
-                created() {
+                async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
@@ -131,8 +236,6 @@
 
                     this.salas = resSalasJson;
                     this.turmas = resTurmasJson;
-                    console.log(this.salas);
-                    console.log(this.turmas);
                 },
                 methods: {
                     confirmarSaida() {
@@ -147,6 +250,86 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    irParaHome() {
+                        window.location = '/home.html';
+                    },
+                    async criarReserva() {
+                        if(this.validacao()) {
+                            this.cadastrando = true;
+                            this.btnText = 'Cadastrando...';
+                            console.log({...this.reserva, id_usuario: this.usuarioLogado.id});
+                            let responseAPI = await fetch(`${api_url}/reservas`, {
+                                method: 'post',
+                                headers: api_header,
+                                mode: 'cors',
+                                body: JSON.stringify({...this.reserva, id_usuario: this.usuarioLogado.id})
+                            });
+
+                            let resJson = await responseAPI.json();
+
+                            if(responseAPI.status == 201) {
+                                this.criado = true;
+                                this.cadastrando = false;
+                                this.btnText = 'Cadastrar';
+                                setTimeout(() => {
+                                    window.location = '/home.html';
+                                }, 3000);
+                            } else {
+                                this.apiErro = true;
+                                this.cadastrando = false;
+                                this.btnText = 'Cadastrar';
+                                this.apiErros.push(resJson.error);
+                                setTimeout(() => {
+                                    this.apiErro = false;
+                                    this.apiErros = [];
+                                }, 3000);
+                            }
+                        }
+                    },
+                    validacao() {
+                        this.justificativaErros = [];
+                        this.dateErros = [];
+                        this.periodoErros = [];
+                        this.salaErros = [];
+                        this.turmaErros = [];
+                        this.apiErros = [];
+
+                        if(this.reserva.justificativa == '' || this.reserva.justificativa == undefined) {
+                            this.justificativaErros.push('A justificativa não pode ser vazia.');
+                        } else if(this.reserva.justificativa.length > 50) {
+                            this.justificativaErros.push('A justificativa não pode conter mais de 50 caracteres.');
+                        } else if(this.reserva.justificativa.length < 10) {
+                            this.justificativaErros.push('A justificativa não pode conter menos de 10 caracteres.');
+                        }
+
+                        if(this.reserva.dt_reserva == '' || this.reserva.dt_reserva == undefined) {
+                            this.dateErros.push('A data não pode ser vazia.');
+                        }
+
+                        if(this.reserva.periodo == '' || this.reserva.periodo == undefined) {
+                            this.periodoErros.push('A sala não pode ser vazia');
+                        }
+
+                        if(this.reserva.id_sala == '' || this.reserva.id_sala == undefined) {
+                            this.salaErros.push('A sala não pode ser vazia');
+                        }
+                        
+                        if(this.reserva.id_turma == '' || this.reserva.id_turma == undefined) {
+                            this.turmaErros.push('A turma não pode ser vazia');
+                        }
+
+                        if(
+                            this.justificativaErros.length > 0 ||
+                            this.dateErros.length > 0 ||
+                            this.periodoErros.length > 0 ||
+                            this.salaErros.length > 0 ||
+                            this.turmaErros.length > 0
+                        ) {
+                            return false;
+                        } else {
+                            return true;
+                        }
                     }
                 }
             });

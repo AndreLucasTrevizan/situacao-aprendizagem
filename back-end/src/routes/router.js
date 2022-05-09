@@ -7,6 +7,7 @@ const uploadAvatar = require('../middlewares/uploadAvatar');
 const UsuariosController = require('../controllers/UsuarioController');
 const TurmasController = require('../controllers/TurmaController');
 const SalasController = require('../controllers/SalaController');
+const ReservasController = require('../controllers/ReservaController');
 
 router.post('/login', UsuariosController.Login);
 
@@ -27,5 +28,8 @@ router.get('/salas/:id', SalasController.ListarSalaPorId);
 router.post('/salas', SalasController.CriarSala);
 router.put('/salas', SalasController.EditarSala);
 router.delete('/salas', SalasController.DeletarSala);
+
+router.get('/reservas/:dt_reserva', ReservasController.ListarReservas);
+router.post('/reservas', ReservasController.criarReserva);
 
 module.exports = router;

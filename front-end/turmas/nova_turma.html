@@ -25,7 +25,7 @@
                     </div>
                     <div class="menu-esquerdo">
                         <div class="logo-menu">
-                            <img src="/assets/SA-LogoSite.png" width="70" />
+                            <img @Click="irParaHome" src="/assets/SA-LogoSite.png" width="70" />
                         </div>
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
@@ -225,6 +225,9 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    irParaHome() {
+                        window.location = '/home.html';
                     },
                     async criarTurma() {
                         if(this.validacao()) {

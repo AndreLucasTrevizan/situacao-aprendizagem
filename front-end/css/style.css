@@ -112,6 +112,10 @@ select {
     width: 30px;
 }
 
+.alert-warning svg {
+    margin-right: 10px;
+}
+
 .alert-success {
     display: flex;
     align-items: center;

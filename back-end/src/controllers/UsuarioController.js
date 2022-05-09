@@ -12,6 +12,7 @@ class UsuarioController {
 
             if(rows.length > 0 && bcryptjs.compareSync(senha, rows[0].senha)) {
                 let user = {
+                    id: rows[0].id,
                     avatar: rows[0].avatar,
                     nome: rows[0].nome,
                     email: rows[0].email,

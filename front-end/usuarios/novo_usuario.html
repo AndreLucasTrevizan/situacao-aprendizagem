@@ -25,12 +25,12 @@
                     </div>
                     <div class="menu-esquerdo">
                         <div class="logo-menu">
-                            <img src="/assets/SA-LogoSite.png" width="70" />
+                            <img @Click="irParaHome" src="/assets/SA-LogoSite.png" width="70" />
                         </div>
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
                             <li @Click="irParaTurmas">Turmas</li>
-                            <li @Click="irParaUsuarios">Usuários</li>
+                            <li @Click="irParaUsuarios" v-if="usuarioLogado.funcao == 1">Usuários</li>
                         </ul>
                     </div>
                     <div class="menu-direito">
@@ -53,7 +53,7 @@
                             <i class="material-icons">groups</i>
                             Turmas
                         </li>
-                        <li @Click="irParaUsuarios" style="border-top: none;">
+                        <li @Click="irParaUsuarios" style="border-top: none;" v-if="usuarioLogado.funcao == 1">
                             <i class="material-icons">account_circle</i>
                             Usuários
                         </li>
@@ -269,6 +269,9 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    irParaHome() {
+                        window.location = '/home.html';
                     },
                     async criarUsuario() {
                         if(this.validacao()) {

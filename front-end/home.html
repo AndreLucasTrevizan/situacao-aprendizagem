@@ -25,7 +25,7 @@
                     </div>
                     <div class="menu-esquerdo">
                         <div class="logo-menu">
-                            <img src="/assets/SA-LogoSite.png" width="70" />
+                            <img @Click="irParaHome" src="/assets/SA-LogoSite.png" width="70" />
                         </div>
                         <ul class="menu-items">
                             <li @Click="irParaSalas">Salas</li>
@@ -72,12 +72,21 @@
                 </ul>
             </nav>
 
+            <div class="container">
+                <div class="alert-warning" v-if="apiErro">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <h5 v-for="erro in apiErros">{{erro}}</h5>
+                </div>
+            </div>
+
             <div class="flex-column center">
                 <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
-                <div class="add-button">
+                <div class="add-button" @Click="irParaNovaReserva">
                     <i class="material-icons">add</i>
                 </div>
-                <button class="add-button-mx">
+                <button class="add-button-mx" @Click="irParaNovaReserva">
                     <i class="material-icons">add</i>
                     Adicionar Reserva
                 </button>
@@ -112,6 +121,8 @@
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
+                    apiErro: false,
+                    apiErros: [],
                     reservas: []
                 },
                 async created() {
@@ -120,6 +131,20 @@
                         window.location = '/index.html';
                     }
 
+                    let responseAPI = await fetch(`${api_url}/reservas/${new Date(Date.now()).toISOString().substring(0, 10)}`, {
+                        method: 'get',
+                        headers: api_header,
+                        mode: 'cors'
+                    });
+
+                    let resJson = await responseAPI.json();
+
+                    if(responseAPI.status == 200) {
+                        console.log(resJson);
+                    } else {
+                        this.apiErro = true;
+                        this.apiErros.push(resJson.error);
+                    }
                 },
                 methods: {
                     confirmarSaida() {
@@ -134,6 +159,12 @@
                     },
                     irParaUsuarios() {
                         window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    irParaNovaReserva() {
+                        window.location = '/reservas/nova_reserva.html';
+                    },
+                    irParaHome() {
+                        window.location = '/home.html';
                     }
                 }
             });
