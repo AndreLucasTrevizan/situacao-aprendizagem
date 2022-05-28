@@ -6,6 +6,8 @@
 
 body {
     font-family: sans-serif;
+    font-style: inherit;
+    letter-spacing: 0.88;
 }
 
 nav {
@@ -43,6 +45,158 @@ select {
     border-radius: 2px;
     padding: 8px;
     outline: none;
+}
+
+select option {
+    font-size: 18px;
+}
+
+.usuario-actions {
+    width: 100%;
+    padding: 10px 0px;
+}
+
+.usuario-actions i {
+    font-size: 35px;
+}
+
+.usuarios {
+    display: flex;
+    flex-basis: auto;
+    flex-wrap: wrap;
+    justify-content: space-around;
+}
+
+.usuario {
+    width: 30%;
+    border: 1px solid #E3E3E3;
+    border-radius: 5px;
+    padding: 10px;
+    margin: 10px;
+    overflow: hidden;
+}
+
+.usuario details summary {
+    text-align: center;
+}
+
+.usuario details small {
+    font-size: 16px;
+}
+
+.usuario-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-bottom: 1px solid #E3E3E3;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+}
+
+.item-usuario {
+    width: 90px;
+    height: 90px;
+}
+
+.item-usuario img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+
+.user-image {
+    display: flex;
+    justify-content: center;
+}
+
+.label-avatar {
+    width: 280px;
+    height: 280px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    cursor: pointer;
+}
+
+.label-avatar img {
+    border-radius: 50%;
+}
+
+.label-avatar input {
+    display: none;
+}
+
+.label-avatar span {
+    z-index: 99;
+    position: absolute;
+    opacity: 0.7;
+    transition: all .5s;
+}
+
+.label-avatar span:hover {
+    opacity: 1;
+    transform: scale(1.4);
+}
+
+.link-perfil:hover {
+    cursor: pointer;
+    color: #0053cf;
+    text-decoration: underline;
+}
+
+.loading-filter {
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+}
+
+.reservas {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 20px 0px;
+}
+
+.reserva {
+    border: 1px solid #E3E3E3;
+    border-radius: 10px;
+    width: 300px;
+}
+
+.reserva-header {
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 10px;
+    color: #FFF;
+    border-bottom: 1px solid #E3E3E3;
+}
+/* 
+.reserva h4 {
+    color: #FFF;
+} */
+
+.reserva-header img {
+    width: 30px;
+    border-radius: 50%;
+    box-shadow: 0px 0px 3px black;
+}
+
+.reserva-body {
+    padding: 10px;
+    font-size: 18px;
+}
+
+.reserva-footer {
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px;
+}
+
+.reserva-footer i {
+    font-size: 35px;
 }
 
 .sala-mobile {

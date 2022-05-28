@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/mobile.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
         <link href="/assets/SA-LogoSite.png" type="image/x-icon">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
@@ -67,10 +68,17 @@
                         </div>
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
+                        <a class="link-perfil" @Click="irParaVerPerfil">Visualizar Perfil</a>
                     </li>
                     <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
             </nav>
+
+            <div class="flex center" style="padding-top: 20px;">
+                <div class="add-button" @Click="irParaNovaReserva">
+                    <i class="material-icons">add</i>
+                </div>
+            </div>
 
             <div class="container">
                 <div class="alert-warning" v-if="apiErro">
@@ -79,17 +87,58 @@
                     </svg>
                     <h5 v-for="erro in apiErros">{{erro}}</h5>
                 </div>
-            </div>
 
-            <div class="flex-column center">
-                <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
-                <div class="add-button" @Click="irParaNovaReserva">
-                    <i class="material-icons">add</i>
+                <div class="filtro">
+                    <label>Filtro por data</label><br>
+                    <input type="date" v-model="dt_filter" @Change="filtrar">
                 </div>
+                <br><hr><br>
                 <button class="add-button-mx" @Click="irParaNovaReserva">
                     <i class="material-icons">add</i>
                     Adicionar Reserva
                 </button>
+
+                <div class="loading-filter" v-if="carregando">
+                    <div class="flex center">
+                        <img src="/assets/loading.gif" style="margin: 10px;" width="50px">
+                        Carregando...
+                    </div>
+                </div>
+
+                <h4 v-if="reservas.length > 0" style="margin-top: 20px;">Reservas para o dia {{new Date(dt_filter).toLocaleDateString('pt-BR')}}</h4>
+
+                <div class="reservas">
+                    <div class="reserva" v-for="reserva in reservas">
+                        <div class="reserva-header flex between">
+                            <h4>{{reserva.sala}}</h4>
+                            <div class="flex between">
+                                <div class="avatar-usuario">
+                                    <img
+                                        :src="`${api_url}/uploads/${reserva.avatar}`"
+                                        :title="reserva.usuario"
+                                        :alt="reserva.usuario"
+                                    >
+                                </div>
+                                <a style="margin-left: 10px;">{{reserva.usuario.split(' ')[0]}}</a>
+                            </div>
+                        </div>
+                        <div class="reserva-body flex-column">
+                            <div class="flex between">
+                                <a>Periodo {{reserva.periodo}}</a>
+                                <a>Turma {{reserva.turma}}</a>
+                            </div>
+                            <a>{{reserva.justificativa}}</a>
+                        </div>
+                        <div class="reserva-footer" v-if="reserva.id_usuario == usuarioLogado.id || usuarioLogado.funcao == 1">
+                            <i class="material-icons edit" @Click="editarReserva(reserva.id)">edit</i>
+                            <i class="material-icons delete" @Click="deletandoReserva(reserva.id)">delete</i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-column center" v-if="reservas.length == 0">
+                <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
             </div>
 
             <div class="modal" v-if="saindo">
@@ -102,6 +151,22 @@
                             Não
                         </div>
                         <div class="accept-modal" @Click="confirmarSaida">
+                            <i class="material-icons">check_circle</i>
+                            Sim
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal" v-if="deletando">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>Tem certeza que quer deletar essa reserva?</p>
+                    <div class="modal-actions">
+                        <div class="cancel-modal" @Click="deletando = false">
+                            <i class="material-icons">close</i>
+                            Não
+                        </div>
+                        <div class="accept-modal" @Click="confirmarDelete">
                             <i class="material-icons">check_circle</i>
                             Sim
                         </div>
@@ -122,16 +187,20 @@
                     userInfoMobile: false,
                     saindo: false,
                     apiErro: false,
+                    carregando: false,
+                    deletando: false,
+                    dt_filter: new Date(Date.now()).toISOString().substring(0, 10),
                     apiErros: [],
                     reservas: []
                 },
                 async created() {
+                    this.carregando = true;
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
                     }
 
-                    let responseAPI = await fetch(`${api_url}/reservas/${new Date(Date.now()).toISOString().substring(0, 10)}`, {
+                    let responseAPI = await fetch(`${api_url}/reservas/dia/${new Date(Date.now()).toISOString().substring(0, 10)}`, {
                         method: 'get',
                         headers: api_header,
                         mode: 'cors'
@@ -140,10 +209,15 @@
                     let resJson = await responseAPI.json();
 
                     if(responseAPI.status == 200) {
-                        console.log(resJson);
+                        this.carregando = false;
+                        this.reservas = resJson;
                     } else {
                         this.apiErro = true;
                         this.apiErros.push(resJson.error);
+                        setTimeout(() => {
+                            this.apiErro = false;
+                            this.apiErros = [];
+                        }, 3000);
                     }
                 },
                 methods: {
@@ -163,8 +237,64 @@
                     irParaNovaReserva() {
                         window.location = '/reservas/nova_reserva.html';
                     },
+                    irParaVerPerfil() {
+                        window.location = '/usuarios/perfil.html';
+                    },
                     irParaHome() {
                         window.location = '/home.html';
+                    },
+                    deletandoReserva(id) {
+                        localStorage.setItem('id_delete', id);
+                        if(this.deletando) {
+                            this.deletando = false;
+                        } else {
+                            this.deletando = true;
+                        }
+                    },
+                    async confirmarDelete() {
+                        let id = JSON.parse(localStorage.getItem('id_delete'));
+                        let responseAPI = await fetch(`${api_url}/reservas`, {
+                            method: 'DELETE',
+                            headers: api_header,
+                            mode: 'cors',
+                            body: JSON.stringify({id: id})
+                        });
+
+                        let resJson = await responseAPI.json();
+
+                        if(responseAPI.status == 200) {
+                            window.location = '/home.html';
+                        } else {
+                            this.apiErro = true;
+                            this.apiErros.push(resJson);
+                        }
+                    },
+                    editarReserva(id) {
+                        localStorage.setItem('id_reserva', id);
+                        window.location = '/reservas/editar_reserva.html';
+                    },
+                    async filtrar() {
+                        this.carregando = true;
+                        let responseAPI = await fetch(`${api_url}/reservas/dia/${this.dt_filter}`, {
+                            method: 'GET',
+                            headers: api_header,
+                            mode: 'cors'
+                        });
+
+                        let resJson = await responseAPI.json();
+
+                        if(responseAPI.status == 200) {
+                            this.carregando = false;
+                            this.reservas = resJson;
+                        } else {
+                            this.carregando = false;
+                            this.apiErro = true;
+                            this.apiErros.push(resJson);
+                            setTimeout(() => {
+                                this.apiErro = false;
+                                this.apiErros = [];
+                            }, 3000);
+                        }
                     }
                 }
             });

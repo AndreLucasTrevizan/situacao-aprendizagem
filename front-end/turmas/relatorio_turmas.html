@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/mobile.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
-        <link href="/assets/SA-LogoSite.png" type="image/x-icon">
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
@@ -67,6 +67,7 @@
                         </div>
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
+                        <a class="link-perfil" @Click="irParaVerPerfil">Visualizar Perfil</a>
                     </li>
                     <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
@@ -124,12 +125,12 @@
                     </div>
                     <div class="flex between">
                         <small>
-                            <strong>Criada em: </strong>{{new Date(turma.createdAt).toLocaleDateString('pt-BR')}}
+                            <strong>Criada </strong>{{new Date(turma.createdAt).toLocaleDateString('pt-BR')}}
                             {{new Date(turma.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
                         </small>
                         <small>
                             <div v-if="turma.createdAt != turma.updatedAt">
-                                <strong>Atualizada em: </strong>{{new Date(turma.updatedAt).toLocaleDateString('pt-BR')}}
+                                <strong>Atualizada </strong>{{new Date(turma.updatedAt).toLocaleDateString('pt-BR')}}
                                 {{new Date(turma.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
                             </div>
                             <div v-else>
@@ -238,6 +239,9 @@
                         } else {
                             this.deletando = true;
                         }
+                    },
+                    irParaVerPerfil() {
+                        window.location = '/usuarios/perfil.html';
                     },
                     irParaHome() {
                         window.location = '/home.html';

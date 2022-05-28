@@ -81,91 +81,97 @@
                     <h5 v-for="erro in apiErros">{{erro}}</h5>
                 </div>
 
-                <div class="alert-success" v-if="criado">
+                <div class="alert-success" v-if="editado">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                       </svg>
-                    <h5>Sala críada com sucesso</h5>
+                    <h5>Alterações feitas com sucesso</h5>
                 </div>
 
                 <fieldset>
                     <legend>
-                        <h3>Adicionando Salas</h3>
+                        <h3>Seu Perfil</h3>
                     </legend>
-                    <p style="border-bottom: 1px solid #e3e3e3;">
-                        As salas são fundamentais para a criação de reservas pelos professores dentro do sistema, seus dados também
-                        podem ser alterados mais tarde, fique tranquilo.
-                    </p>
+                    <div class="user-image">
+                        <label class="label-avatar">
+                            <span>
+                                <svg style="width: 20px" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                                </svg>
+                            </span>
+    
+                            <input type="file" accept='image/*' @Change="handleFile($event)" /><br />
+                            <img :src="avatarUrl" alt="Avatar Usuário" width="200" height="200" />
+                        </label>
+                    </div>
                     <div class="row">
-                        <div class="col-6">
-                            <div class="flex-column">
-                                <label for="numero">Numero</label>
-                                <input
-                                    type="number"
-                                    name="numero"
-                                    id="numero"
-                                    v-model="sala.numero"
-                                    placeholder="Número da sala"
-                                >
-                                <small class="error" v-if="numeroErros.length > 0" v-for="erro in numeroErros">{{erro}}</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="flex-column">
-                                <label for="bloco">Bloco</label>
-                                <input
-                                    type="number"
-                                    name="bloco"
-                                    id="bloco"
-                                    v-model="sala.bloco"
-                                    placeholder="Bloco da sala"
-                                >
-                                <small class="error" v-if="blocoErros.length > 0" v-for="erro in blocoErros">{{erro}}</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="flex-column">
-                                <label for="apelido">Apelido</label>
-                                <input
-                                    type="text"
-                                    name="apelido"
-                                    id="apelido"
-                                    v-model="sala.apelido"
-                                    placeholder="Apelido da sala"
-                                >
-                                <small class="error" v-if="apelidoErros.length > 0" v-for="erro in apelidoErros">{{erro}}</small>
-                            </div>
-                        </div>
-                        <div class="col-6">
-                            <div class="flex-column">
-                                <label for="capacidade">Capacidade</label>
-                                <input
-                                    type="number"
-                                    name="capacidade"
-                                    id="capacidade"
-                                    v-model="sala.capacidade"
-                                    placeholder="Capacidade da sala"
-                                >
-                                <small class="error" v-if="capacidadeErros.length > 0" v-for="erro in capacidadeErros">{{erro}}</small>
-                            </div>
-                        </div>
                         <div class="col-12">
                             <div class="flex-column">
-                                <label for="descricao_tipo">Descrição</label>
+                                <label for="nome">Nome</label>
                                 <input
                                     type="text"
-                                    autocomplete="off"
-                                    name="descricao_tipo"
-                                    id="descricao_tipo"
-                                    v-model="sala.descricao_tipo"
-                                    placeholder="Descrição do tipo da sala"
+                                    name="nome"
+                                    id="nome"
+                                    v-model="usuario.nome"
+                                    placeholder="Nome do usuário"
                                 >
-                                <small class="error" v-if="descricaoTipoErros.length > 0" v-for="erro in descricaoTipoErros">{{erro}}</small>
+                                <small class="error" v-if="nomeErros.length > 0" v-for="erro in nomeErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="cpf">CPF</label>
+                                <input
+                                    type="text"
+                                    name="cpf"
+                                    id="cpf"
+                                    v-model="usuario.cpf"
+                                    placeholder="CPF do usuário"
+                                >
+                                <small class="error" v-if="cpfErros.length > 0" v-for="erro in cpfErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="dt_nascimento">Data de Nascimento</label>
+                                <input
+                                    type="date"
+                                    name="dt_nascimento"
+                                    id="dt_nascimento"
+                                    v-model="usuario.dt_nascimento"
+                                >
+                                <small class="error" v-if="dataErros.length > 0" v-for="erro in dataErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="email">Email</label>
+                                <input
+                                    type="email"
+                                    autocomplete="off"
+                                    name="email"
+                                    id="email"
+                                    v-model="usuario.email"
+                                    placeholder="Email do usuário"
+                                >
+                                <small class="error" v-if="emailErros.length > 0" v-for="erro in emailErros">{{erro}}</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="flex-column">
+                                <label for="sexo">Sexo</label>
+                                <select v-model="usuario.sexo" id="sexo">
+                                    <option disable>Escolha o sexo...</option>
+                                    <option value="1">Masculino</option>
+                                    <option value="2">Feminino</option>
+                                    <option value="3">Outro</option>
+                                </select>
+                                <small class="error" v-if="sexoErros.length > 0" v-for="erro in sexoErros">{{erro}}</small>
                             </div>
                         </div>
                         <div class="col-12 flex between action-mobile">
-                            <button class="btn btn-primary create-flex" @Click="criarSala">
-                                <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
+                            <button class="btn btn-primary create-flex" @Click="editarUsuario">
+                                <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="editando">
                                 {{btnText}}
                             </button>
                             <button class="btn btn-danger" @Click="cancelar">
@@ -200,33 +206,53 @@
             var app = new Vue({
                 el: '#app',
                 data: {
+                    editado: false,
                     api_url: api_url,
+                    apiErro: false,
+                    editando: false,
                     usuarioLogado: null,
                     menuMobile: true,
                     userInfoMobile: false,
                     saindo: false,
-                    cadastrando: false,
-                    criado: false,
-                    apiErro: false,
-                    btnText: 'Cadastrar',
-                    sala: {
-                        numero: '',
-                        bloco: '',
-                        apelido: '',
-                        descricao_tipo: '',
-                        capacidade: ''
+                    btnText: 'Editar',
+                    avatarUrl: '',
+                    usuario: {
+                        id: '',
+                        avatar: '',
+                        nome: '',
+                        cpf: '',
+                        dt_nascimento: '',
+                        sexo: '',
+                        email: ''
                     },
-                    numeroErros: [],
-                    blocoErros: [],
-                    apelidoErros: [],
-                    descricaoTipoErros: [],
-                    capacidadeErros: [],
+                    nomeErros: [],
+                    cpfErros: [],
+                    dataErros: [],
+                    sexoErros: [],
+                    emailErros: [],
                     apiErros: []
                 },
-                created() {
+                async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
+                    }
+                    this.avatarUrl = `${api_url}/uploads/${this.usuarioLogado.avatar}`;
+
+                    let responseAPI = await fetch(`${api_url}/usuarios/${this.usuarioLogado.id}`, {
+                        method: 'get',
+                        headers: api_header,
+                        mode: 'cors'
+                    });
+
+                    let resJson = await responseAPI.json();
+
+                    if(responseAPI.status == 200) {
+                        let dt_nascimento = new Date(resJson.dt_nascimento).toISOString().substring(0, 10);
+                        this.usuario = {...resJson, dt_nascimento: dt_nascimento};
+                    } else {
+                        this.apiErro = true;
+                        this.apiErros.push(resJson);
                     }
                 },
                 methods: {
@@ -247,93 +273,108 @@
                         window.location = '/home.html';
                     },
                     cancelar() {
-                        window.location = '/salas/relatorio_salas.html';
+                        window.location = '/usuarios/relatorio_usuarios.html';
                     },
                     irParaVerPerfil() {
                         window.location = '/usuarios/perfil.html';
                     },
-                    async criarSala() {
+                    handleFile(e) {
+                        if(e.target.files[0]) {
+                            const image = e.target.files[0];
+
+                            if(image.type === 'image/jpeg' || image.type === 'image/png') {
+                                this.avatarUrl = URL.createObjectURL(e.target.files[0]);
+                                this.usuario.avatar = e.target.files[0];
+                            } else {
+                                alert('Envie um formato permitido de arquivo');
+                                return null;
+                            }
+                        }
+                    },
+                    async editarUsuario() {
                         if(this.validacao()) {
-                            this.cadastrando = true;
-                            this.btnText = 'Cadastrando...';
-                            let responseAPI = await fetch(`${api_url}/salas`, {
-                                method: 'post',
-                                headers: api_header,
+                            this.editando = true;
+                            this.btnText = 'Editando...';
+                            const fd =  new FormData();
+                            fd.append('avatar', this.usuario.avatar);
+                            fd.append('nome', this.usuario.nome);
+                            fd.append('cpf', this.usuario.cpf);
+                            fd.append('dt_nascimento', this.usuario.dt_nascimento);
+                            fd.append('sexo', this.usuario.sexo);
+                            fd.append('email', this.usuario.email);
+                            fd.append('id', this.usuario.id);
+
+                            let responseAPI = await fetch(`${api_url}/usuarios/perfil`, {
+                                method: 'PUT',
                                 mode: 'cors',
-                                body: JSON.stringify(this.sala)
+                                body: fd
                             });
 
                             let resJson = await responseAPI.json();
 
-                            if(responseAPI.status == 201) {
-                                this.criado = true;
-                                this.cadastrando = false;
-                                this.btnText = 'Cadastrar';
+                            if(responseAPI.status == 200) {
+                                this.editado = true;
+                                let usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+                                localStorage.removeItem('usuarioLogado');
+                                usuarioLogado.avatar = resJson.avatar;
+                                localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
                                 setTimeout(() => {
-                                    window.location = '/salas/relatorio_salas.html';
-                                }, 3000); 
-                            } else {
-                                this.cadastrando = false;
-                                this.apiErro = true;
-                                this.btnText = 'Cadastrar';
-                                this.apiErros.push(resJson.error);
-                                setTimeout(() => {
-                                    this.apiErro = false;
+                                    window.location.reload();
                                 }, 3000);
-                                return;
+                            } else {
+                                this.editando = false;
+                                this.apiErro = true;
+                                this.apiErros.push(resJson);
                             }
                         }
                     },
                     validacao() {
-                        this.numeroErros = [];
-                        this.blocoErros = [];
-                        this.apelidoErros = [];
-                        this.descricaoTipoErros = [];
-                        this.capacidadeErros = [];
+                        this.nomeErros = [];
+                        this.cpfErros = [];
+                        this.dataErros = [];
+                        this.sexoErros = [];
+                        this.emailErros = [];
                         this.apiErros = [];
 
-                        if(this.sala.numero == '' || this.sala.numero == undefined) {
-                            this.numeroErros.push('O numero não pode ser vazio.');
-                        } else if(this.sala.numero < 0) {
-                            this.numeroErros.push('Número inválido');
+                        if(this.usuario.nome == '' || this.usuario.nome == undefined) {
+                            this.nomeErros.push('O nome não pode ser vazio.');
+                        } else if(this.usuario.nome.length > 50) {
+                            this.nomeErros.push('O nome não pode conter mais de 50 caracteres.');
+                        } else if(this.usuario.nome.length < 3) {
+                            this.nomeErros.push('O nome não pode conter menos de 03 caracteres.');
                         }
 
-                        if(this.sala.bloco == '' || this.sala.bloco == undefined) {
-                            this.blocoErros.push('O bloco não pode ser vazio.');
-                        } else if(this.sala.bloco < 0) {
-                            this.blocoErros.push('Bloco inválido');
+                        if(this.usuario.cpf == '' || this.usuario.cpf == undefined) {
+                            this.cpfErros.push('O CPF não pode ser vazio.');
+                        } else if (this.usuario.cpf.length > 14) {
+                            this.cpfErros.push('O CPF não pode ter mais de 14 caracteres.');
                         }
 
-                        if(this.sala.apelido == '' || this.sala.apelido == undefined) {
-                            this.apelidoErros.push('O apelido não pode ser vazio.');
-                        } else if(this.sala.apelido.length > 15) {
-                            this.apelidoErros.push('O apelido não pode conter mais de 50 caracteres.');
-                        } else if(this.sala.apelido.length < 3) {
-                            this.apelidoErros.push('O apelido não pode conter menos de 03 caracteres.');
+                        if(this.usuario.dt_nascimento == '' || this.usuario.dt_nascimento == undefined) {
+                            this.dataErros.push('A data não pode ser vazia.');
+                        } else if (
+                            new Date(this.usuario.dt_nascimento).getFullYear() < 1950 ||
+                            new Date(this.usuario.dt_nascimento) > Date.now()
+                        ) {
+                            this.dataErros.push('Data Inválida');
                         }
 
-                        if(this.sala.descricao_tipo == '' || this.sala.descricao_tipo == undefined) {
-                            this.descricaoTipoErros.push('A descrição não pode ser vazia.');
-                        } else if(this.sala.descricao_tipo.length > 50) {
-                            this.descricaoTipoErros.push('A descrição não pode conter mais de 50 caracteres.');
-                        } else if(this.sala.descricao_tipo.length < 15) {
-                            this.descricaoTipoErros.push('A descrição não pode conter menos de 15 caracteres.');
+                        if(this.usuario.sexo == '' || this.usuario.sexo == undefined) {
+                            this.sexoErros.push('O sexo não pode ser vazio.');
                         }
 
-                        if(this.sala.capacidade == '' || this.sala.capacidade == undefined) {
-                            this.capacidadeErros.push('A capacidade não pode ser vazia');
-                        } else if(this.sala.capacidade > 40) {
-                            this.capacidadeErros.push('A capacidade pode ter no máximo 40 alunos');
-                        } else if(this.sala.capacidade < 15) {
-                            this.capacidadeErros.push('A capacidade precisa ser de pelo menos 15 alunos');
+                        if(this.usuario.email == '' || this.usuario.email == undefined) {
+                            this.emailErros.push('Email não pode ser vazio');
+                        } else if (!this.usuario.email.includes('@') || !this.usuario.email.includes('.com')) {
+                            this.emailErros.push('Email inválido');
                         }
 
                         if(
-                            this.numeroErros.length > 0 ||
-                            this.blocoErros.length > 0 ||
-                            this.apelidoErros.length > 0 ||
-                            this.descricaoTipoErros.length > 0 ||
-                            this.capacidadeErros.length > 0
+                            this.nomeErros.length > 0 ||
+                            this.cpfErros.length > 0 ||
+                            this.dataErros.length > 0 ||
+                            this.sexoErros.length > 0 ||
+                            this.emailErros.length > 0
                         ) {
                             return false;
                         } else {

@@ -1,53 +1,93 @@
-const db = require('../database/DbConnection');
-
 class ReservaController {
+
+    async ListarReservaPorId(req, res) {
+        try {
+            let {id} = req.params;
+            let sql = 'SELECT * FROM reserva WHERE id = ?';
+            let [response] = await req.dbConn.query(sql, id);
+            res.status(200).json(response[0]);
+        } catch (err) {
+            res.status(500).json({error: err.message});
+        }
+    }
 
     async ListarReservas(req, res) {
         try {
             let {dt_reserva} = req.params;
-            let sql = 'SELECT * FROM reserva WHERE reserva.dt_reserva = ?';
-            let dbData = await db.promise().query(sql, dt_reserva);
+            let sql = `
+                SELECT 
+                    sala.apelido as sala,
+                    turma.apelido as turma,
+                    usuario.avatar as avatar,
+                    usuario.nome as usuario,
+                    usuario.funcao as funcao,
+                    reserva.id as id,
+                    reserva.id_usuario as id_usuario,
+                    reserva.justificativa as justificativa,
+                    reserva.periodo as periodo,
+                    reserva.createdAt as createdAt,
+                    reserva.updatedAt as updatedAt
+                FROM reserva
+                INNER JOIN sala on sala.id = reserva.id_sala
+                INNER JOIN turma on turma.id = reserva.id_turma
+                INNER JOIN usuario on usuario.id = reserva.id_usuario
+                WHERE reserva.dt_reserva = ?;
+            `;
+            let [dbData] = await req.dbConn.query(sql, dt_reserva);
 
-            res.status(200).json(dbData[0]);
+            res.status(200).json(dbData);
         } catch (err) {
             res.status(500).json({error: err.message});
         }
     }
 
     async criarReserva(req, res) {
-        let {justificativa, dt_reserva, periodo, id_sala, id_turma, id_usuario} = req.body;
-        let sql = 'CALL InsereReserva(?, ?, ?, ?, ?, ?)';
-        let sql_verifica_data = 'SELECT * FROM reserva WHERE reserva.id_sala = ? and reserva.dt_reserva = ?';
-        let sql_verifica_periodo = 'SELECT * FROM reserva WHERE reserva.id_sala =? AND reserva.periodo = ?';
-        let data = false;
-        let periodo_valido = false;
-        
-        let dbReservaValida = await db.promise().query(sql_verifica_data, [
-            id_sala, dt_reserva
-        ]);
+        try {
+            let {justificativa, dt_reserva, periodo, id_sala, id_turma, id_usuario} = req.body;
+            let sql = 'CALL InsereReserva(?, ?, ?, ?, ?, ?)';
+            let sql_verifica_data = 'SELECT * FROM reserva WHERE reserva.id_sala = ? AND reserva.periodo = ? AND reserva.dt_reserva = ?';
 
-        if(dbReservaValida[0].length > 0) {
-            data = true;
+            let [reservaPorData] = await req.dbConn.query(sql_verifica_data, [id_sala, dt_reserva]);
+            
+            if(reservaPorData.length > 0) {
+                res.status(400).json({error: `Sala já cadastrada para o periodo ${periodo} no dia selecionado`});
+            } else {
+                let result = await req.dbConn.query(sql, [
+                    justificativa, dt_reserva, periodo, id_usuario, id_sala, id_turma
+                ]);
+
+                res.status(201).json(result);
+            }
+        } catch (error) {
+            res.status(500).json({error: error.message});
         }
+    }
 
-        let dbReservaPeriodoValido = await db.promise().query(sql_verifica_periodo, [
-            id_sala, periodo
-        ]);
+    async editarReserva(req, res) {
+        try {
+            let {id, justificativa, dt_reserva, periodo, id_sala, id_turma, id_usuario} = req.body;
+            let sql = 'CALL EditarReserva(?, ?, ?, ?, ?, ?, ?)';
 
-        if(dbReservaPeriodoValido[0].length > 0) {
-            periodo_valido = true;
+            let result = await req.dbConn.query(sql, [
+                id, justificativa, dt_reserva, periodo, id_usuario, id_sala, id_turma
+            ]);
+
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: error.message});
         }
+    }
 
-        if(data && periodo_valido) {
-            res.status(400).json({error: `Sala já cadastrada para o periodo ${periodo} no dia selecionado`});
-        } else {
-            db.query(sql, [
-                justificativa, dt_reserva, periodo, id_usuario, id_sala, id_turma
-            ], (err, rows) => {
-                if(err) res.status(400).json({error: err.message});
+    async deletarReserva(req, res) {
+        try {
+            let {id} = req.body;
+            let sql = 'CALL DeletarReserva(?)';
 
-                res.status(201).json(rows);
-            });
+            let result = await req.dbConn.query(sql, id);
+            
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: error.message});
         }
     }
 

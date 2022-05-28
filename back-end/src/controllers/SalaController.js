@@ -1,63 +1,71 @@
-const db = require('../database/DbConnection');
-
 class SalaController {
 
-    ListarSalas(req, res) {
-        let sql = 'SELECT * FROM RelatorioSalas';
+    async ListarSalas(req, res) {
+        try {
+            let sql = 'SELECT * FROM RelatorioSalas';
 
-        db.query(sql, (err, rows) => {
-            if(err) res.status(400).json({error: err.message});
-        
-            res.status(200).json(rows);
-        });
+            let [result] = await req.dbConn.query(sql);
+
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
     }
 
-    ListarSalaPorId(req, res) {
-        let {id} = req.params;
-        let sql = 'SELECT * FROM sala WHERE sala.id = ?';
+    async ListarSalaPorId(req, res) {
+        try {
+            let {id} = req.params;
+            let sql = 'SELECT * FROM sala WHERE sala.id = ?';
+        
+            let [result] = await req.dbConn.query(sql, id);
+
+            res.status(200).json(result[0]);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
+    }
     
-        db.query(sql, id, (err, rows) => {
-            if(err) res.status(400).json({error: err.message});
-        
-            res.status(200).json(rows[0]);
-        });
-    }
-    
-    CriarSala(req, res) {
-        let {numero, bloco, apelido, descricao_tipo, capacidade} = req.body;
-        let sql = 'CALL InsereSala(?, ?, ?, ?, ?)';
-        
-        db.query(sql, [
-            numero, bloco, apelido, descricao_tipo, capacidade
-        ], (err, rows) => {
-            if(err) res.status(400).json({error: err.message});
+    async CriarSala(req, res) {
+        try {
+            let {numero, bloco, apelido, descricao_tipo, capacidade} = req.body;
+            let sql = 'CALL InsereSala(?, ?, ?, ?, ?)';
+            
+            let result = await req.dbConn.query(sql, [
+                numero, bloco, apelido, descricao_tipo, capacidade
+            ]);
 
-            res.status(201).json(rows);
-        });
+            res.status(201).json(result);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
     }
 
-    EditarSala(req, res) {
-        let {id, numero, bloco, apelido, descricao_tipo, capacidade} = req.body;
-        let sql = 'CALL EditarSala(?, ?, ?, ?, ?, ?)';
+    async EditarSala(req, res) {
+        try {
+            let {id, numero, bloco, apelido, descricao_tipo, capacidade} = req.body;
+            let sql = 'CALL EditarSala(?, ?, ?, ?, ?, ?)';
 
-        db.query(sql, [
-            id, numero, bloco, apelido, descricao_tipo, capacidade
-        ], (err, rows) => {
-            if(err) res.status(400).json({error: err.message});
+            let result = await req.dbConn.query(sql, [
+                id, numero, bloco, apelido, descricao_tipo, capacidade
+            ]);
 
-            res.status(200).json(rows);
-        });
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
     }
 
-    DeletarSala(req, res) {
-        let {id} = req.body;
-        let sql = 'CALL DeletarSala(?)';
+    async DeletarSala(req, res) {
+        try {
+            let {id} = req.body;
+            let sql = 'CALL DeletarSala(?)';
 
-        db.query(sql, id, (err, rows) => {
-            if(err) res.status(400).json({error: err.message});
+            let result = await req.dbConn.query(sql, id);
 
-            res.status(200).json(rows);
-        });
+            res.status(200).json(result);
+        } catch (error) {
+            res.status(500).json({error: error.message});
+        }
     }
 
 }

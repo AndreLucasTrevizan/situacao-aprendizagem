@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/mobile.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
-        <link href="/assets/SA-LogoSite.png" type="image/x-icon">
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
@@ -67,6 +67,7 @@
                         </div>
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
+                        <a class="link-perfil" @Click="irParaVerPerfil">Visualizar Perfil</a>
                     </li>
                     <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
@@ -157,7 +158,7 @@
                                 <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
                                 {{btnText}}
                             </button>
-                            <button class="btn btn-danger">
+                            <button class="btn btn-danger" @Click="cancelar">
                                 Cancelar
                             </button>
                         </div>
@@ -253,6 +254,12 @@
                     },
                     irParaHome() {
                         window.location = '/home.html';
+                    },
+                    cancelar() {
+                        window.location = '/home.html';
+                    },
+                    irParaVerPerfil() {
+                        window.location = '/usuarios/perfil.html';
                     },
                     async criarReserva() {
                         if(this.validacao()) {

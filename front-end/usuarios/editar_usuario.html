@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/mobile.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
-        <link href="/assets/SA-LogoSite.png" type="image/x-icon">
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
     </head>
@@ -67,6 +67,7 @@
                         </div>
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
+                        <a class="link-perfil" @Click="irParaVerPerfil">Visualizar Perfil</a>
                     </li>
                     <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
@@ -188,7 +189,7 @@
                                 <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="editando">
                                 {{btnText}}
                             </button>
-                            <button class="btn btn-danger">
+                            <button class="btn btn-danger" @Click="cancelar">
                                 Cancelar
                             </button>
                         </div>
@@ -266,9 +267,8 @@
                     let resJson = await responseAPI.json();
 
                     if(responseAPI.status == 200) {
-                        let dt_nascimento = new Date(resJson[0].dt_nascimento).toISOString().substring(0, 10);
-                        this.usuario = {...resJson[0], dt_nascimento: dt_nascimento};
-                        console.log(this.usuario);
+                        let dt_nascimento = new Date(resJson.dt_nascimento).toISOString().substring(0, 10);
+                        this.usuario = {...resJson, dt_nascimento: dt_nascimento};
                     }
                 },
                 methods: {
@@ -287,6 +287,12 @@
                     },
                     irParaHome() {
                         window.location = '/home.html';
+                    },
+                    cancelar() {
+                        window.location = '/usuarios/relatorio_usuarios.html';
+                    },
+                    irParaVerPerfil() {
+                        window.location = '/usuarios/perfil.html';
                     },
                     async editarUsuario() {
                         if(this.validacao()) {
@@ -309,14 +315,7 @@
                             } else {
                                 this.editando = false;
                                 this.apiErro = true;
-                                this.btnText = 'Cadastrar'
-                                if(resJson.sqlMessage.includes('email')) {
-                                    this.apiErros.push('Email inválido.');
-                                }
-
-                                if(resJson.sqlMessage.includes('cpf')) {
-                                    this.apiErros.push('CPF inválido.');
-                                }
+                                this.btnText = 'Editar'
                                 setTimeout(() => {
                                     this.apiErro = false;
                                 }, 3000);

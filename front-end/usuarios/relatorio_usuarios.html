@@ -7,6 +7,7 @@
         <link rel="stylesheet" href="/css/style.css">
         <link rel="stylesheet" href="/css/mobile.css">
         <link rel="stylesheet" href="/css/simple-grid.min.css">
+        <link rel="icon" type="image/x-icon" href="/assets/SA-LogoSite.png">
         <link href="/assets/SA-LogoSite.png" type="image/x-icon">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <title>Situação de Aprendizagem</title>
@@ -67,12 +68,13 @@
                         </div>
                         {{usuarioLogado.nome}}
                         <small>{{usuarioLogado.email}}</small>
+                        <a class="link-perfil" @Click="irParaVerPerfil">Visualizar Perfil</a>
                     </li>
                     <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
             </nav>
 
-            <div class="flex-column center" v-if="usuarios.length == 0">
+            <div class="flex-column center" v-if="emptyUsers">
                 <h3 class="msg-vazias">Ainda não há usuários cadastrados</h3>
             </div>
 
@@ -90,43 +92,82 @@
             </div>
 
             <div class="container">
-                <table class="tabela">
-                    <thead>
-                        <tr>
-                            <th>Ações</th>
-                            <th>Nome</th>
-                            <th>CPF</th>
-                            <th>Email</th>
-                            <th>Sexo</th>
-                            <th>Função</th>
-                            <th>Situação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="usuario in usuarios">
-                            <td class="table-actions">
-                                <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
-                                <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
-                            </td>
-                            <td>{{usuario.nome}}</td>
-                            <td>{{usuario.cpf}}</td>
-                            <td>{{usuario.email}}</td>
-                            <td>{{(usuario.sexo == 1) ? 'Masculino' : (usuario.sexo == 2) ? 'Feminino' : 'Outro'}}</td>
-                            <td>{{(usuario.funcao == 1) ? 'Administrador' : (usuario.funcao == 2) ? 'Aluno' : 'Professor'}}</td>
-                            <td>{{(usuario.situacao == 1) ? 'Ativo' : 'Inativo'}}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="flex-column">
+                    <input
+                        style="margin-top: 10px;"
+                        type="text"
+                        v-model="dt_filtro"
+                        placeholder="Buscar usuário"
+                        @Input="filtrar" 
+                    >
+                    <button class="btn btn-primary" style="margin-top: 10px;" @Click="filtrar">Buscar Usuario</button>
+                </div>
+            </div>
+
+            <div class="loading-filter" v-if="carregando">
+                <div class="flex center">
+                    <img src="/assets/loading.gif" style="margin: 10px;" width="50px">
+                    Carregando...
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="alert-warning" v-if="apiErro">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                    </svg>
+                    <h5 v-for="erro in apiErros">{{erro}}</h5>
+                </div>
+
+                <div class="usuarios">
+                    <div class="usuario" v-for="usuario in usuarios">
+                        <div class="usuario-header">
+                            <div class="item-usuario">
+                                <img :src="`${api_url}/uploads/${usuario.avatar}`" alt="usuario.nome">
+                            </div>
+                            <h4>{{usuario.nome}}</h4>
+                        </div>
+                        <details>
+                            <summary>Mais Informações</summary>
+                            <div class="flex-column">
+                                <div class="flex between">
+                                    <small>{{new Date(usuario.dt_nascimento).toLocaleDateString('pt-BR')}}</small>
+                                    <small>{{new Date(Date.now()).getFullYear() - new Date(usuario.dt_nascimento).getFullYear()}} anos</small>
+                                </div>
+                                <div class="flex-column center">
+                                    <small>{{usuario.email}}</small>
+                                    <small>{{usuario.cpf}}</small>
+                                    <small>
+                                        Criado {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}
+                                        às {{new Date(usuario.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
+                                    </small>
+                                    <small v-if="usuario.createdAt != usuario.updatedAt">
+                                        Atualizado {{new Date(usuario.updatedAt).toLocaleDateString('pt-BR')}}
+                                        às {{new Date(usuario.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
+                                    </small>
+                                    <small v-else>
+                                        <small>Sem atualizações</small>
+                                    </small>
+                                    <div class="flex evenly usuario-actions">
+                                        <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
+                                        <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
+                                    </div>
+                                </div>
+                            </div>
+                        </details>
+                    </div>
+                </div>
                 <div class="usuario-mobile" v-for="usuario in usuarios">
-                    <div class="usuario-header">
-                        <img :src="`${api_url}/uploads/${usuario.avatar}`">
+                    <div class="usuario-header-mobile">
+                        <div class="avatar-usuario-reserva">
+                            <img :src="`${api_url}/uploads/${usuario.avatar}`">
+                        </div>
                         <div class="flex between" style="width: 100%;">
                             <h4>{{usuario.nome}}</h4>
                             <a class="ativo" v-if="usuario.situacao == 1"></a>
                             <a class="inativo" v-if="usuario.situacao == 2"></a>
                         </div>
                     </div>
-                    <hr style="margin: 10px 0px;">
                     <div class="flex between">
                         <strong>
                             <small>
@@ -232,7 +273,14 @@
                     userInfoMobile: false,
                     saindo: false,
                     deletando: false,
-                    usuarios: []
+                    dt_filtro: '',
+                    carregando: false,
+                    emptyUsers: false,
+                    emptyUsersFilter: false,
+                    usuarios: null,
+                    filtroErros: [],
+                    apiErro: false,
+                    apiErros: []
                 },
                 async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -263,7 +311,12 @@
                     }
 
                     if(responseAPI.status == 200) {
-                        this.usuarios = resJson;
+                        if(resJson.length > 0) {
+                            this.emptyUsers = false;
+                            this.usuarios = resJson;
+                        } else {
+                            this.emptyUsers = true;
+                        }
                     }
                 },
                 methods: {
@@ -297,6 +350,29 @@
                     },
                     irParaHome() {
                         window.location = '/home.html';
+                    },
+                    irParaVerPerfil() {
+                        window.location = '/usuarios/perfil.html';
+                    },
+                    async filtrar() {
+                        this.carregando = true;
+                    
+                        let responseAPI = await fetch(`${api_url}/usuarios/filtro`, {
+                            method: 'POST',
+                            headers: api_header,
+                            mode: 'cors',
+                            body: JSON.stringify({dt_filtro: this.dt_filtro})
+                        });
+
+                        let resJson = await responseAPI.json();
+
+                        if(responseAPI.status === 200) {
+                            this.usuarios = resJson;
+                            this.carregando = false;
+                        } else {
+                            this.carregando = false;
+                            this.emptyUsersFilter = true;
+                        }
                     },
                     async confirmarDelete() {
                         let id = JSON.parse(localStorage.getItem('id_delete'));
