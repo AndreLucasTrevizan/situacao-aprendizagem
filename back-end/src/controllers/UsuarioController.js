@@ -1,25 +1,25 @@
 const bcryptjs = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const UsuarioService = require('../services/UsuarioService');
 
 class UsuarioController {
 
     async Login(req, res) {
         try {
             let {email, senha} = req.body;
-            let sql = 'SELECT * FROM usuario WHERE `email` = ?';
-            let [result] = await req.dbConn.query(sql, email);
+            let emailUser = await new UsuarioService(req.dbConn).findByEmail(email);
 
-            if(result.length != 0 && bcryptjs.compareSync(senha, result[0].senha)) {
-                if(result[0].funcao != 2) {
-                    if(result[0].situacao != 1) {
+            if(emailUser && bcryptjs.compareSync(senha, emailUser.senha)) {
+                if(emailUser.funcao != 2) {
+                    if(emailUser.situacao != 1) {
                         res.status(402).json({error: 'Usuário inativo, por favor, contate o administrador'});
                     } else {
                         let user = {
-                            id: result[0].id,
-                            avatar: result[0].avatar,
-                            nome: result[0].nome,
-                            email: result[0].email,
-                            funcao: result[0].funcao,
+                            id: emailUser.id,
+                            avatar: emailUser.avatar,
+                            nome: emailUser.nome,
+                            email: emailUser.email,
+                            funcao: emailUser.funcao,
                         };
                         let token = jwt.sign(user, process.env.SECRET, {expiresIn: '1h'});
         
@@ -32,53 +32,38 @@ class UsuarioController {
                 res.status(403).json({error: 'Email ou senha inválidos'});
             }
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({error: error});
         }
     }
 
     async ListarUsuarios(req, res) {
         try {
-            let sql = 'SELECT * FROM RelatorioUsuarios;';
-
-            let [result] = await req.dbConn.query(sql);
+            let usuarios = await new UsuarioService(req.dbConn).findAll();
             
-            res.status(200).json(result);
+            res.status(200).json(usuarios);
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({error: error});
         }
     }
 
     async ListarUsuarioPorNome(req, res) {
         try {
-            let {dt_filtro} = req.body;
-            
-            let sql = `SELECT * FROM usuario WHERE usuario.nome LIKE ?`;
-            let [result] = await req.dbConn.query(sql, `%${dt_filtro}%`);
-            
-            res.status(200).json(result);
+            let usuario = await new UsuarioService(req.dbConn).findByName(req.body.name);
+
+            res.status(200).json(usuario);
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({error: error});
         }
     }
 
     async ListarUsuarioPorId(req, res) {
         try {
-            let {id} = req.params;
-            let sql = 'SELECT * FROM usuario WHERE `id` = ?';
-            let [result] = await req.dbConn.query(sql, id);
+            let usuario = await new UsuarioService(req.dbConn).findById(req.params.id);
             
-            res.status(200).json(result[0]);
+            res.status(200).json(usuario);
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({error: error});
         }
-    }
-
-    async ListarUsuarioPorEmail(req, res) {
-        let {email} = req.body;
-        let sql = 'SELECT id, nome, email FROM usuario WHERE `email` = ?';
-        let [result] = await req.dbConn.query(sql, email);
-        
-        return result[0];
     }
 
     async CriarUsuario(req, res) {
@@ -86,62 +71,61 @@ class UsuarioController {
             let {nome, cpf, dt_nascimento, sexo, email, senha, funcao} = req.body; 
             let avatar = (req.file !== undefined) ? req.file.filename : 'default.jpg';
             let hash = bcryptjs.hashSync(senha, 15);
-            let sql = `CALL InsereUsuario(?, ?, ?, ?, ?, ?, ?, ?);`;
 
-            let [result] = await req.dbConn.query(sql, [
-                avatar, nome, cpf, dt_nascimento, sexo, email, hash, funcao
-            ]);
+            let usuario = await new UsuarioService(req.dbConn, {
+                avatar: avatar,
+                nome: nome,
+                cpf: cpf,
+                dt_nascimento: dt_nascimento,
+                sexo: sexo,
+                email: email,
+                senha: hash,
+                funcao: funcao
+            }).insert();
 
-            res.status(201).json(result);
+            res.status(201).json(usuario);
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({error: error});
         }
     }
 
     async EditarPerfil(req, res) {
         try {
             let {id, nome, cpf, dt_nascimento, sexo, email} = req.body;
-            let sql_busca = 'SELECT avatar FROM usuario WHERE id = ?';
-            let [userDb] = await req.dbConn.query(sql_busca, id);
-            let avatar = (req.file !== undefined) ? req.file.filename : userDb.avatar;
-            let sql = `
-                UPDATE usuario
-                SET nome = ?, avatar = ?, cpf = ?, dt_nascimento = ?, sexo = ?, email = ?, updatedAt = current_timestamp
-                WHERE id = ?
-            `;
+            let avatar = (req.file !== undefined) ? req.file.filename : req.body.avatar;
 
-            let result = await req.dbConn.query(sql, [
+            let user = await new UsuarioService(req.dbConn).updateProfile([
                 nome, avatar, cpf, dt_nascimento, sexo, email, id
             ]);
 
-            res.status(200).json({...result, avatar: avatar});
+            res.status(200).json({...user, avatar: avatar});
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({error: error});
         }
     }
 
     async EditarUsuario(req, res) {
         try {
             let {id, nome, cpf, dt_nascimento, sexo, email, situacao, funcao} = req.body;
-            let sql = `CALL EditarUsuario(?, ?, ?, ?, ?, ?, ?, ?);`;
             
-            let result = await req.dbConn.query(sql, [
+            await new UsuarioService(req.dbConn).update([
                 id, nome, cpf, dt_nascimento, sexo, email, situacao, funcao
             ]);
 
-            res.status(200).json(result);
+            res.status(200).json({msg: 'Usuário atualizado'});
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({error: error});
         }
     }
 
     async DeletarUsuario(req, res) {
-        let {id} = req.body;
-        let sql = `CALL DeletarUsuario(?);`;
+        try {
+            await new UsuarioService(req.dbConn).delete(req.body.id);
 
-        let result = await req.dbConn.query(sql, id);
-
-        res.status(200).json(result);
+            res.status(200).json({msg: 'Usuário deletado'});
+        } catch (error) {
+            res.status(500).json({error: error});
+        }
     }
 
 }

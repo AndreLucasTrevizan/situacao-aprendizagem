@@ -12,8 +12,8 @@ const dbConn = mysql.createConnection({
 
 passport.use(new GoogleStrategy({
   callbackURL: `http://localhost:3000/api/auth/google/redirect`,  //same URI as registered in Google console portal
-  clientID: '368479267500-uenc2g77idoh2r700mbaatbou6s36klq.apps.googleusercontent.com', //replace with copied value from Google console
-  clientSecret: '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',
+  clientID: '829403040362-dce9oa70kogetd1igmm2mfsmjc4fco8f.apps.googleusercontent.com', //replace with copied value from Google console
+  clientSecret: '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',
 },
   async (accessToken, refreshToken, profile, done) => {
     try {

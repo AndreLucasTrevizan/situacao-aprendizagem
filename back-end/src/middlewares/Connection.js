@@ -1,7 +1,7 @@
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv').config();
 
-async function dbPool(req, res, next) {
+module.exports = async (req, res, next) => {
     try {
         req.dbConn = await mysql.createConnection({
             host: process.env.DB_HOST,
@@ -20,5 +20,3 @@ async function dbPool(req, res, next) {
         res.status(500).json({error: error.message});
     }
 }
-
-module.exports = dbPool;

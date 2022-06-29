@@ -30,7 +30,7 @@ router.get('/auth/facebook/callback',passport.authenticate('facebook'), (req, re
 
 router.post('/login', UsuariosController.Login);
 
-router.get('/usuarios', isAdmin, UsuariosController.ListarUsuarios);
+router.get('/usuarios', UsuariosController.ListarUsuarios);
 router.post('/usuarios/filtro', UsuariosController.ListarUsuarioPorNome);
 router.get('/usuarios/:id', UsuariosController.ListarUsuarioPorId);
 router.post('/usuarios', uploadAvatar, UsuariosController.CriarUsuario);
@@ -39,10 +39,10 @@ router.put('/usuarios', UsuariosController.EditarUsuario);
 router.delete('/usuarios', UsuariosController.DeletarUsuario);
 
 router.get('/turmas', TurmasController.ListarTurmas);
-router.get('/turmas/:id', TurmasController.ListarTurmaPorId);
+router.get('/turmas/:id', TurmasController.ListarTurmaPorId); 
 router.post('/turmas', TurmasController.CriarTurma);
 router.put('/turmas', TurmasController.EditarTurma);
-router.delete('/turmas', TurmasController.DeletarTurma);
+router.delete('/turmas/:id', TurmasController.DeletarTurma);
 
 router.get('/salas', SalasController.ListarSalas);
 router.get('/salas/:id', SalasController.ListarSalaPorId);
@@ -56,4 +56,4 @@ router.post('/reservas', ReservasController.criarReserva);
 router.put('/reservas', ReservasController.editarReserva);
 router.delete('/reservas', ReservasController.deletarReserva);
 
-module.exports = router;
+module.exports = router; 

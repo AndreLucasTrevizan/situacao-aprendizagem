@@ -1,10 +1,10 @@
+const TurmaService = require('../services/TurmasService');
+
 class TurmaController {
 
     async ListarTurmas(req, res) {
         try {
-            let sql = 'SELECT * FROM RelatorioTurmas';
-
-            let [result] = await req.dbConn.query(sql);
+            let result = await new TurmaService(req.dbConn).findAll();
 
             res.status(200).json(result);
         } catch (error) {
@@ -14,32 +14,21 @@ class TurmaController {
 
     async ListarTurmaPorId(req, res) {
         try {
-            let id = req.params.id;
-            let sql = 'SELECT * FROM turma WHERE turma.id = ?';
-
-            let [result] = await req.dbConn.query(sql, id);
-
-            res.status(200).json(result[0]);
+            let result = await new TurmaService(req.dbConn).findById(req.params.id);
+            res.status(200).json(result);
         } catch (error) {
-            res.status(500).json({error: error.message});
+            res.status(500).json({error: error.message}); 
         }
     }
 
     async CriarTurma(req, res) {
         try {
-            let {apelido, nome_curso, ano_inicio, duracao} = req.body;   
-            let sql = 'SELECT * FROM turma WHERE turma.apelido = ?';
-
-            let [turma] = await req.dbConn.query(sql, apelido);
+            let turma = await new TurmaService(req.dbConn).findByApelido(req.body.apelido);
             
-            if(turma.length > 0) {
+            if(turma) {
                 res.status(406).json({error: 'Turma já cadastrada'});
             } else {
-                let sql_dois = 'CALL InsereTurma(?, ?, ?, ?)';
-
-                let result = req.dbConn.query(sql_dois, [
-                    apelido, nome_curso, ano_inicio, duracao
-                ]);
+                let result = await new TurmaService(req.dbConn, req.body).insert();
 
                 res.status(201).json(result);
             }
@@ -50,27 +39,23 @@ class TurmaController {
 
     async EditarTurma(req, res) {
         try {
-            let {id, apelido, nome_curso, ano_inicio, duracao} = req.body;
-
-            let sql = 'CALL EditarTurma(?, ?, ?, ?, ?)';
-
-            let result = await req.dbConn.query(sql, [
-                id, apelido, nome_curso, ano_inicio, duracao
+            let result = await new TurmaService(req.dbConn).update([
+                req.body.id,
+                req.body.apelido,
+                req.body.nome_curso,
+                req.body.ano_inicio,
+                req.body.duracao
             ]);
 
             res.status(200).json(result);
         } catch (error) {
-            
+            res.status(500).json({error: error.message});
         }
     }
 
     async DeletarTurma(req, res) {
         try {
-            let {id} = req.body;
-
-            let sql = 'CALL DeletarTurma(?);';
-
-            let result = await req.dbConn.query(sql, id);
+            let result = await new TurmaService(req.dbConn).delete(req.params.id);
 
             res.status(200).json(result);
         } catch (error) {

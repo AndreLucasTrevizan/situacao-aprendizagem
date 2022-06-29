@@ -8,7 +8,6 @@ const dbPool = require('./middlewares/Connection');
 require('./modules/google_oauth');
 require('./modules/facebook_oauth');
 
-
 app.use(cors());
 app.use('/api/uploads', express.static('uploads'));
 app.use(logger('dev'));

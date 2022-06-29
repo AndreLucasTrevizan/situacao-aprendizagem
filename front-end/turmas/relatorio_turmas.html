@@ -248,11 +248,9 @@
                     },
                     async confirmarDelete() {
                         let id = JSON.parse(localStorage.getItem('id_turma'));
-                        let responseAPI = await fetch(`${api_url}/turmas`, {
+                        let responseAPI = await fetch(`${api_url}/turmas/${id}`, {
                             method: 'delete',
-                            headers: api_header,
-                            mode: 'cors',
-                            body: JSON.stringify({id: id})
+                            headers: api_header
                         });
 
                         let resJson = await responseAPI.json();

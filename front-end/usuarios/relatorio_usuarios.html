@@ -96,7 +96,7 @@
                     <input
                         style="margin-top: 10px;"
                         type="text"
-                        v-model="dt_filtro"
+                        v-model="name"
                         placeholder="Buscar usuário"
                         @Input="filtrar" 
                     >
@@ -273,7 +273,7 @@
                     userInfoMobile: false,
                     saindo: false,
                     deletando: false,
-                    dt_filtro: '',
+                    name: '',
                     carregando: false,
                     emptyUsers: false,
                     emptyUsersFilter: false,
@@ -361,7 +361,7 @@
                             method: 'POST',
                             headers: api_header,
                             mode: 'cors',
-                            body: JSON.stringify({dt_filtro: this.dt_filtro})
+                            body: JSON.stringify({name: this.name})
                         });
 
                         let resJson = await responseAPI.json();
