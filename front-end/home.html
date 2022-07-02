@@ -39,7 +39,7 @@
                             <img @Click="userInfoMobile = true" :src="`${api_url}/uploads/${usuarioLogado.avatar}`" alt="Avatar do usuário">
                         </div>
                         <ul class="usuario-menu">
-                            <li>{{usuarioLogado.nome}}</li>
+                            <li @Click="irParaVerPerfil()">{{usuarioLogado.nome}}</li>
                             <li @Click="saindo = true" class="delete">Sair</li>
                         </ul>
                     </div>
@@ -253,11 +253,10 @@
                     },
                     async confirmarDelete() {
                         let id = JSON.parse(localStorage.getItem('id_delete'));
-                        let responseAPI = await fetch(`${api_url}/reservas`, {
+                        let responseAPI = await fetch(`${api_url}/reservas/${id}`, {
                             method: 'DELETE',
                             headers: api_header,
-                            mode: 'cors',
-                            body: JSON.stringify({id: id})
+                            mode: 'cors'
                         });
 
                         let resJson = await responseAPI.json();

@@ -1,11 +1,12 @@
+const ReservasService = require('../services/ReservasService');
+
 class ReservaController {
 
     async ListarReservaPorId(req, res) {
         try {
-            let {id} = req.params;
-            let sql = 'SELECT * FROM reserva WHERE id = ?';
-            let [response] = await req.dbConn.query(sql, id);
-            res.status(200).json(response[0]);
+            let result = await new ReservasService(req.dbConn).findById(req.params.id);
+
+            res.status(200).json(result);
         } catch (err) {
             res.status(500).json({error: err.message});
         }
@@ -14,26 +15,7 @@ class ReservaController {
     async ListarReservas(req, res) {
         try {
             let {dt_reserva} = req.params;
-            let sql = `
-                SELECT 
-                    sala.apelido as sala,
-                    turma.apelido as turma,
-                    usuario.avatar as avatar,
-                    usuario.nome as usuario,
-                    usuario.funcao as funcao,
-                    reserva.id as id,
-                    reserva.id_usuario as id_usuario,
-                    reserva.justificativa as justificativa,
-                    reserva.periodo as periodo,
-                    reserva.createdAt as createdAt,
-                    reserva.updatedAt as updatedAt
-                FROM reserva
-                INNER JOIN sala on sala.id = reserva.id_sala
-                INNER JOIN turma on turma.id = reserva.id_turma
-                INNER JOIN usuario on usuario.id = reserva.id_usuario
-                WHERE reserva.dt_reserva = ?;
-            `;
-            let [dbData] = await req.dbConn.query(sql, dt_reserva);
+            let dbData = await new ReservasService(req.dbConn).findAll(dt_reserva);
 
             res.status(200).json(dbData);
         } catch (err) {
@@ -43,18 +25,13 @@ class ReservaController {
 
     async criarReserva(req, res) {
         try {
-            let {justificativa, dt_reserva, periodo, id_sala, id_turma, id_usuario} = req.body;
-            let sql = 'CALL InsereReserva(?, ?, ?, ?, ?, ?)';
-            let sql_verifica_data = 'SELECT * FROM reserva WHERE reserva.id_sala = ? AND reserva.periodo = ? AND reserva.dt_reserva = ?';
-
-            let [reservaPorData] = await req.dbConn.query(sql_verifica_data, [id_sala, dt_reserva]);
+            let {dt_reserva, periodo, id_sala} = req.body;
+            let verifica_sala = await new ReservasService(req.dbConn).check([id_sala, periodo, dt_reserva]);
             
-            if(reservaPorData.length > 0) {
+            if(verifica_sala) {
                 res.status(400).json({error: `Sala já cadastrada para o periodo ${periodo} no dia selecionado`});
             } else {
-                let result = await req.dbConn.query(sql, [
-                    justificativa, dt_reserva, periodo, id_usuario, id_sala, id_turma
-                ]);
+                let result = await new ReservasService(req.dbConn, req.body).insert();
 
                 res.status(201).json(result);
             }
@@ -66,9 +43,8 @@ class ReservaController {
     async editarReserva(req, res) {
         try {
             let {id, justificativa, dt_reserva, periodo, id_sala, id_turma, id_usuario} = req.body;
-            let sql = 'CALL EditarReserva(?, ?, ?, ?, ?, ?, ?)';
-
-            let result = await req.dbConn.query(sql, [
+            
+            let result = await new ReservasService(req.dbConn).update([
                 id, justificativa, dt_reserva, periodo, id_usuario, id_sala, id_turma
             ]);
 
@@ -80,10 +56,7 @@ class ReservaController {
 
     async deletarReserva(req, res) {
         try {
-            let {id} = req.body;
-            let sql = 'CALL DeletarReserva(?)';
-
-            let result = await req.dbConn.query(sql, id);
+            let result = await new ReservasService(req.dbConn).delete(req.params.id);
             
             res.status(200).json(result);
         } catch (error) {

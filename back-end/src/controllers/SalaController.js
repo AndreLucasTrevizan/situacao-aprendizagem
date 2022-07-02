@@ -1,11 +1,10 @@
+const SalasService = require('../services/SalasService');
+
 class SalaController {
 
     async ListarSalas(req, res) {
         try {
-            let sql = 'SELECT * FROM RelatorioSalas';
-
-            let [result] = await req.dbConn.query(sql);
-
+            let result = await new SalasService(req.dbConn).findAll();
             res.status(200).json(result);
         } catch (error) {
             res.status(500).json({error: error.message});
@@ -14,12 +13,9 @@ class SalaController {
 
     async ListarSalaPorId(req, res) {
         try {
-            let {id} = req.params;
-            let sql = 'SELECT * FROM sala WHERE sala.id = ?';
-        
-            let [result] = await req.dbConn.query(sql, id);
+            let result = await new SalasService(req.dbConn).findById(req.params.id);
 
-            res.status(200).json(result[0]);
+            res.status(200).json(result);
         } catch (error) {
             res.status(500).json({error: error.message});
         }
@@ -27,14 +23,9 @@ class SalaController {
     
     async CriarSala(req, res) {
         try {
-            let {numero, bloco, apelido, descricao_tipo, capacidade} = req.body;
-            let sql = 'CALL InsereSala(?, ?, ?, ?, ?)';
-            
-            let result = await req.dbConn.query(sql, [
-                numero, bloco, apelido, descricao_tipo, capacidade
-            ]);
+            await new SalasService(req.dbConn, req.body).insert();
 
-            res.status(201).json(result);
+            res.status(201).json({msg: 'Sala cadastrada'});
         } catch (error) {
             res.status(500).json({error: error.message});
         }
@@ -42,10 +33,9 @@ class SalaController {
 
     async EditarSala(req, res) {
         try {
-            let {id, numero, bloco, apelido, descricao_tipo, capacidade} = req.body;
-            let sql = 'CALL EditarSala(?, ?, ?, ?, ?, ?)';
+            let {numero, bloco, apelido, descricao_tipo, capacidade, id} = req.body;
 
-            let result = await req.dbConn.query(sql, [
+            let result = await new SalasService(req.dbConn).update([
                 id, numero, bloco, apelido, descricao_tipo, capacidade
             ]);
 
@@ -57,12 +47,9 @@ class SalaController {
 
     async DeletarSala(req, res) {
         try {
-            let {id} = req.body;
-            let sql = 'CALL DeletarSala(?)';
+            await new SalasService(req.dbConn).delete(req.params.id);
 
-            let result = await req.dbConn.query(sql, id);
-
-            res.status(200).json(result);
+            res.status(200).json({msg: 'Sala deletada'});
         } catch (error) {
             res.status(500).json({error: error.message});
         }

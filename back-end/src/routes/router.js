@@ -48,12 +48,12 @@ router.get('/salas', SalasController.ListarSalas);
 router.get('/salas/:id', SalasController.ListarSalaPorId);
 router.post('/salas', SalasController.CriarSala);
 router.put('/salas', SalasController.EditarSala);
-router.delete('/salas', SalasController.DeletarSala);
+router.delete('/salas/:id', SalasController.DeletarSala);
 
 router.get('/reservas/dia/:dt_reserva', ReservasController.ListarReservas);
 router.get('/reservas/:id', ReservasController.ListarReservaPorId);
 router.post('/reservas', ReservasController.criarReserva);
 router.put('/reservas', ReservasController.editarReserva);
-router.delete('/reservas', ReservasController.deletarReserva);
+router.delete('/reservas/:id', ReservasController.deletarReserva);
 
 module.exports = router; 
