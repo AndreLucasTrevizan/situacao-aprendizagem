@@ -121,94 +121,42 @@
 
                 <div class="usuarios">
                     <div class="usuario" v-for="usuario in usuarios">
-                        <div class="usuario-header">
-                            <div class="item-usuario">
-                                <img :src="`${api_url}/uploads/${usuario.avatar}`" alt="usuario.nome">
-                            </div>
-                            <h4>{{usuario.nome}}</h4>
-                        </div>
-                        <details>
-                            <summary>Mais Informações</summary>
-                            <div class="flex-column">
-                                <div class="flex between">
-                                    <small>{{new Date(usuario.dt_nascimento).toLocaleDateString('pt-BR')}}</small>
-                                    <small>{{new Date(Date.now()).getFullYear() - new Date(usuario.dt_nascimento).getFullYear()}} anos</small>
+                        <div class="user-details">
+                            <div class="usuario-header">
+                                <div class="item-usuario">
+                                    <img :src="`${api_url}/uploads/${usuario.avatar}`" alt="usuario.nome">
                                 </div>
-                                <div class="flex-column center">
-                                    <small>{{usuario.email}}</small>
-                                    <small>{{usuario.cpf}}</small>
-                                    <small>
-                                        Criado {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}
-                                        às {{new Date(usuario.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
-                                    </small>
-                                    <small v-if="usuario.createdAt != usuario.updatedAt">
-                                        Atualizado {{new Date(usuario.updatedAt).toLocaleDateString('pt-BR')}}
-                                        às {{new Date(usuario.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
-                                    </small>
-                                    <small v-else>
-                                        <small>Sem atualizações</small>
-                                    </small>
-                                    <div class="flex evenly usuario-actions">
-                                        <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
-                                        <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
+                                <h4>{{usuario.nome}}</h4>
+                            </div>
+                            <details>
+                                <summary>Mais Informações</summary>
+                                <div class="flex-column">
+                                    <div class="flex between">
+                                        <small>{{new Date(usuario.dt_nascimento).toLocaleDateString('pt-BR')}}</small>
+                                        <small>{{new Date(Date.now()).getFullYear() - new Date(usuario.dt_nascimento).getFullYear()}} anos</small>
+                                    </div>
+                                    <div class="flex-column center">
+                                        <small>{{usuario.email}}</small>
+                                        <small>{{usuario.cpf}}</small>
+                                        <small>
+                                            Criado {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}
+                                            às {{new Date(usuario.createdAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
+                                        </small>
+                                        <small v-if="usuario.createdAt != usuario.updatedAt">
+                                            Atualizado {{new Date(usuario.updatedAt).toLocaleDateString('pt-BR')}}
+                                            às {{new Date(usuario.updatedAt).toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}}
+                                        </small>
+                                        <small v-else>
+                                            <small>Sem atualizações</small>
+                                        </small>
+                                        <div class="flex evenly usuario-actions">
+                                            <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
+                                            <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </details>
-                    </div>
-                </div>
-                <div class="usuario-mobile" v-for="usuario in usuarios">
-                    <div class="usuario-header-mobile">
-                        <div class="avatar-usuario-reserva">
-                            <img :src="`${api_url}/uploads/${usuario.avatar}`">
+                            </details>
                         </div>
-                        <div class="flex between" style="width: 100%;">
-                            <h4>{{usuario.nome}}</h4>
-                            <a class="ativo" v-if="usuario.situacao == 1"></a>
-                            <a class="inativo" v-if="usuario.situacao == 2"></a>
-                        </div>
-                    </div>
-                    <div class="flex between">
-                        <strong>
-                            <small>
-                                Nascido em {{new Date(usuario.dt_nascimento).toLocaleDateString('pt-BR')}}
-                            </small>
-                        </strong>
-                        <strong>
-                            <small>{{
-                                new Date(Date.now()).getFullYear() - new Date(usuario.dt_nascimento).getFullYear()    
-                                }} anos
-                            </small>
-                        </strong>
-                    </div>
-                    <div class="flex between">
-                        <strong>
-                            <small>
-                                CPF {{usuario.cpf}}
-                            </small>
-                        </strong>
-                        <strong>
-                            <small>
-                                {{usuario.email}}
-                            </small>
-                        </strong>
-                    </div>
-                    <div class="flex between">
-                        <strong>
-                            <small>
-                                Críado em {{new Date(usuario.createdAt).toLocaleDateString('pt-BR')}}
-                            </small>
-                        </strong>
-                        <strong>
-                            <small v-if="usuario.createdAt != usuario.updatedAt">
-                                Atualizado em {{new Date(usuario.updatedAt).toLocaleDateString('pt-BR')}}
-                            </small>
-                            <small v-else>Sem Atualizações</small>
-                        </strong>
-                    </div>
-                    <div class="flex evenly usuario-actions-mobile">
-                        <i class="material-icons edit" @Click="irParaEditarUsuario(usuario.id)">edit</i>
-                        <i class="material-icons delete" @Click="deletandoUsuario(usuario.id)">delete</i>
                     </div>
                 </div>
             </div>

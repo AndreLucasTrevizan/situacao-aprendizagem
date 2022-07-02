@@ -69,11 +69,14 @@ select option {
 
 .usuario {
     width: 30%;
-    border: 1px solid #E3E3E3;
     border-radius: 5px;
-    padding: 10px;
-    margin: 10px;
+    padding: 10px 0px;
     overflow: hidden;
+}
+
+.user-details {
+    border: 1px solid #e3e3e3;
+    padding: 10px;
 }
 
 .usuario details summary {

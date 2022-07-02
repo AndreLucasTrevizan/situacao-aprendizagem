@@ -1,7 +1,14 @@
 @media (max-width: 1280px) {
 
     .usuarios {
-        display: none;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .usuario {
+        margin: 0px;
+        width: 100%;
     }
     
     .item-usuario img {
