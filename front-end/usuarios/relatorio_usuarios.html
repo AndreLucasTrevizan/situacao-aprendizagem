@@ -91,6 +91,15 @@
                 </button>
             </div>
 
+            <div class="container radio-buttons">
+                <input type="radio" name="kind_user" id="todos" value="todos" v-model="filter" @Click="filtrando('todos')">
+                <label for="todos">Todos</label>
+                <input type="radio" name="kind_user" id="professores" value="professores" @Click="filtrando('professores')">
+                <label for="professores">Professores</label>
+                <input type="radio" name="kind_user" id="alunos" value="alunos" @Click="filtrando('alunos')">
+                <label for="alunos">Alunos</label>
+            </div>
+
             <div class="container">
                 <div class="flex-column">
                     <input
@@ -98,10 +107,9 @@
                         type="text"
                         v-model="name"
                         placeholder="Buscar usuário"
-                        @Input="filtrar" 
                     >
-                    <button class="btn btn-primary" style="margin-top: 10px;" @Click="filtrar">Buscar Usuario</button>
                 </div>
+                <button class="btn btn-primary" style="margin-top: 10px;" @Click="filtrar">Buscar Usuario</button>
             </div>
 
             <div class="loading-filter" v-if="carregando">
@@ -111,13 +119,15 @@
                 </div>
             </div>
 
-            <div class="container">
+            <div class="container" v-if="!carregando">
                 <div class="alert-warning" v-if="apiErro">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                     </svg>
                     <h5 v-for="erro in apiErros">{{erro}}</h5>
                 </div>
+
+                <h3 v-if="filter != ''" style="margin-top: 10px;">Filtrando por {{filter}}</h3>
 
                 <div class="usuarios">
                     <div class="usuario" v-for="usuario in usuarios">
@@ -207,7 +217,8 @@
             </div>
         </div>
 
-        <script src="/common.js"></script>
+        <script src="../js/moment.js"></script>
+        <script src="../js/common.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
@@ -228,15 +239,17 @@
                     usuarios: null,
                     filtroErros: [],
                     apiErro: false,
-                    apiErros: []
+                    apiErros: [],
+                    filter: 'todos',
                 },
                 async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
+                    this.carregando = true;
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
                     }
 
-                    let responseAPI = await fetch(`${api_url}/usuarios`, {
+                    let responseAPI = await fetch(`${api_url}/usuarios?filter=${this.filter}`, {
                         method: 'get',
                         headers: {...api_header, 'Authorization': `Bearer ${this.usuarioLogado.token}`},
                         mode: 'cors'
@@ -259,6 +272,7 @@
                     }
 
                     if(responseAPI.status == 200) {
+                        this.carregando = false;
                         if(resJson.length > 0) {
                             this.emptyUsers = false;
                             this.usuarios = resJson;
@@ -320,6 +334,41 @@
                         } else {
                             this.carregando = false;
                             this.emptyUsersFilter = true;
+                        }
+                    },
+                    async filtrando(filter) {
+                        this.carregando = true;
+                        this.filter = filter;
+                        let responseAPI = await fetch(`${api_url}/usuarios?filter=${this.filter}`, {
+                            method: 'get',
+                            headers: api_header,
+                            mode: 'cors'
+                        });
+
+                        let resJson = await responseAPI.json();
+
+                        if(responseAPI.status == 401) {
+                            this.naoautorizado = true;
+                            setTimeout(() => {
+                                window.location = '/home.html';
+                            }, 3000);
+                        }
+
+                        if(responseAPI.status == 406) {
+                            this.tokenexpirou = true;
+                            setTimeout(() => {
+                                window.location = '/index.html';
+                            }, 3000);
+                        }
+
+                        if(responseAPI.status == 200) {
+                            this.carregando = false;
+                            if(resJson.length > 0) {
+                                this.emptyUsers = false;
+                                this.usuarios = resJson;
+                            } else {
+                                this.emptyUsers = true;
+                            }
                         }
                     },
                     async confirmarDelete() {

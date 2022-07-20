@@ -154,6 +154,17 @@
                                 <small class="error" v-if="turmaErros.length > 0" v-for="erro in turmaErros">{{erro}}</small>
                             </div>
                         </div>
+                        <div class="col-12" v-if="usuarioLogado.funcao == 1">
+                            <div class="flex-column">
+                                <label for="id_usuario">Professor</label>
+                                <select id="id_usuario" v-model="reserva.id_usuario">
+                                    <option v-for="professor in professores" :value="professor.id">
+                                        {{professor.nome}}
+                                    </option>
+                                </select>
+                                <small class="error" v-if="professorErros.length > 0" v-for="erro in professorErros">{{erro}}</small>
+                            </div>
+                        </div>
                         <div class="col-12 flex between action-mobile">
                             <button class="btn btn-primary create-flex" @Click="editarReserva">
                                 <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="editando">
@@ -185,7 +196,8 @@
             </div>
         </div>
 
-        <script src="/common.js"></script>
+        <script src="../js/moment.js"></script>
+        <script src="../js/common.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
@@ -206,22 +218,27 @@
                         dt_reserva: '',
                         periodo: '',
                         id_sala: '',
-                        id_turma: ''
+                        id_turma: '',
+                        id_usuario: '',
                     },
                     justificativaErros: [],
                     dateErros: [],
                     periodoErros: [],
                     salaErros: [],
                     turmaErros: [],
+                    professorErros: [],
                     salas: [],
                     turmas: [],
+                    professores: []
                 },
                 async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
                     }
+
                     let id = JSON.parse(localStorage.getItem('id_reserva'));
+
                     let responseReservaAPI = await fetch(`${api_url}/reservas/${id}`, {
                         method: 'GET',
                         headers: api_header,
@@ -229,24 +246,34 @@
                     });
 
                     let responseSalasAPI = await fetch(`${api_url}/salas`, {
-                        method: 'get',
+                        method: 'GET',
                         headers: api_header,
                         mode: 'cors'
                     });
-
+                    
                     let responseTurmasAPI = await fetch(`${api_url}/turmas`, {
-                        method: 'get',
+                        method: 'GET',
                         headers: api_header,
                         mode: 'cors'
                     });
+                    
+                    if(this.usuarioLogado.funcao == 1) {
+                        let responseUsuariosAPI = await fetch(`${api_url}/usuarios?filter=professores`, {
+                            method: 'GET',
+                            headers: api_header,
+                            mode: 'cors'
+                        });
+
+                        let resUsuariosJson = await responseUsuariosAPI.json();
+
+                        this.professores = resUsuariosJson;
+                    }
 
                     let resReservaJson = await responseReservaAPI.json();
                     let resSalasJson = await responseSalasAPI.json();
                     let resTurmasJson = await responseTurmasAPI.json();
 
-                    let dt_reserva = new Date(resReservaJson.dt_reserva).toISOString().substring(0, 10);
-
-                    this.reserva = {...resReservaJson, dt_reserva: dt_reserva};
+                    this.reserva = {...resReservaJson, dt_reserva: moment(resReservaJson.dt_reserva).locale('pt-br').format('YYYY-MM-DD')};
                     this.salas = resSalasJson;
                     this.turmas = resTurmasJson;
                 },
@@ -277,12 +304,15 @@
                         if(this.validacao()) {
                             this.editando = true;
                             this.btnText = 'Editando...';
-                            console.log({...this.reserva, id_usuario: this.usuarioLogado.id});
+
                             let responseAPI = await fetch(`${api_url}/reservas`, {
                                 method: 'put',
                                 headers: api_header,
                                 mode: 'cors',
-                                body: JSON.stringify({...this.reserva, id_usuario: this.usuarioLogado.id})
+                                body: JSON.stringify({
+                                    ...this.reserva,
+                                    id_usuario: (this.usuarioLogado.funcao == 1) ? this.reserva.id_usuario : this.usuarioLogado.id
+                                })
                             });
 
                             let resJson = await responseAPI.json();
@@ -312,6 +342,7 @@
                         this.periodoErros = [];
                         this.salaErros = [];
                         this.turmaErros = [];
+                        this.professorErros = [];
                         this.apiErros = [];
 
                         if(this.reserva.justificativa == '' || this.reserva.justificativa == undefined) {
@@ -338,12 +369,17 @@
                             this.turmaErros.push('A turma não pode ser vazia');
                         }
 
+                        if(this.reserva.id_usuario == '' || this.reserva.id_usuario == undefined) {
+                            this.professorErros.push('O professor não pode ser vazio');
+                        }
+
                         if(
                             this.justificativaErros.length > 0 ||
                             this.dateErros.length > 0 ||
                             this.periodoErros.length > 0 ||
                             this.salaErros.length > 0 ||
-                            this.turmaErros.length > 0
+                            this.turmaErros.length > 0 ||
+                            this.professorErros > 0
                         ) {
                             return false;
                         } else {

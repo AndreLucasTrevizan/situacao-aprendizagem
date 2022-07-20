@@ -30,25 +30,25 @@ router.get('/auth/facebook/callback',passport.authenticate('facebook'), (req, re
 
 router.post('/login', UsuariosController.Login);
 
-router.get('/usuarios', UsuariosController.ListarUsuarios);
-router.post('/usuarios/filtro', UsuariosController.ListarUsuarioPorNome);
+router.get('/usuarios', isAdmin, UsuariosController.ListarUsuarios);
+router.post('/usuarios/filtro', isAdmin, UsuariosController.ListarUsuarioPorNome);
 router.get('/usuarios/:id', UsuariosController.ListarUsuarioPorId);
-router.post('/usuarios', uploadAvatar, UsuariosController.CriarUsuario);
-router.put('/usuarios/perfil', uploadAvatar, UsuariosController.EditarPerfil);
-router.put('/usuarios', UsuariosController.EditarUsuario);
-router.delete('/usuarios', UsuariosController.DeletarUsuario);
+router.post('/usuarios', isAdmin, uploadAvatar, UsuariosController.CriarUsuario);
+router.put('/usuarios/perfil', isAdmin, uploadAvatar, UsuariosController.EditarPerfil);
+router.put('/usuarios', isAdmin, UsuariosController.EditarUsuario);
+router.delete('/usuarios', isAdmin, UsuariosController.DeletarUsuario);
 
 router.get('/turmas', TurmasController.ListarTurmas);
 router.get('/turmas/:id', TurmasController.ListarTurmaPorId); 
-router.post('/turmas', TurmasController.CriarTurma);
-router.put('/turmas', TurmasController.EditarTurma);
-router.delete('/turmas/:id', TurmasController.DeletarTurma);
+router.post('/turmas', isAdmin, TurmasController.CriarTurma);
+router.put('/turmas', isAdmin, TurmasController.EditarTurma);
+router.delete('/turmas/:id', isAdmin, TurmasController.DeletarTurma);
 
 router.get('/salas', SalasController.ListarSalas);
 router.get('/salas/:id', SalasController.ListarSalaPorId);
-router.post('/salas', SalasController.CriarSala);
-router.put('/salas', SalasController.EditarSala);
-router.delete('/salas/:id', SalasController.DeletarSala);
+router.post('/salas', isAdmin, SalasController.CriarSala);
+router.put('/salas', isAdmin, SalasController.EditarSala);
+router.delete('/salas/:id', isAdmin, SalasController.DeletarSala);
 
 router.get('/reservas/dia/:dt_reserva', ReservasController.ListarReservas);
 router.get('/reservas/:id', ReservasController.ListarReservaPorId);

@@ -11,7 +11,8 @@ const queries = {
     updateProfile: `UPDATE usuario
                     SET nome = ?, avatar = ?, cpf = ?, dt_nascimento = ?, sexo = ?, email = ?, updatedAt = current_timestamp
                     WHERE id = ?`,
-    delete: 'CALL DeletarUsuario(?);'
+    delete: 'CALL DeletarUsuario(?);',
+    filterUsersByRole: 'SELECT * FROM usuario WHERE funcao = ?',
 };
 
 module.exports = class Usuario extends UsuarioDao {
@@ -82,5 +83,11 @@ module.exports = class Usuario extends UsuarioDao {
             this.#senha,
             this.#funcao
         ]);
+    }
+
+    //----------------------------------------------------------------------------
+    //
+    filterUsersByRole(filter) {
+        return super.filterUsersByRole(filter);
     }
 }

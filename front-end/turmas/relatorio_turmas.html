@@ -73,10 +73,6 @@
                 </ul>
             </nav>
 
-            <div class="flex-column center" v-if="turmas.length == 0">
-                <h3 class="msg-vazias">Ainda não há turmas cadastradas</h3>
-            </div>
-
             <div class="flex center" style="padding-top: 20px;" v-if="usuarioLogado.funcao == 1">
                 <div class="add-button" @Click="irParaNovaTurma">
                     <i class="material-icons">add</i>
@@ -88,6 +84,17 @@
                     <i class="material-icons">add</i>
                     Adicionar Turma
                 </button>
+            </div>
+
+            <div class="flex-column center" v-if="turmas.length == 0 && !carregando">
+                <h3 class="msg-vazias">Ainda não há turmas cadastradas</h3>
+            </div>
+
+            <div class="loading-filter" v-if="carregando">
+                <div class="flex center">
+                    <img src="/assets/loading.gif" style="margin: 10px;" width="50px">
+                    Carregando...
+                </div>
             </div>
 
             <div class="container">
@@ -179,7 +186,8 @@
             </div>
         </div>
 
-        <script src="/common.js"></script>
+        <script src="../js/moment.js"></script>
+        <script src="../js/common.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
@@ -191,7 +199,8 @@
                     userInfoMobile: false,
                     saindo: false,
                     deletando: false,
-                    turmas: []
+                    turmas: [],
+                    carregando: true,
                 },
                 async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -208,6 +217,7 @@
                     let resJson = await responseAPI.json();
 
                     if(responseAPI.status == 200) {
+                        this.carregando = false;
                         this.turmas = resJson;
                     }
                 },

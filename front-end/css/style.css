@@ -51,6 +51,21 @@ select option {
     font-size: 18px;
 }
 
+.radio-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0px;
+}
+
+.radio-buttons label {
+    margin-right: 20px;
+}
+
+.radio-buttons input {
+    margin-right: 5px;
+}
+
 .usuario-actions {
     width: 100%;
     padding: 10px 0px;
@@ -64,13 +79,14 @@ select option {
     display: flex;
     flex-basis: auto;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-between;
 }
 
 .usuario {
     width: 30%;
     border-radius: 5px;
     padding: 10px 0px;
+    margin-bottom: 20px;
     overflow: hidden;
 }
 
@@ -255,6 +271,25 @@ select option {
     align-items: center;
 }
 
+.alert-danger {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    margin: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    color: #721c24;
+    background-color: #f8d7da;
+}
+
+.alert-danger svg {
+    width: 30px;
+}
+
+.alert-danger i {
+    margin-right: 10px;
+}
+
 .alert-warning {
     display: flex;
     align-items: center;
@@ -357,22 +392,6 @@ select option {
 
 .error {
     color: red;
-}
-
-.alert-danger {
-    padding: 10px;
-    font-size: 18px;
-    background-color: rgb(221, 27, 27);
-    color: #FFF;
-    border: 1px solid rgb(145, 23, 23);
-    display: flex;
-    align-items: center;
-}
-
-.alert-danger i {
-    color: #FFF;
-    margin-right: 10px;
-    font-size: 25px;
 }
 
 .menu-esquerdo {

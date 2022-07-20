@@ -7,23 +7,18 @@ class UsuarioController {
     async Login(req, res) {
         try {
             let {email, senha} = req.body;
-            let emailUser = await new UsuarioService(req.dbConn).findByEmail(email);
+            let userInDb = await new UsuarioService(req.dbConn).findByEmail(email);
 
-            if(emailUser && bcryptjs.compareSync(senha, emailUser.senha)) {
-                if(emailUser.funcao != 2) {
-                    if(emailUser.situacao != 1) {
+            if(userInDb && bcryptjs.compareSync(senha, userInDb.senha)) {
+                if(userInDb.funcao != 2) {
+                    if(userInDb.situacao != 1) {
                         res.status(402).json({error: 'Usuário inativo, por favor, contate o administrador'});
                     } else {
-                        let user = {
-                            id: emailUser.id,
-                            avatar: emailUser.avatar,
-                            nome: emailUser.nome,
-                            email: emailUser.email,
-                            funcao: emailUser.funcao,
-                        };
-                        let token = jwt.sign(user, process.env.SECRET, {expiresIn: '1h'});
+                        delete userInDb['senha'];
+                        delete userInDb['cpf'];
+                        let token = jwt.sign(userInDb, process.env.SECRET, {expiresIn: '1h'});
         
-                        res.status(200).json({...user, token: token});
+                        res.status(200).json({...userInDb, token: token});
                     }
                 } else {
                     res.status(402).json({error: 'Você não tem permissão de acessar essa aplicação'});
@@ -38,7 +33,20 @@ class UsuarioController {
 
     async ListarUsuarios(req, res) {
         try {
-            let usuarios = await new UsuarioService(req.dbConn).findAll();
+            let usuarios;
+            console.log(req.query.filter);
+
+            if(req.query.filter == 'todos') {
+                usuarios = await new UsuarioService(req.dbConn).filterUsersByRole();
+            }
+
+            if(req.query.filter == 'professores') {
+                usuarios = await new UsuarioService(req.dbConn).filterUsersByRole(3);
+            }
+
+            if(req.query.filter == 'alunos') {
+                usuarios = await new UsuarioService(req.dbConn).filterUsersByRole(2);
+            }
             
             res.status(200).json(usuarios);
         } catch (error) {
@@ -91,11 +99,12 @@ class UsuarioController {
 
     async EditarPerfil(req, res) {
         try {
-            let {id, nome, cpf, dt_nascimento, sexo, email} = req.body;
+            console.log(req.user);
+            let {nome, cpf, dt_nascimento, sexo, email} = req.body;
             let avatar = (req.file !== undefined) ? req.file.filename : req.body.avatar;
 
             let user = await new UsuarioService(req.dbConn).updateProfile([
-                nome, avatar, cpf, dt_nascimento, sexo, email, id
+                nome, avatar, cpf, dt_nascimento, sexo, email, req.user.id
             ]);
 
             res.status(200).json({...user, avatar: avatar});

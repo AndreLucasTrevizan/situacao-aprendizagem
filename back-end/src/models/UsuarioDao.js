@@ -136,4 +136,18 @@ module.exports = class Dao {
         });
     }
 
+    //----------------------------------------
+    //
+    filterUsersByRole(filter) {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const [result] = (filter != undefined) ? 
+                                    await this.#db.query(this.#queries.filterUsersByRole, filter) :
+                                    await this.#db.query(this.#queries.findAll);
+                resolve(result);
+            } catch (error) {
+                reject(err);
+            }
+        });
+    }
 }

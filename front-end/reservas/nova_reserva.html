@@ -153,6 +153,17 @@
                                 <small class="error" v-if="turmaErros.length > 0" v-for="erro in turmaErros">{{erro}}</small>
                             </div>
                         </div>
+                        <div class="col-12" v-if="usuarioLogado.funcao == 1">
+                            <div class="flex-column">
+                                <label for="id_usuario">Professor</label>
+                                <select id="id_usuario" v-model="reserva.id_usuario">
+                                    <option v-for="professor in professores" :value="professor.id">
+                                        {{professor.nome}}
+                                    </option>
+                                </select>
+                                <small class="error" v-if="professorErros.length > 0" v-for="erro in professorErros">{{erro}}</small>
+                            </div>
+                        </div>
                         <div class="col-12 flex between action-mobile">
                             <button class="btn btn-primary create-flex" @Click="criarReserva">
                                 <img src="/assets/loading.gif" width="20" style="margin-right: 10px;" v-if="cadastrando">
@@ -164,7 +175,6 @@
                         </div>
                     </div>
                 </fieldset>
-            </div>
 
             <div class="modal" v-if="saindo">
                 <div class="modal-msg">
@@ -184,7 +194,8 @@
             </div>
         </div>
 
-        <script src="/common.js"></script>
+        <script src="../js/moment.js"></script>
+        <script src="../js/common.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
@@ -201,18 +212,21 @@
                     btnText: 'Cadastrar',
                     reserva: {
                         justificativa: '',
-                        dt_reserva: new Date(Date.now()).toISOString().substring(0, 10),
+                        dt_reserva: moment().format('YYYY-MM-DD'),
                         periodo: '',
                         id_sala: '',
-                        id_turma: ''
+                        id_turma: '',
+                        id_usuario: ''
                     },
                     justificativaErros: [],
                     dateErros: [],
                     periodoErros: [],
                     salaErros: [],
                     turmaErros: [],
+                    professorErros: [],
                     salas: [],
                     turmas: [],
+                    professores: []
                 },
                 async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -232,11 +246,19 @@
                         mode: 'cors'
                     });
 
+                    let responseUsuariosAPI = await fetch(`${api_url}/usuarios?filter=professores`, {
+                        method: 'get',
+                        headers: api_header,
+                        mode: 'cors'
+                    });
+
                     let resSalasJson = await responseSalasAPI.json();
                     let resTurmasJson = await responseTurmasAPI.json();
+                    let resUsuariosJson = await responseUsuariosAPI.json();
 
                     this.salas = resSalasJson;
                     this.turmas = resTurmasJson;
+                    this.professores = resUsuariosJson;
                 },
                 methods: {
                     confirmarSaida() {
@@ -265,12 +287,15 @@
                         if(this.validacao()) {
                             this.cadastrando = true;
                             this.btnText = 'Cadastrando...';
-                            console.log({...this.reserva, id_usuario: this.usuarioLogado.id});
+                            
                             let responseAPI = await fetch(`${api_url}/reservas`, {
                                 method: 'post',
                                 headers: api_header,
                                 mode: 'cors',
-                                body: JSON.stringify({...this.reserva, id_usuario: this.usuarioLogado.id})
+                                body: JSON.stringify({
+                                    ...this.reserva,
+                                    id_usuario: (this.usuarioLogado.funcao == 1) ? this.reserva.id_usuario : this.usuarioLogado.id
+                                })
                             });
 
                             let resJson = await responseAPI.json();
@@ -300,6 +325,7 @@
                         this.periodoErros = [];
                         this.salaErros = [];
                         this.turmaErros = [];
+                        this.professorErros = [];
                         this.apiErros = [];
 
                         if(this.reserva.justificativa == '' || this.reserva.justificativa == undefined) {
@@ -326,12 +352,17 @@
                             this.turmaErros.push('A turma não pode ser vazia');
                         }
 
+                        if(this.reserva.id_usuario == '' || this.reserva.id_usuario == undefined) {
+                            this.professorErros.push('O professor não pode ser vazio');
+                        }
+
                         if(
                             this.justificativaErros.length > 0 ||
                             this.dateErros.length > 0 ||
                             this.periodoErros.length > 0 ||
                             this.salaErros.length > 0 ||
-                            this.turmaErros.length > 0
+                            this.turmaErros.length > 0 ||
+                            this.professorErros > 0
                         ) {
                             return false;
                         } else {

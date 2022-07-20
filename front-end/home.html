@@ -105,9 +105,9 @@
                     </div>
                 </div>
 
-                <h4 v-if="reservas.length > 0" style="margin-top: 20px;">Reservas para o dia {{new Date(dt_filter).toLocaleDateString('pt-BR')}}</h4>
+                <h4 v-if="reservas.length > 0 && !carregando" style="margin-top: 20px;">Reservas para o dia {{showDate()}}</h4>
 
-                <div class="reservas">
+                <div class="reservas" v-if="!carregando">
                     <div class="reserva" v-for="reserva in reservas">
                         <div class="reserva-header flex between">
                             <h4>{{reserva.sala}}</h4>
@@ -137,7 +137,7 @@
                 </div>
             </div>
 
-            <div class="flex-column center" v-if="reservas.length == 0">
+            <div class="flex-column center" v-if="reservas.length == 0 && !carregando">
                 <h3 class="msg-vazias">Ainda não há reservas cadastradas</h3>
             </div>
 
@@ -175,7 +175,8 @@
             </div>
         </div>
 
-        <script src="/common.js"></script>
+        <script src="js/moment.js"></script>
+        <script src="js/common.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
@@ -189,7 +190,8 @@
                     apiErro: false,
                     carregando: false,
                     deletando: false,
-                    dt_filter: new Date(Date.now()).toISOString().substring(0, 10),
+                    dt_filter: moment().locale('pt-br').format('YYYY-MM-DD'),
+                    dt_reservas: '',
                     apiErros: [],
                     reservas: []
                 },
@@ -200,7 +202,7 @@
                         window.location = '/index.html';
                     }
 
-                    let responseAPI = await fetch(`${api_url}/reservas/dia/${new Date(Date.now()).toISOString().substring(0, 10)}`, {
+                    let responseAPI = await fetch(`${api_url}/reservas/dia/${moment().format('YYYY-MM-DD')}`, {
                         method: 'get',
                         headers: api_header,
                         mode: 'cors'
@@ -274,6 +276,7 @@
                     },
                     async filtrar() {
                         this.carregando = true;
+                        this.dt_reservas = moment(this.filter).locale('pt-br').format('LL');
                         let responseAPI = await fetch(`${api_url}/reservas/dia/${this.dt_filter}`, {
                             method: 'GET',
                             headers: api_header,
@@ -294,6 +297,9 @@
                                 this.apiErros = [];
                             }, 3000);
                         }
+                    },
+                    showDate() {
+                        return moment(this.dt_filter).locale('pt-br').format('LL');
                     }
                 }
             });

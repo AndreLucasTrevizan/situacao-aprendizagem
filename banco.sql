@@ -147,6 +147,7 @@ begin
         `sexo` = p_sexo,
         `email` = p_email,
         `situacao` = p_situacao,
+        `funcao` = p_funcao,
         `updatedAt` = current_timestamp
     where `id` = p_id;
 end$$

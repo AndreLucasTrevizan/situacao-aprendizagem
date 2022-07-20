@@ -72,17 +72,13 @@
                     <li @Click="saindo = true" class="sair-mobile">Sair</li>
                 </ul>
             </nav>
-
-            <div class="flex-column center" v-if="salas.length == 0">
-                <h3 class="msg-vazias">Ainda não há salas cadastradas</h3>
-            </div>
-
+            
             <div class="flex center" style="padding-top: 20px;" v-if="usuarioLogado.funcao == 1">
                 <div class="add-button" @Click="irParaNovaSala">
                     <i class="material-icons">add</i>
                 </div>
             </div>
-
+            
             <div class="container" v-if="usuarioLogado.funcao == 1">
                 <button class="add-button-mx" @Click="irParaNovaSala">
                     <i class="material-icons">add</i>
@@ -90,6 +86,17 @@
                 </button>
             </div>
 
+            <div class="loading-filter" v-if="carregando">
+                <div class="flex center">
+                    <img src="/assets/loading.gif" style="margin: 10px;" width="50px">
+                    Carregando...
+                </div>
+            </div>
+            
+            <div class="flex-column center" v-if="salas.length == 0 && !carregando">
+                <h3 class="msg-vazias">Ainda não há salas cadastradas</h3>
+            </div>
+            
             <div class="container">
                 <div v-if="apiErros.length > 0" class="col-12 alert-danger" v-for="erro in apiErros" style="margin-top: 20px; width: 100%;">
                     <i class="material-icons">warning</i>
@@ -188,7 +195,8 @@
             </div>
         </div>
 
-        <script src="/common.js"></script>
+        <script src="../js/moment.js"></script>
+        <script src="../js/common.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
@@ -202,7 +210,8 @@
                     deletando: false,
                     salas: [],
                     apiErro: false,
-                    apiErros: []
+                    apiErros: [],
+                    carregando: true
                 },
                 async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -219,6 +228,7 @@
                     let resJson = await responseAPI.json();
 
                     if(responseAPI.status == 200) {
+                        this.carregando = false;
                         this.salas = resJson;
                     } else {
                         this.apiErro = true;

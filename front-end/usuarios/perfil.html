@@ -200,7 +200,8 @@
             </div>
         </div>
 
-        <script src="/common.js"></script>
+        <script src="../js/moment.js"></script>
+        <script src="../js/common.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
         <script>
             var app = new Vue({
@@ -295,18 +296,22 @@
                         if(this.validacao()) {
                             this.editando = true;
                             this.btnText = 'Editando...';
+
                             const fd =  new FormData();
+                            
                             fd.append('avatar', this.usuario.avatar);
                             fd.append('nome', this.usuario.nome);
                             fd.append('cpf', this.usuario.cpf);
                             fd.append('dt_nascimento', this.usuario.dt_nascimento);
                             fd.append('sexo', this.usuario.sexo);
                             fd.append('email', this.usuario.email);
-                            fd.append('id', this.usuario.id);
+
+                            let token = api_header['Authorization'];
 
                             let responseAPI = await fetch(`${api_url}/usuarios/perfil`, {
                                 method: 'PUT',
                                 mode: 'cors',
+                                headers: {Authorization: token},
                                 body: fd
                             });
 
@@ -324,7 +329,7 @@
                             } else {
                                 this.editando = false;
                                 this.apiErro = true;
-                                this.apiErros.push(resJson);
+                                this.apiErros.push(resJson.error);
                             }
                         }
                     },
