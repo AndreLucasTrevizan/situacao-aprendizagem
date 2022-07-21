@@ -39,7 +39,6 @@ fieldset p {
 }
 
 select {
-    line-height: 1.2em;
     padding: 2px;
     border: 1px solid #E3E3E3;
     border-radius: 2px;
