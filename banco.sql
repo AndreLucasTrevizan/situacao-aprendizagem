@@ -275,3 +275,14 @@ create view RelatorioReservas as
         inner join usuario on usuario.id = reserva.id_usuario
         inner join sala on sala.id = reserva.id_sala
         inner join turma on turma.id = reserva.id_turma;
+
+call InsereUsuario(
+    'default.jpg',
+    'Administrator',
+    '000.000.000-12',
+    '2000-01-01',
+    1,
+    'administrator@system.com',
+    '$2a$15$BuFL/wiGSzMYWGVVbWoFOO7HWWawAOjAECxO79JK8SAUB8ybEKMHi',
+    1
+);
