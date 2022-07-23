@@ -198,6 +198,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal" v-if="tokenInvalido">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>{{errorMsg}}</p>
+                </div>
+            </div>
         </div>
 
         <script src="../js/moment.js"></script>
@@ -210,6 +217,7 @@
                     editado: false,
                     api_url: api_url,
                     apiErro: false,
+                    tokenInvalido: false,
                     editando: false,
                     usuarioLogado: null,
                     menuMobile: true,
@@ -231,7 +239,8 @@
                     dataErros: [],
                     sexoErros: [],
                     emailErros: [],
-                    apiErros: []
+                    apiErros: [],
+                    errorMsg: ''
                 },
                 async created() {
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
@@ -317,19 +326,48 @@
 
                             let resJson = await responseAPI.json();
 
+                            if(responseAPI.status == 406) {
+                                let cont = 3;
+
+                                setInterval(() => {                                    
+                                    if(cont > 0) {
+                                        this.errorMsg = `${resJson.msg} - Redirecionando para tela de login em ${cont}`;
+                                        this.tokenInvalido = true;
+                                        cont--;
+                                    } else {
+                                        localStorage.removeItem('usuarioLogado');
+                                        window.location = '/index.html';
+                                    }
+                                }, 1000);
+                            }
+
                             if(responseAPI.status == 200) {
                                 this.editado = true;
                                 let usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
-                                localStorage.removeItem('usuarioLogado');
-                                usuarioLogado.avatar = resJson.avatar;
-                                localStorage.setItem('usuarioLogado', JSON.stringify(usuarioLogado));
-                                setTimeout(() => {
-                                    window.location.reload();
-                                }, 3000);
-                            } else {
-                                this.editando = false;
-                                this.apiErro = true;
-                                this.apiErros.push(resJson.error);
+
+                                fetch(`${api_url}/usuarios/${usuarioLogado.id}`, {
+                                    method: 'get',
+                                    mode: 'cors',
+                                    headers: api_header
+                                })
+                                .then((res) => {
+                                    if(!res.ok) alert('Erro ao buscar dados do usuário');
+
+                                    return res.json();
+                                })
+                                .then(data => {
+                                    usuarioLogado = data;
+                                    localStorage.removeItem('usuarioLogado');
+                                    localStorage.setItem('usuarioLogado', JSON.stringify({
+                                        ...usuarioLogado,
+                                        token: this.usuarioLogado.token
+                                    }));
+                                    
+                                    setTimeout(() => {
+                                        window.location.reload();
+                                    }, 3000);
+                                })
+                                .catch(err => alert(err.msg));
                             }
                         }
                     },

@@ -340,6 +340,10 @@
                             this.dateErros.push('A data não pode ser vazia.');
                         }
 
+                        if(this.reserva.dt_reserva < moment().locale('pt-br').format('YYYY-MM-DD')) {
+                            this.dateErros.push('Data inválida.');
+                        }
+
                         if(this.reserva.periodo == '' || this.reserva.periodo == undefined) {
                             this.periodoErros.push('A sala não pode ser vazia');
                         }

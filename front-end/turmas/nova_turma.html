@@ -178,6 +178,13 @@
                     </div>
                 </div>
             </div>
+
+            <div class="modal" v-if="naoautorizado">
+                <div class="modal-msg">
+                    <i class="modal-main-icon material-icons">cancel</i>
+                    <p>Você não tem permissão de acessar aqui!</p>
+                </div>
+            </div>
         </div>
 
         <script src="../js/moment.js"></script>
@@ -187,6 +194,7 @@
             var app = new Vue({
                 el: '#app',
                 data: {
+                    naoautorizado: false,
                     api_url: api_url,
                     usuarioLogado: null,
                     menuMobile: true,
@@ -212,6 +220,13 @@
                     this.usuarioLogado = JSON.parse(localStorage.getItem('usuarioLogado'));
                     if(!this.usuarioLogado) {
                         window.location = '/index.html';
+                    }
+
+                    if(this.usuarioLogado.funcao != 1) {
+                        this.naoautorizado = true;
+                        setTimeout(() => {
+                            window.location = '/home.html';
+                        }, 3000);
                     }
                 },
                 methods: {
