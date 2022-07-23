@@ -99,7 +99,7 @@ class UsuarioController {
 
     async EditarPerfil(req, res) {
         try {
-            console.log(req.user);
+            console.log(`Aqui o req.user ${{...req.user}}`);
             let {nome, cpf, dt_nascimento, sexo, email} = req.body;
             let avatar = (req.file !== undefined) ? req.file.filename : req.body.avatar;
 
@@ -107,7 +107,9 @@ class UsuarioController {
                 nome, avatar, cpf, dt_nascimento, sexo, email, req.user.id
             ]);
 
-            res.status(200).json({...user, avatar: avatar});
+            console.log(user);
+
+            res.status(200).json({user: user, avatar: avatar});
         } catch (error) {
             res.status(500).json({error: error});
         }

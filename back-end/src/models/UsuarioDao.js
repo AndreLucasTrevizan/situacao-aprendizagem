@@ -115,7 +115,7 @@ module.exports = class Dao {
         return new Promise(async (resolve, reject) => {
             try {
                 const [result] = await this.#db.execute(this.#queries.updateProfile, values);
-                resolve(result[0]);
+                resolve(result);
             } catch (err) {
                 reject(err);
             }

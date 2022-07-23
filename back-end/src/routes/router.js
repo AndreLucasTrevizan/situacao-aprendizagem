@@ -3,6 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 
 const isAdmin = require('../middlewares/isAdmin');
+const auth = require('../middlewares/auth');
 const uploadAvatar = require('../middlewares/uploadAvatar');
 
 const UsuariosController = require('../controllers/UsuarioController');
@@ -34,7 +35,7 @@ router.get('/usuarios', isAdmin, UsuariosController.ListarUsuarios);
 router.post('/usuarios/filtro', isAdmin, UsuariosController.ListarUsuarioPorNome);
 router.get('/usuarios/:id', UsuariosController.ListarUsuarioPorId);
 router.post('/usuarios', isAdmin, uploadAvatar, UsuariosController.CriarUsuario);
-router.put('/usuarios/perfil', isAdmin, uploadAvatar, UsuariosController.EditarPerfil);
+router.put('/usuarios/perfil', auth, uploadAvatar, UsuariosController.EditarPerfil);
 router.put('/usuarios', isAdmin, UsuariosController.EditarUsuario);
 router.delete('/usuarios', isAdmin, UsuariosController.DeletarUsuario);
 
