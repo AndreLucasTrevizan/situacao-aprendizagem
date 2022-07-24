@@ -246,19 +246,23 @@
                         mode: 'cors'
                     });
 
-                    let responseUsuariosAPI = await fetch(`${api_url}/usuarios?filter=professores`, {
-                        method: 'get',
-                        headers: api_header,
-                        mode: 'cors'
-                    });
+                    if(this.usuarioLogado.funcao == 1) {
+                        let responseUsuariosAPI = await fetch(`${api_url}/usuarios?filter=professores`, {
+                            method: 'get',
+                            headers: api_header,
+                            mode: 'cors'
+                        });
+
+                        let resUsuariosJson = await responseUsuariosAPI.json();
+                    
+                        this.professores = resUsuariosJson;
+                    }
 
                     let resSalasJson = await responseSalasAPI.json();
                     let resTurmasJson = await responseTurmasAPI.json();
-                    let resUsuariosJson = await responseUsuariosAPI.json();
 
                     this.salas = resSalasJson;
                     this.turmas = resTurmasJson;
-                    this.professores = resUsuariosJson;
                 },
                 methods: {
                     confirmarSaida() {

@@ -154,7 +154,7 @@
                             </div>
                         </small>
                     </div>
-                    <div class="sala-actions-mobile">
+                    <div class="sala-actions-mobile" v-if="usuarioLogado.funcao == 1">
                         <i class="material-icons edit" @Click="irParaEditarSala(sala.id)">edit</i>
                         <i class="material-icons delete" @Click="deletandoSala(sala.id)">delete</i>
                     </div>

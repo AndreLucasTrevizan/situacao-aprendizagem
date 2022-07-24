@@ -124,10 +124,10 @@
                         </div>
                         <div class="reserva-body flex-column">
                             <div class="flex between">
-                                <a>Periodo {{reserva.periodo}}</a>
-                                <a>Turma {{reserva.turma}}</a>
+                                <a>{{reserva.periodo}}</a>
+                                <a>{{reserva.turma}}</a>
                             </div>
-                            <a>{{reserva.justificativa}}</a>
+                            <a style="text-align: center;">{{reserva.justificativa}}</a>
                         </div>
                         <div class="reserva-footer" v-if="reserva.id_usuario == usuarioLogado.id || usuarioLogado.funcao == 1">
                             <i class="material-icons edit" @Click="editarReserva(reserva.id)">edit</i>

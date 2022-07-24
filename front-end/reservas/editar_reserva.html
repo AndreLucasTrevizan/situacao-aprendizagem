@@ -148,7 +148,7 @@
                                 <label for="id_turma">Turma</label>
                                 <select id="id_turma" v-model="reserva.id_turma">
                                     <option v-for="turma in turmas" :value="turma.id">
-                                        {{turma.apelido}} - {{turma.nome_curso}}
+                                        {{turma.nome_curso}}
                                     </option>
                                 </select>
                                 <small class="error" v-if="turmaErros.length > 0" v-for="erro in turmaErros">{{erro}}</small>

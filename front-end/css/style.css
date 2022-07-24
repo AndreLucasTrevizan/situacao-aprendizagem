@@ -182,19 +182,26 @@ select option {
     border: 1px solid #E3E3E3;
     border-radius: 10px;
     width: 300px;
+    box-shadow: 0px 0px 3px black;
+}
+
+.reserva:hover {
+    transition: 0.2s;
+    cursor: pointer;
+    box-shadow: 0px 0px 10px black;
 }
 
 .reserva-header {
+    background-color: #0053cf;
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     padding: 10px;
-    color: #FFF;
     border-bottom: 1px solid #E3E3E3;
 }
-/* 
-.reserva h4 {
+
+.reserva-header h4, a {
     color: #FFF;
-} */
+}
 
 .reserva-header img {
     width: 30px;
@@ -203,6 +210,11 @@ select option {
 }
 
 .reserva-body {
+    border-bottom: 1px solid #E1E1E1;
+}
+
+.reserva-body a {
+    color: #131313;
     padding: 10px;
     font-size: 18px;
 }

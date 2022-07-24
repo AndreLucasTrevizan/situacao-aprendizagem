@@ -286,3 +286,173 @@ call InsereUsuario(
     '$2a$15$BuFL/wiGSzMYWGVVbWoFOO7HWWawAOjAECxO79JK8SAUB8ybEKMHi',
     1
 );
+
+call InsereUsuario(
+    'default.jpg',
+    'Aluno Test',
+    '000.000.000-13',
+    '2000-01-02',
+    1,
+    'alunoteste@system.com',
+    '$2a$15$BuFL/wiGSzMYWGVVbWoFOO7HWWawAOjAECxO79JK8SAUB8ybEKMHi',
+    2
+);
+
+call InsereUsuario(
+    'default.jpg',
+    'Professor Teste',
+    '000.000.000-14',
+    '2000-01-03',
+    1,
+    'professorteste@system.com',
+    '$2a$15$BuFL/wiGSzMYWGVVbWoFOO7HWWawAOjAECxO79JK8SAUB8ybEKMHi',
+    3
+);
+
+call InsereSala(
+    501,
+    500,
+    'Sala 501',
+    'Sala de aula normal',
+    35
+);
+
+call InsereSala(
+    502,
+    500,
+    'Sala 502',
+    'Sala de aula normal',
+    25
+);
+
+call InsereSala(
+    503,
+    500,
+    'Sala 503',
+    'Sala de aula normal',
+    25
+);
+
+call InsereSala(
+    504,
+    500,
+    'Sala 504',
+    'Sala de aula normal',
+    32
+);
+
+call InsereSala(
+    505,
+    500,
+    'Sala 505',
+    'Sala de aula normal',
+    30
+);
+
+call InsereSala(
+    506,
+    500,
+    'Laboratório 506',
+    'Laboratório de Informática',
+    25
+);
+
+call InsereSala(
+    507,
+    500,
+    'Sala 507',
+    'Sala de aula normal',
+    35
+);
+
+call InsereSala(
+    508,
+    500,
+    'Laboratório 508',
+    'Laboratório de Informática',
+    30
+);
+
+call InsereSala(
+    509,
+    500,
+    'Laboratório 509',
+    'Laboratório de Informática',
+    40
+);
+
+call InsereTurma(
+    'AINFO',
+    'Aprendizagem Industrial em Informática',
+    '2023-02-07',
+    2
+);
+
+call InsereTurma(
+    'TINFO',
+    'Técnico em Informática',
+    '2023-02-07',
+    4
+);
+
+call InsereTurma(
+    'AISMR',
+    'Aprendizagem Industrial em Sup. e Man. de Redes',
+    '2023-02-07',
+    4
+);
+
+call InsereTurma(
+    'TINFOWEB',
+    'Técnico em Informática para Web',
+    '2023-02-07',
+    3
+);
+
+call InsereTurma(
+    'AIFP',
+    'Aprendizagem Industrial em Fazer Pão',
+    '2023-02-07',
+    2
+);
+
+call InsereTurma(
+    'AIMEC',
+    'Aprendizagem Industrial em Mecânica',
+    '2023-02-07',
+    2
+);
+
+call InsereTurma(
+    'AIEL',
+    'Aprendizagem Industrial em Elétrica',
+    '2023-02-07',
+    2
+);
+
+call InsereReserva(
+    'Aplicação de Prova',
+    '2022-07-26',
+    'Matutino',
+    2,
+    1,
+    1
+);
+
+call InsereReserva(
+    'Explicação de matéria nova',
+    '2022-07-26',
+    'Vespertino',
+    2,
+    2,
+    2
+);
+
+call InsereReserva(
+    'Aplicação do SAEP',
+    '2022-07-26',
+    'Noturno',
+    2,
+    4,
+    6
+);

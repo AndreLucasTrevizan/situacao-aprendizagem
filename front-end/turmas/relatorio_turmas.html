@@ -145,7 +145,7 @@
                             </div>
                         </small>
                     </div>
-                    <div class="turma-actions-mobile">
+                    <div class="turma-actions-mobile" v-if="usuarioLogado.funcao == 1">
                         <i class="material-icons edit" @Click="irParaEditarTurma(turma.id)">edit</i>
                         <i class="material-icons delete" @Click="deletandoTurma(turma.id)">delete</i>
                     </div>
