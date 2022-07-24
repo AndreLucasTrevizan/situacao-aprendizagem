@@ -34,7 +34,6 @@ class UsuarioController {
     async ListarUsuarios(req, res) {
         try {
             let usuarios;
-            console.log(req.query.filter);
 
             if(req.query.filter == 'todos') {
                 usuarios = await new UsuarioService(req.dbConn).filterUsersByRole();
