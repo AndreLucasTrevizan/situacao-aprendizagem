@@ -289,7 +289,7 @@ call InsereUsuario(
 
 call InsereUsuario(
     'default.jpg',
-    'Aluno Test',
+    'Aluno Teste',
     '000.000.000-13',
     '2000-01-02',
     1,
@@ -434,7 +434,7 @@ call InsereReserva(
     'Aplicação de Prova',
     '2022-07-26',
     'Matutino',
-    2,
+    3,
     1,
     1
 );
@@ -443,7 +443,7 @@ call InsereReserva(
     'Explicação de matéria nova',
     '2022-07-26',
     'Vespertino',
-    2,
+    3,
     2,
     2
 );
@@ -452,7 +452,7 @@ call InsereReserva(
     'Aplicação do SAEP',
     '2022-07-26',
     'Noturno',
-    2,
+    3,
     4,
     6
 );
