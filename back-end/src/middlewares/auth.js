@@ -13,6 +13,7 @@ module.exports = (req, res, next) => {
             }
             
             req.user = encoded;
+
             next();
         });
         return;

@@ -21,8 +21,7 @@ router.route('/usuarios')
     .all(isAdmin, uploadAvatar)
     .post(UsuariosController.CriarUsuario);
 
-    // Testar se o get Id pelo token vai funcionar
-router.route('/usuarios')
+router.route('/usuarios/:id')
     .all(auth)
     .get(UsuariosController.ListarUsuarioPorId);
 

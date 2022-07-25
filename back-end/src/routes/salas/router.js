@@ -7,8 +7,11 @@ const auth = require('../../middlewares/auth');
 const SalaController = require('../../controllers/SalaController');
 
 router.route('/salas')
-    .all(auth, isAdmin)
-    .get(SalaController.ListarSalas)
+    .all(auth)
+    .get(SalaController.ListarSalas);
+
+router.route('/salas')
+    .all(isAdmin)
     .post(SalaController.CriarSala)
     .put(SalaController.EditarSala);
 

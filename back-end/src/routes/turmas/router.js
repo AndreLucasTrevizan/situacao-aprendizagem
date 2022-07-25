@@ -7,8 +7,11 @@ const auth = require('../../middlewares/auth');
 const TurmaController = require('../../controllers/TurmaController');
 
 router.route('/turmas')
-    .all(auth, isAdmin)
-    .get(TurmaController.ListarTurmas)
+    .all(auth)
+    .get(TurmaController.ListarTurmas);
+
+router.route('/turmas')
+    .all(isAdmin)
     .post(TurmaController.CriarTurma)
     .put(TurmaController.EditarTurma);
 
